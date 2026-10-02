@@ -1568,3 +1568,269 @@ main {
     gap: 10px;
     flex-shrink: 0;
 }
+/* =========================================
+   MENU LATERAL
+========================================= */
+
+.btn-menu {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+
+    width: 44px;
+    height: 44px;
+
+    border: none;
+    border-radius: 10px;
+
+    background: rgba(255, 255, 255, 0.10);
+    color: #ffffff;
+
+    font-size: 24px;
+    line-height: 1;
+
+    cursor: pointer;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    transition:
+        background 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+.btn-menu:hover {
+    background: rgba(255, 255, 255, 0.18);
+}
+
+
+.topo {
+    position: relative;
+}
+
+
+.titulo-topo {
+    text-align: center;
+}
+
+
+/* =========================================
+   FUNDO ESCURO
+========================================= */
+
+.fundo-menu {
+    position: fixed;
+
+    inset: 0;
+
+    background: rgba(0, 0, 0, 0.45);
+
+    z-index: 999;
+
+    opacity: 0;
+    visibility: hidden;
+
+    transition:
+        opacity 0.25s ease,
+        visibility 0.25s ease;
+}
+
+
+.fundo-menu.mostrar {
+    opacity: 1;
+    visibility: visible;
+}
+
+
+/* =========================================
+   MENU
+========================================= */
+
+.menu-lateral {
+    position: fixed;
+
+    top: 0;
+    left: 0;
+
+    width: 300px;
+    max-width: 82vw;
+    height: 100vh;
+
+    background: #ffffff;
+
+    z-index: 1000;
+
+    box-shadow:
+        4px 0 20px rgba(0, 0, 0, 0.18);
+
+    transform: translateX(-105%);
+
+    transition:
+        transform 0.28s ease;
+
+    display: flex;
+    flex-direction: column;
+}
+
+
+.menu-lateral.mostrar {
+    transform: translateX(0);
+}
+
+
+/* =========================================
+   CABEÇALHO DO MENU
+========================================= */
+
+.menu-cabecalho {
+    min-height: 90px;
+
+    padding: 20px;
+
+    background: #17212b;
+    color: #ffffff;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    box-sizing: border-box;
+}
+
+
+.menu-cabecalho strong {
+    display: block;
+
+    font-size: 17px;
+    letter-spacing: 0.5px;
+}
+
+
+.menu-cabecalho span {
+    display: block;
+
+    margin-top: 5px;
+
+    font-size: 12px;
+
+    opacity: 0.75;
+}
+
+
+.btn-fechar-menu {
+    width: 40px;
+    height: 40px;
+
+    border: none;
+    border-radius: 8px;
+
+    background: rgba(255, 255, 255, 0.10);
+
+    color: #ffffff;
+
+    font-size: 28px;
+
+    cursor: pointer;
+}
+
+
+/* =========================================
+   OPÇÕES
+========================================= */
+
+.menu-opcoes {
+    flex: 1;
+
+    padding: 14px 10px;
+
+    overflow-y: auto;
+}
+
+
+.menu-item {
+    width: 100%;
+
+    min-height: 54px;
+
+    padding: 0 15px;
+
+    margin-bottom: 5px;
+
+    border: none;
+    border-radius: 10px;
+
+    background: transparent;
+
+    color: #27313a;
+
+    text-decoration: none;
+
+    font-size: 15px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 13px;
+
+    box-sizing: border-box;
+
+    cursor: pointer;
+
+    text-align: left;
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease;
+}
+
+
+.menu-item:hover {
+    background: #f1f4f6;
+}
+
+
+.menu-item.ativo {
+    background: #e8eef3;
+    color: #17212b;
+    font-weight: 600;
+}
+
+
+.menu-icone {
+    width: 28px;
+
+    text-align: center;
+
+    font-size: 19px;
+}
+
+
+.menu-bloqueado {
+    opacity: 0.48;
+    cursor: default;
+}
+
+
+.menu-bloqueado:hover {
+    background: transparent;
+}
+
+
+/* =========================================
+   RODAPÉ
+========================================= */
+
+.menu-rodape {
+    padding: 18px 20px;
+
+    border-top: 1px solid #e5e7e9;
+
+    color: #7a8288;
+
+    font-size: 11px;
+
+    line-height: 1.6;
+}
