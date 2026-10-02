@@ -1562,26 +1562,16 @@ async function confirmarFechamento() {
     try {
 
 
-        const {
+     const {
 
-            db,
-            doc,
-            setDoc,
-            serverTimestamp
+    db,
+    doc,
+    setDoc,
+    serverTimestamp,
+    addDoc,
+    collection
 
-        } = window.firebaseHotel;
-
-
-        const {
-
-            addDoc,
-            collection
-
-        } = await import(
-
-            "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"
-
-        );
+} = window.firebaseHotel;
 
 
         const idMesa =
