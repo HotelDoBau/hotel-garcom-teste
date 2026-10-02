@@ -19,10 +19,26 @@
 
     <style>
 
+        /* =========================================
+           PÁGINA
+        ========================================= */
+
         .saidas-page {
             padding-bottom: 40px;
         }
 
+
+        .saidas-page main {
+            width: 100%;
+            max-width: none;
+            margin: 0;
+            padding: 0;
+        }
+
+
+        /* =========================================
+           FILTROS
+        ========================================= */
 
         .filtro-saidas {
 
@@ -54,7 +70,8 @@
         }
 
 
-        .filtro-saidas select {
+        .filtro-saidas select,
+        .filtro-saidas input {
 
             width: 100%;
 
@@ -70,6 +87,24 @@
 
         }
 
+
+        .filtro-saidas input {
+
+            margin-top: 0;
+
+        }
+
+
+        .campo-busca {
+
+            margin-top: 18px;
+
+        }
+
+
+        /* =========================================
+           RESUMO
+        ========================================= */
 
         .resumo-saidas {
 
@@ -123,67 +158,85 @@
         }
 
 
-     .tabela-saidas-container {
-  width: 100%;
+        /* =========================================
+           TABELA
+        ========================================= */
 
-    max-width: none;
+        .tabela-saidas-container {
 
-    margin: 20px auto;
+            width: 100%;
 
-    overflow-x: auto;
+            max-width: none;
 
-    background: white;
+            margin: 20px 0;
 
-    border-radius: 14px;
+            overflow-x: auto;
 
-    box-shadow:
-        0 3px 12px
-        rgba(0,0,0,0.08);
+            background: white;
 
-}
+            border-radius: 14px;
+
+            box-shadow:
+                0 3px 12px
+                rgba(0,0,0,0.08);
+
+        }
 
 
-.tabela-saidas {
-    width: 100%;
-    min-width: 100%;
-    border-collapse: collapse;
-    table-layout: fixed;
-}
+        .tabela-saidas {
 
-   .tabela-saidas th:nth-child(1),
-.tabela-saidas td:nth-child(1) {
-    width: 6%;
-}
+            width: 100%;
 
-.tabela-saidas th:nth-child(2),
-.tabela-saidas td:nth-child(2) {
-    width: 30%;
-}
+            min-width: 100%;
 
-.tabela-saidas th:nth-child(3),
-.tabela-saidas td:nth-child(3) {
-    width: 17%;
-}
+            border-collapse: collapse;
 
-.tabela-saidas th:nth-child(4),
-.tabela-saidas td:nth-child(4) {
-    width: 12%;
-}
+            table-layout: fixed;
 
-.tabela-saidas th:nth-child(5),
-.tabela-saidas td:nth-child(5) {
-    width: 8%;
-}
+        }
 
-.tabela-saidas th:nth-child(6),
-.tabela-saidas td:nth-child(6) {
-    width: 17%;
-}
 
-.tabela-saidas th:nth-child(7),
-.tabela-saidas td:nth-child(7) {
-    width: 10%;
-}
+        .tabela-saidas th:nth-child(1),
+        .tabela-saidas td:nth-child(1) {
+            width: 6%;
+        }
+
+
+        .tabela-saidas th:nth-child(2),
+        .tabela-saidas td:nth-child(2) {
+            width: 30%;
+        }
+
+
+        .tabela-saidas th:nth-child(3),
+        .tabela-saidas td:nth-child(3) {
+            width: 17%;
+        }
+
+
+        .tabela-saidas th:nth-child(4),
+        .tabela-saidas td:nth-child(4) {
+            width: 12%;
+        }
+
+
+        .tabela-saidas th:nth-child(5),
+        .tabela-saidas td:nth-child(5) {
+            width: 8%;
+        }
+
+
+        .tabela-saidas th:nth-child(6),
+        .tabela-saidas td:nth-child(6) {
+            width: 17%;
+        }
+
+
+        .tabela-saidas th:nth-child(7),
+        .tabela-saidas td:nth-child(7) {
+            width: 10%;
+        }
+
 
         .tabela-saidas th {
 
@@ -260,6 +313,89 @@
         }
 
 
+        /* =========================================
+           BOTÕES DE AJUSTE
+        ========================================= */
+
+        .controles-produto {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            gap: 8px;
+
+            white-space: nowrap;
+
+        }
+
+
+        .btn-ajuste {
+
+            width: 32px;
+
+            height: 32px;
+
+            border: none;
+
+            border-radius: 6px;
+
+            background: #245d88;
+
+            color: white;
+
+            font-size: 18px;
+
+            font-weight: bold;
+
+            cursor: pointer;
+
+            line-height: 1;
+
+        }
+
+
+        .btn-ajuste:hover {
+
+            opacity: 0.85;
+
+        }
+
+
+        .btn-excluir {
+
+            margin-left: 2px;
+
+            padding: 7px 10px;
+
+            border: none;
+
+            border-radius: 6px;
+
+            background: #b3261e;
+
+            color: white;
+
+            cursor: pointer;
+
+            font-size: 12px;
+
+        }
+
+
+        .btn-excluir:hover {
+
+            opacity: 0.85;
+
+        }
+
+
+        /* =========================================
+           BOTÃO VOLTAR
+        ========================================= */
+
         .btn-voltar-saidas {
 
             display: block;
@@ -286,70 +422,11 @@
 
         }
 
-.controles-produto {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    white-space: nowrap;
-}
-.btn-ajuste {
-    width: 32px;
-    height: 32px;
-    border: none;
-    border-radius: 6px;
-    background: #245d88;
-    color: white;
-    font-size: 18px;
-    font-weight: bold;
-    cursor: pointer;
-    line-height: 1;
-}
-
-.btn-ajuste:hover {
-    opacity: 0.85;
-}
-
-.btn-excluir {
-    margin-left: 2px;
-    padding: 7px 10px;
-    border: none;
-    border-radius: 6px;
-    background: #b3261e;
-    color: white;
-    cursor: pointer;
-    font-size: 12px;
-}
-
-.btn-excluir:hover {
-    opacity: 0.85;
-
-}
 
         /* =========================================
-   TABELA OCUPA TODA A LARGURA DA TELA
-========================================= */
+           CELULAR
+        ========================================= */
 
-.saidas-page main {
-    width: 100%;
-    max-width: none;
-    margin: 0;
-    padding-left: 0;
-    padding-right: 0;
-}
-
-.tabela-saidas-container {
-    width: 100%;
-    max-width: none;
-    margin-left: 0;
-    margin-right: 0;
-    box-sizing: border-box;
-}
-
-.tabela-saidas {
-    width: 100%;
-    min-width: 100%;
-}
         @media (max-width: 600px) {
 
             .tabela-saidas {
@@ -358,6 +435,7 @@
 
             }
 
+
             .tabela-saidas th,
             .tabela-saidas td {
 
@@ -365,15 +443,38 @@
 
             }
 
+
             .resumo-saidas strong {
 
                 font-size: 19px;
 
             }
 
-            
+
+            .controles-produto {
+
+                gap: 4px;
+
+            }
+
+
+            .btn-ajuste {
+
+                width: 30px;
+
+                height: 30px;
+
+            }
+
+
+            .btn-excluir {
+
+                padding: 6px 8px;
+
+            }
 
         }
+
     </style>
 
 </head>
@@ -398,52 +499,45 @@
 <main>
 
 
-    <!-- ========================================= -->
-    <!-- FILTRO -->
-    <!-- ========================================= -->
+    <!-- =========================================
+         FILTROS
+    ========================================= -->
 
-   <section class="filtro-saidas">
+    <section class="filtro-saidas">
 
-    <label for="mesSelecionado">
-        Mês
-    </label>
+        <label for="mesSelecionado">
+            Mês
+        </label>
 
-    <select id="mesSelecionado">
+        <select id="mesSelecionado">
 
-        <option value="">
-            Carregando...
-        </option>
+            <option value="">
+                Carregando...
+            </option>
 
-    </select>
-
-
-    <label
-        for="buscarProduto"
-        style="margin-top: 18px;"
-    >
-        Buscar produto
-    </label>
-
-    <input
-        type="text"
-        id="buscarProduto"
-        placeholder="Digite o nome do produto..."
-        style="
-            width: 100%;
-            padding: 12px;
-            border-radius: 8px;
-            border: 1px solid #ccc;
-            font-size: 16px;
-            box-sizing: border-box;
-        "
-    >
-
-</section>
+        </select>
 
 
-    <!-- ========================================= -->
-    <!-- RESUMO -->
-    <!-- ========================================= -->
+        <div class="campo-busca">
+
+            <label for="buscarProduto">
+                Buscar produto
+            </label>
+
+            <input
+                type="text"
+                id="buscarProduto"
+                placeholder="Digite o nome do produto..."
+            >
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================
+         RESUMO
+    ========================================= -->
 
     <section class="resumo-saidas">
 
@@ -488,9 +582,9 @@
     </section>
 
 
-    <!-- ========================================= -->
-    <!-- TABELA -->
-    <!-- ========================================= -->
+    <!-- =========================================
+         TABELA
+    ========================================= -->
 
     <section class="tabela-saidas-container">
 
@@ -516,13 +610,14 @@
                         Valor unit.
                     </th>
 
-                   <th class="numero">
-    Qtd.
-</th>
+                    <th class="numero">
+                        Qtd.
+                    </th>
 
-<th class="numero">
-    Ajustar
-</th>
+                    <th class="numero">
+                        Ajustar
+                    </th>
+
                     <th class="valor">
                         Total
                     </th>
@@ -540,33 +635,36 @@
                         colspan="7"
                         class="mensagem-saidas"
                     >
-
                         Carregando...
-
                     </td>
 
                 </tr>
 
             </tbody>
 
-
         </table>
 
     </section>
 
 
+    <!-- =========================================
+         VOLTAR
+    ========================================= -->
+
     <button
         class="btn-voltar-saidas"
         onclick="window.location.href='index.html'"
     >
-
         ← Voltar
-
     </button>
 
 
 </main>
 
+
+<!-- =========================================
+     FIREBASE
+========================================= -->
 
 <script
     type="module"
@@ -581,7 +679,6 @@
 
 <script>
 
-
 /* =========================================
    AGUARDAR FIREBASE
 ========================================= */
@@ -589,7 +686,6 @@
 async function aguardarFirebase() {
 
     let tentativas = 0;
-
 
     while (
         !window.firebaseHotel &&
@@ -608,7 +704,6 @@ async function aguardarFirebase() {
 
     }
 
-
     return !!window.firebaseHotel;
 
 }
@@ -622,10 +717,13 @@ const seletorMes =
     document.getElementById(
         "mesSelecionado"
     );
+
+
 const buscarProduto =
     document.getElementById(
         "buscarProduto"
     );
+
 
 const corpoTabela =
     document.getElementById(
@@ -655,7 +753,7 @@ let saidasFirebase = [];
 
 
 /* =========================================
-   FORMATAR VALOR
+   FORMATAR MOEDA
 ========================================= */
 
 function formatarMoeda(valor) {
@@ -682,12 +780,13 @@ function criarMeses() {
     const agora =
         new Date();
 
+
     seletorMes.innerHTML =
         "";
 
+
     /*
-        Mostra o mês atual
-        e os próximos 12 meses.
+        Mês atual + próximos 12 meses.
     */
 
     for (
@@ -703,8 +802,10 @@ function criarMeses() {
                 1
             );
 
+
         const ano =
             data.getFullYear();
+
 
         const mes =
             String(
@@ -714,8 +815,10 @@ function criarMeses() {
                 "0"
             );
 
+
         const valor =
             `${ano}-${mes}`;
+
 
         const texto =
             data.toLocaleDateString(
@@ -723,22 +826,27 @@ function criarMeses() {
                 {
                     month:
                         "long",
+
                     year:
                         "numeric"
                 }
             );
+
 
         const option =
             document.createElement(
                 "option"
             );
 
+
         option.value =
             valor;
+
 
         option.textContent =
             texto.charAt(0).toUpperCase() +
             texto.slice(1);
+
 
         seletorMes.appendChild(
             option
@@ -748,12 +856,12 @@ function criarMeses() {
 
 }
 
+
 /* =========================================
    CARREGAR SAÍDAS
 ========================================= */
 
 async function carregarSaidas() {
-
 
     const conectado =
         await aguardarFirebase();
@@ -769,10 +877,8 @@ async function carregarSaidas() {
                     colspan="7"
                     class="mensagem-saidas"
                 >
-
                     Não foi possível
                     conectar ao Firebase.
-
                 </td>
 
             </tr>
@@ -786,13 +892,10 @@ async function carregarSaidas() {
 
     try {
 
-
         const {
-
             db,
             collection,
             getDocs
-
         } = window.firebaseHotel;
 
 
@@ -830,10 +933,8 @@ async function carregarSaidas() {
 
         mostrarSaidas();
 
-
     }
     catch (erro) {
-
 
         console.error(
             "Erro ao carregar saídas:",
@@ -849,10 +950,8 @@ async function carregarSaidas() {
                     colspan="7"
                     class="mensagem-saidas"
                 >
-
                     Erro ao carregar
                     as vendas.
-
                 </td>
 
             </tr>
@@ -873,6 +972,7 @@ function mostrarSaidas() {
     const mes =
         seletorMes.value;
 
+
     const busca =
         buscarProduto.value
             .trim()
@@ -880,7 +980,8 @@ function mostrarSaidas() {
 
 
     /*
-        Guarda o total de cada produto.
+        Soma os produtos SOMENTE
+        do mês selecionado.
     */
 
     const vendasPorProduto = {};
@@ -893,7 +994,9 @@ function mostrarSaidas() {
                 saida.referenciaMes !==
                 mes
             ) {
+
                 return;
+
             }
 
 
@@ -973,7 +1076,7 @@ function mostrarSaidas() {
 
 
     /*
-        Usa todos os produtos
+        Mostra todos os produtos
         cadastrados no cardápio.
     */
 
@@ -987,7 +1090,7 @@ function mostrarSaidas() {
 
 
             /*
-                Filtro pelo nome.
+                Pesquisa pelo nome.
             */
 
             if (
@@ -1076,17 +1179,13 @@ function mostrarSaidas() {
                 </td>
 
                 <td class="valor">
-
                     ${formatarMoeda(
                         valorUnitario
                     )}
-
                 </td>
 
                 <td class="numero">
-
                     ${quantidade}
-
                 </td>
 
                 <td>
@@ -1122,11 +1221,9 @@ function mostrarSaidas() {
                 </td>
 
                 <td class="valor">
-
                     ${formatarMoeda(
                         total
                     )}
-
                 </td>
 
             `;
@@ -1141,7 +1238,7 @@ function mostrarSaidas() {
 
 
     /*
-        Se nenhum produto foi encontrado.
+        Nenhum produto encontrado.
     */
 
     if (
@@ -1156,9 +1253,7 @@ function mostrarSaidas() {
                     colspan="7"
                     class="mensagem-saidas"
                 >
-
                     Nenhum produto encontrado.
-
                 </td>
 
             </tr>
@@ -1169,7 +1264,7 @@ function mostrarSaidas() {
 
 
     /*
-        Linha final.
+        Total do mês.
     */
 
     const trTotal =
@@ -1185,27 +1280,19 @@ function mostrarSaidas() {
     trTotal.innerHTML = `
 
         <td colspan="4">
-
             TOTAL DO MÊS
-
         </td>
 
         <td class="numero">
-
             ${unidadesVendidas}
-
         </td>
 
-        <td>
-
-        </td>
+        <td></td>
 
         <td class="valor">
-
             ${formatarMoeda(
                 totalGeral
             )}
-
         </td>
 
     `;
@@ -1231,8 +1318,10 @@ function mostrarSaidas() {
 
 }
 
-    /* =========================================
-   ALTERAR QUANTIDADE DO PRODUTO
+
+/* =========================================
+   ALTERAR QUANTIDADE
+   SOMENTE NO MÊS SELECIONADO
 ========================================= */
 
 async function alterarQuantidadeProduto(
@@ -1245,29 +1334,21 @@ async function alterarQuantidadeProduto(
 
 
     /*
-        Procura os registros do mês
-        que possuem esse produto.
+        Busca somente registros
+        do mês atualmente selecionado.
     */
 
     const registros =
-        saidasFirebase
-            .filter(
-                saida =>
-                    saida.referenciaMes ===
-                        mes &&
-                    Array.isArray(
-                        saida.itens
-                    ) &&
-                    saida.itens.some(
-                        item =>
-                            String(
-                                item.id
-                            ) ===
-                            String(
-                                idProduto
-                            )
-                    )
-            );
+        saidasFirebase.filter(
+            saida =>
+                saida.referenciaMes === mes &&
+                Array.isArray(saida.itens) &&
+                saida.itens.some(
+                    item =>
+                        String(item.id) ===
+                        String(idProduto)
+                )
+        );
 
 
     if (
@@ -1284,94 +1365,57 @@ async function alterarQuantidadeProduto(
 
 
     /*
-        Para diminuir, começamos
-        pelo registro mais recente.
-
-        Para aumentar, também usamos
-        o registro mais recente.
-    */
-
-    const registro =
-        registros[
-            registros.length - 1
-        ];
-
-
-    const itens =
-        Array.isArray(
-            registro.itens
-        )
-            ? [...registro.itens]
-            : [];
-
-
-    const indice =
-        itens.findIndex(
-            item =>
-                String(
-                    item.id
-                ) ===
-                String(
-                    idProduto
-                )
-        );
-
-
-    if (
-        indice === -1
-    ) {
-
-        return;
-
-    }
-
-
-    const item =
-        {
-            ...itens[indice]
-        };
-
-
-    const quantidadeAtual =
-        Number(
-            item.quantidade || 0
-        );
-
-
-    const novaQuantidade =
-        quantidadeAtual +
-        variacao;
-
-
-    /*
-        Nunca permite quantidade negativa.
+        + 1
+        Adiciona somente no último
+        fechamento desse mês.
     */
 
     if (
-        novaQuantidade < 0
+        variacao > 0
     ) {
 
-        return;
+        const registro =
+            registros[
+                registros.length - 1
+            ];
 
-    }
+
+        const itens =
+            [...registro.itens];
 
 
-    /*
-        Se zerou, remove o item
-        daquele fechamento.
-    */
+        const indice =
+            itens.findIndex(
+                item =>
+                    String(item.id) ===
+                    String(idProduto)
+            );
 
-    if (
-        novaQuantidade === 0
-    ) {
 
-        itens.splice(
-            indice,
-            1
-        );
+        if (
+            indice === -1
+        ) {
 
-    }
-    else {
+            return;
+
+        }
+
+
+        const item =
+            {
+                ...itens[indice]
+            };
+
+
+        const quantidadeAtual =
+            Number(
+                item.quantidade || 0
+            );
+
+
+        const novaQuantidade =
+            quantidadeAtual + 1;
+
 
         item.quantidade =
             novaQuantidade;
@@ -1391,58 +1435,170 @@ async function alterarQuantidadeProduto(
         itens[indice] =
             item;
 
-    }
 
-
-    try {
-
-        const {
-
-            db,
-            doc,
-            updateDoc
-
-        } = window.firebaseHotel;
-
-
-        await updateDoc(
-            doc(
-                db,
-                "saidas",
-                registro.id
-            ),
-            {
-                itens:
-                    itens
-            }
+        await atualizarRegistroSaida(
+            registro.id,
+            itens
         );
 
-
-        /*
-            Atualiza os dados locais.
-        */
 
         registro.itens =
             itens;
 
+    }
 
-        mostrarSaidas();
 
+    /*
+        - 1
+        Retira somente do mês selecionado,
+        começando pelo último fechamento.
+    */
+
+    if (
+        variacao < 0
+    ) {
+
+        let restante =
+            1;
+
+
+        for (
+            let i = registros.length - 1;
+            i >= 0 && restante > 0;
+            i--
+        ) {
+
+            const registro =
+                registros[i];
+
+
+            const itens =
+                [...registro.itens];
+
+
+            const indice =
+                itens.findIndex(
+                    item =>
+                        String(item.id) ===
+                        String(idProduto)
+                );
+
+
+            if (
+                indice === -1
+            ) {
+
+                continue;
+
+            }
+
+
+            const item =
+                {
+                    ...itens[indice]
+                };
+
+
+            const quantidadeAtual =
+                Number(
+                    item.quantidade || 0
+                );
+
+
+            if (
+                quantidadeAtual <= 0
+            ) {
+
+                continue;
+
+            }
+
+
+            const novaQuantidade =
+                quantidadeAtual - 1;
+
+
+            if (
+                novaQuantidade === 0
+            ) {
+
+                itens.splice(
+                    indice,
+                    1
+                );
+
+            }
+            else {
+
+                item.quantidade =
+                    novaQuantidade;
+
+
+                item.total =
+                    Number(
+                        (
+                            Number(
+                                item.valorUnitario || 0
+                            ) *
+                            novaQuantidade
+                        ).toFixed(2)
+                    );
+
+
+                itens[indice] =
+                    item;
+
+            }
+
+
+            await atualizarRegistroSaida(
+                registro.id,
+                itens
+            );
+
+
+            registro.itens =
+                itens;
+
+
+            restante--;
+
+        }
 
     }
-    catch (erro) {
-
-        console.error(
-            "Erro ao alterar quantidade:",
-            erro
-        );
 
 
-        alert(
-            "Não foi possível alterar a quantidade."
-        );
+    mostrarSaidas();
 
-    }
+}
+
+
+/* =========================================
+   ATUALIZAR SAÍDA NO FIREBASE
+========================================= */
+
+async function atualizarRegistroSaida(
+    idRegistro,
+    itens
+) {
+
+    const {
+        db,
+        doc,
+        updateDoc
+    } = window.firebaseHotel;
+
+
+    await updateDoc(
+        doc(
+            db,
+            "saidas",
+            idRegistro
+        ),
+        {
+            itens: itens
+        }
+    );
 
 }
 
@@ -1462,12 +1618,8 @@ async function excluirProdutoMes(
     const produto =
         produtos.find(
             item =>
-                String(
-                    item.id
-                ) ===
-                String(
-                    idProduto
-                )
+                String(item.id) ===
+                String(idProduto)
         );
 
 
@@ -1494,42 +1646,33 @@ async function excluirProdutoMes(
     try {
 
         const {
-
             db,
             doc,
             updateDoc
-
         } = window.firebaseHotel;
 
 
         /*
-            Localiza todos os fechamentos
-            do mês que possuem o produto.
+            Procura somente os registros
+            do mês selecionado.
         */
 
         const registros =
             saidasFirebase.filter(
                 saida =>
-                    saida.referenciaMes ===
-                        mes &&
-                    Array.isArray(
-                        saida.itens
-                    ) &&
+                    saida.referenciaMes === mes &&
+                    Array.isArray(saida.itens) &&
                     saida.itens.some(
                         item =>
-                            String(
-                                item.id
-                            ) ===
-                            String(
-                                idProduto
-                            )
+                            String(item.id) ===
+                            String(idProduto)
                     )
             );
 
 
         /*
-            Remove somente esse produto
-            de cada fechamento.
+            Remove o produto somente
+            desses registros.
         */
 
         for (
@@ -1540,12 +1683,8 @@ async function excluirProdutoMes(
             const novosItens =
                 registro.itens.filter(
                     item =>
-                        String(
-                            item.id
-                        ) !==
-                        String(
-                            idProduto
-                        )
+                        String(item.id) !==
+                        String(idProduto)
                 );
 
 
@@ -1570,7 +1709,6 @@ async function excluirProdutoMes(
 
         mostrarSaidas();
 
-
     }
     catch (erro) {
 
@@ -1587,18 +1725,23 @@ async function excluirProdutoMes(
     }
 
 }
+
+
 /* =========================================
-   TROCAR MÊS
+   EVENTOS
 ========================================= */
 
 seletorMes.addEventListener(
     "change",
     mostrarSaidas
 );
+
+
 buscarProduto.addEventListener(
     "input",
     mostrarSaidas
 );
+
 
 /* =========================================
    INICIAR
@@ -1607,7 +1750,6 @@ buscarProduto.addEventListener(
 criarMeses();
 
 carregarSaidas();
-
 
 </script>
 
