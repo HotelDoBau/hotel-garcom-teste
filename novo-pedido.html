@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>Novo Pedido - Hotel do Baú</title>
+
+<link
+    rel="stylesheet"
+    href="css/style.css"
+>
+
+
+</head>
+
+<body>
+
+
+<!-- ========================= -->
+<!-- CABEÇALHO -->
+<!-- ========================= -->
+
+<header class="topo">
+
+    <a
+        href="index.html"
+        style="
+            display: inline-block;
+            margin-bottom: 15px;
+            padding: 10px 20px;
+            background: #555;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: bold;
+        "
+    >
+        ← Voltar
+    </a>
+
+    <h1 id="tituloMesa">
+        Mesa
+    </h1>
+
+    <p>
+        Novo pedido
+    </p>
+
+</header>
+
+
+<!-- ========================= -->
+<!-- CONTEÚDO -->
+<!-- ========================= -->
+
+<main class="conteudo-pedido">
+
+
+    <!-- PESQUISA -->
+
+    <div class="barra-pesquisa">
+
+        <input
+            type="text"
+            id="buscar"
+            placeholder="🔎 Buscar produto..."
+            autocomplete="off"
+        >
+
+    </div>
+
+
+    <!-- ========================= -->
+    <!-- LISTA DE PRODUTOS -->
+    <!-- ========================= -->
+
+    <div id="listaProdutos">
+
+        <!--
+            Os produtos serão carregados
+            automaticamente pelo pedido.js
+        -->
+
+    </div>
+
+
+</main>
+
+
+<!-- ========================= -->
+<!-- BARRA DO PEDIDO -->
+<!-- ========================= -->
+
+<div class="resumo-pedido">
+
+    <div class="resumo-info">
+
+        <span>
+            Itens:
+        </span>
+
+        <strong id="qtdItens">
+            0
+        </strong>
+
+        <span>
+            Total:
+        </span>
+
+        <strong id="totalPedido">
+            R$ 0,00
+        </strong>
+
+    </div>
+
+
+    <button
+        type="button"
+        onclick="abrirRevisao()"
+        class="botao-revisar"
+    >
+
+        Revisar pedido
+
+    </button>
+
+</div>
+
+
+<!-- ========================= -->
+<!-- MODAL DE REVISÃO -->
+<!-- ========================= -->
+
+<div
+    id="modalRevisao"
+    class="modal"
+>
+
+    <div class="modal-conteudo">
+
+
+        <button
+            type="button"
+            onclick="fecharRevisao()"
+            class="fechar-modal"
+        >
+
+            ×
+
+        </button>
+
+
+        <h2>
+            Revisar pedido
+        </h2>
+
+
+        <!-- ITENS -->
+
+        <div id="listaRevisao">
+
+        </div>
+
+
+        <!-- TOTAL -->
+
+        <div class="total-revisao">
+
+            <span>
+                Total:
+            </span>
+
+            <strong id="totalRevisao">
+                R$ 0,00
+            </strong>
+
+        </div>
+
+
+        <!-- OBSERVAÇÃO -->
+
+        <div class="campo-observacao">
+
+            <label for="observacao">
+                Observação
+            </label>
+
+            <textarea
+                id="observacao"
+                rows="3"
+                placeholder="Alguma observação para o pedido?"
+            ></textarea>
+
+        </div>
+
+
+        <!-- CAMPO QUARTO -->
+
+        <div class="campo-quarto">
+
+            <label for="numeroQuarto">
+                Número do quarto
+            </label>
+
+            <input
+                type="text"
+                id="numeroQuarto"
+                placeholder="Digite o número do quarto"
+            >
+
+        </div>
+
+
+        <!-- ENVIAR -->
+
+        <button
+            type="button"
+            onclick="enviarPedido()"
+            class="botao-enviar"
+        >
+
+            Enviar pedido
+
+        </button>
+
+
+    </div>
+
+</div>
+
+
+<!-- ========================= -->
+<!-- FIREBASE -->
+<!-- ========================= -->
+
+<script
+    type="module"
+    src="js/firebase.js"
+></script>
+
+
+<!-- ========================= -->
+<!-- PRODUTOS -->
+<!-- ========================= -->
+
+<script
+    src="dados/produtos.js"
+></script>
+
+
+<!-- ========================= -->
+<!-- LÓGICA DO PEDIDO -->
+<!-- ========================= -->
+
+<script
+    src="js/pedido.js"
+></script>
+
+
+</body>
+
+</html>

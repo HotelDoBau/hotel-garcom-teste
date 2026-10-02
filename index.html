@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Comandas - Hotel do Baú</title>
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+<header class="topo">
+
+    <h1>Hotel do Baú</h1>
+    <p>Comandas</p>
+
+</header>
+
+
+<main>
+
+    <section class="titulo-mesas">
+
+        <h2>Mesas</h2>
+
+        <p>
+            Selecione uma mesa
+        </p>
+
+    </section>
+
+
+    <section class="legenda">
+
+        <span>🟢 Livre</span>
+        <span>🔵 Ocupada</span>
+        <span>🟠 Pagamento</span>
+
+    </section>
+
+
+    <section class="mesas" id="mesas">
+
+        <button class="mesa livre" onclick="abrirMesa(1)">
+            <strong>01</strong>
+            <span>Livre</span>
+        </button>
+
+        <button class="mesa livre" onclick="abrirMesa(2)">
+            <strong>02</strong>
+            <span>Livre</span>
+        </button>
+
+        <button class="mesa livre" onclick="abrirMesa(3)">
+            <strong>03</strong>
+            <span>Livre</span>
+        </button>
+
+        <button class="mesa livre" onclick="abrirMesa(4)">
+            <strong>04</strong>
+            <span>Livre</span>
+        </button>
+
+        <button class="mesa livre" onclick="abrirMesa(5)">
+            <strong>05</strong>
+            <span>Livre</span>
+        </button>
+
+        <button class="mesa livre" onclick="abrirMesa(6)">
+            <strong>06</strong>
+            <span>Livre</span>
+        </button>
+
+        <button class="mesa livre" onclick="abrirMesa(7)">
+            <strong>07</strong>
+            <span>Livre</span>
+        </button>
+
+        <button class="mesa livre" onclick="abrirMesa(8)">
+            <strong>08</strong>
+            <span>Livre</span>
+        </button>
+
+        <button class="mesa livre" onclick="abrirMesa(9)">
+            <strong>09</strong>
+            <span>Livre</span>
+        </button>
+
+        <button class="mesa livre" onclick="abrirMesa(10)">
+            <strong>10</strong>
+            <span>Livre</span>
+        </button>
+
+        <button class="mesa livre" onclick="abrirMesa(11)">
+            <strong>11</strong>
+            <span>Livre</span>
+        </button>
+
+        <button class="mesa livre" onclick="abrirMesa(12)">
+            <strong>12</strong>
+            <span>Livre</span>
+        </button>
+
+        <button class="mesa livre" onclick="abrirMesa(13)">
+            <strong>13</strong>
+            <span>Livre</span>
+        </button>
+
+        <button class="mesa livre" onclick="abrirMesa(14)">
+            <strong>14</strong>
+            <span>Livre</span>
+        </button>
+
+        <button class="mesa livre" onclick="abrirMesa(15)">
+            <strong>15</strong>
+            <span>Livre</span>
+        </button>
+
+        <button class="mesa livre" onclick="abrirMesa(16)">
+            <strong>16</strong>
+            <span>Livre</span>
+        </button>
+
+        <button class="mesa livre" onclick="abrirMesa(17)">
+            <strong>17</strong>
+            <span>Livre</span>
+        </button>
+
+        <button class="mesa livre" onclick="abrirMesa(18)">
+            <strong>18</strong>
+            <span>Livre</span>
+        </button>
+
+        <button class="mesa livre" onclick="abrirMesa(19)">
+            <strong>19</strong>
+            <span>Livre</span>
+        </button>
+
+        <button class="mesa livre" onclick="abrirMesa(20)">
+            <strong>20</strong>
+            <span>Livre</span>
+        </button>
+        
+        </section>
+    
+<section class="titulo-mesas">
+
+    <h2>Quartos</h2>
+
+    <p>
+        Selecione um quarto
+    </p>
+
+</section>
+
+
+<section class="mesas" id="quartos">
+
+    <button class="mesa livre" data-tipo="quarto" data-numero="1" onclick="abrirQuarto(1)">
+        <strong>01</strong>
+        <span>Livre</span>
+    </button>
+
+    <button class="mesa livre" data-tipo="quarto" data-numero="2" onclick="abrirQuarto(2)">
+        <strong>02</strong>
+        <span>Livre</span>
+    </button>
+
+    <button class="mesa livre" data-tipo="quarto" data-numero="3" onclick="abrirQuarto(3)">
+        <strong>03</strong>
+        <span>Livre</span>
+    </button>
+
+    <button class="mesa livre" data-tipo="quarto" data-numero="4" onclick="abrirQuarto(4)">
+        <strong>04</strong>
+        <span>Livre</span>
+    </button>
+
+    <button class="mesa livre" data-tipo="quarto" data-numero="5" onclick="abrirQuarto(5)">
+        <strong>05</strong>
+        <span>Livre</span>
+    </button>
+
+    <button class="mesa livre" data-tipo="quarto" data-numero="6" onclick="abrirQuarto(6)">
+        <strong>06</strong>
+        <span>Livre</span>
+    </button>
+
+    <button class="mesa livre" data-tipo="quarto" data-numero="7" onclick="abrirQuarto(7)">
+        <strong>07</strong>
+        <span>Livre</span>
+    </button>
+
+    <button class="mesa livre" data-tipo="quarto" data-numero="8" onclick="abrirQuarto(8)">
+        <strong>08</strong>
+        <span>Livre</span>
+    </button>
+
+    <button class="mesa livre" data-tipo="quarto" data-numero="9" onclick="abrirQuarto(9)">
+        <strong>09</strong>
+        <span>Livre</span>
+    </button>
+
+    <button class="mesa livre" data-tipo="quarto" data-numero="10" onclick="abrirQuarto(10)">
+        <strong>10</strong>
+        <span>Livre</span>
+    </button>
+
+    <button class="mesa livre" data-tipo="quarto" data-numero="11" onclick="abrirQuarto(11)">
+        <strong>11</strong>
+        <span>Livre</span>
+    </button>
+
+    <button class="mesa livre" data-tipo="quarto" data-numero="12" onclick="abrirQuarto(12)">
+        <strong>12</strong>
+        <span>Livre</span>
+    </button>
+
+    <button class="mesa livre" data-tipo="quarto" data-numero="13" onclick="abrirQuarto(13)">
+        <strong>13</strong>
+        <span>Livre</span>
+    </button>
+
+    <button class="mesa livre" data-tipo="quarto" data-numero="14" onclick="abrirQuarto(14)">
+        <strong>14</strong>
+        <span>Livre</span>
+    </button>
+
+    <button class="mesa livre" data-tipo="quarto" data-numero="15" onclick="abrirQuarto(15)">
+        <strong>15</strong>
+        <span>Livre</span>
+    </button>
+
+    <button class="mesa livre" data-tipo="quarto" data-numero="16" onclick="abrirQuarto(16)">
+        <strong>16</strong>
+        <span>Livre</span>
+    </button>
+
+    <button class="mesa livre" data-tipo="quarto" data-numero="33" onclick="abrirQuarto(33)">
+        <strong>33</strong>
+        <span>Livre</span>
+    </button>
+
+    <button class="mesa livre" data-tipo="quarto" data-numero="34" onclick="abrirQuarto(34)">
+        <strong>34</strong>
+        <span>Livre</span>
+    </button>
+
+    <button class="mesa livre" data-tipo="quarto" data-numero="35" onclick="abrirQuarto(35)">
+        <strong>35</strong>
+        <span>Livre</span>
+    </button>
+
+    <button class="mesa livre" data-tipo="quarto" data-numero="36" onclick="abrirQuarto(36)">
+        <strong>36</strong>
+        <span>Livre</span>
+    </button>
+
+    <button class="mesa livre" data-tipo="quarto" data-numero="37" onclick="abrirQuarto(37)">
+        <strong>37</strong>
+        <span>Livre</span>
+    </button>
+
+    <button class="mesa livre" data-tipo="quarto" data-numero="38" onclick="abrirQuarto(38)">
+        <strong>38</strong>
+        <span>Livre</span>
+    </button>
+
+    <button class="mesa livre" data-tipo="quarto" data-numero="39" onclick="abrirQuarto(39)">
+        <strong>39</strong>
+        <span>Livre</span>
+    </button>
+
+    <button class="mesa livre" data-tipo="quarto" data-numero="40" onclick="abrirQuarto(40)">
+        <strong>40</strong>
+        <span>Livre</span>
+    </button>
+
+</section>
+
+
+</main>
+
+<script type="module" src="js/firebase.js"></script>
+    
+<script>
+
+function abrirMesa(numero) {
+
+    localStorage.setItem(
+        "mesaSelecionada",
+        numero
+    );
+
+    localStorage.setItem(
+        "tipoSelecionado",
+        "mesa"
+    );
+
+    window.location.href =
+        "mesa.html";
+}
+    
+    function abrirQuarto(numero) {
+
+    localStorage.setItem(
+        "mesaSelecionada",
+        numero
+    );
+
+    localStorage.setItem(
+        "tipoSelecionado",
+        "quarto"
+    );
+
+    window.location.href =
+        "mesa.html";
+
+}
+
+
+// =========================
+// AGUARDAR FIREBASE
+// =========================
+
+async function aguardarFirebase() {
+
+    let tentativas = 0;
+
+
+    while (
+        !window.firebaseHotel &&
+        tentativas < 50
+    ) {
+
+        await new Promise(
+            resolve =>
+                setTimeout(resolve, 100)
+        );
+
+        tentativas++;
+
+    }
+
+
+    return !!window.firebaseHotel;
+
+}
+
+
+// =========================
+// QUARTOS DISPONÍVEIS
+// =========================
+
+const quartosDisponiveis = [
+    1, 2, 3, 4,
+    5, 6, 7, 8,
+    9, 10, 11, 12,
+    13, 14, 15, 16,
+    33, 34, 35, 36,
+    37, 38, 39, 40
+];
+
+
+// =========================
+// DEFINIR VISUAL
+// =========================
+
+function definirStatusLocal(
+    tipo,
+    numero,
+    status
+) {
+
+    let botao;
+
+
+    // MESA
+
+    if (tipo === "mesa") {
+
+        botao =
+            document.querySelector(
+                `#mesas .mesa:nth-child(${numero})`
+            );
+
+    }
+
+
+    // QUARTO
+
+    else if (tipo === "quarto") {
+
+        botao =
+            document.querySelector(
+                `#quartos .mesa[data-numero="${numero}"]`
+            );
+
+    }
+
+
+    if (!botao) {
+        return;
+    }
+
+
+    const textoStatus =
+        botao.querySelector("span");
+
+
+    botao.classList.remove(
+        "livre",
+        "ocupada",
+        "pagamento"
+    );
+
+
+    // PAGAMENTO
+
+    if (status === "pagamento") {
+
+        botao.classList.add(
+            "pagamento"
+        );
+
+        textoStatus.textContent =
+            "Pagamento";
+
+        return;
+
+    }
+
+
+    // OCUPADA
+
+    if (status === "ocupada") {
+
+        botao.classList.add(
+            "ocupada"
+        );
+
+        textoStatus.textContent =
+            tipo === "quarto"
+                ? "Ocupado"
+                : "Ocupada";
+
+        return;
+
+    }
+
+
+    // LIVRE
+
+    botao.classList.add(
+        "livre"
+    );
+
+    textoStatus.textContent =
+        "Livre";
+
+}
+
+
+// =========================
+// DEIXAR TODOS LIVRES
+// =========================
+
+function resetarStatus() {
+
+
+    // MESAS 01 A 20
+
+    for (
+        let numero = 1;
+        numero <= 20;
+        numero++
+    ) {
+
+        definirStatusLocal(
+            "mesa",
+            numero,
+            "livre"
+        );
+
+    }
+
+
+    // QUARTOS
+
+    quartosDisponiveis.forEach(
+        numero => {
+
+            definirStatusLocal(
+                "quarto",
+                numero,
+                "livre"
+            );
+
+        }
+    );
+
+}
+
+
+// =========================
+// INICIAR MESAS E QUARTOS
+// =========================
+
+async function iniciarMesas() {
+
+    const conectado =
+        await aguardarFirebase();
+
+
+    if (!conectado) {
+
+        console.error(
+            "Firebase não conectado."
+        );
+
+        return;
+
+    }
+
+
+    const {
+
+        db,
+        collection,
+        onSnapshot
+
+    } = window.firebaseHotel;
+
+
+    // Inicialmente todos livres
+
+    resetarStatus();
+
+
+    const referenciaMesas =
+        collection(
+            db,
+            "mesas"
+        );
+
+
+    // =========================================
+    // OUVIR STATUS DAS MESAS E QUARTOS
+    // =========================================
+
+   onSnapshot(
+
+    referenciaMesas,
+
+    snapshot => {
+
+        // Primeiro deixa todas livres
+
+        resetarStatus();
+
+
+        // Aplica somente o estado PAGAMENTO.
+        // Livre/Ocupada será controlado pelo consumo real.
+
+        snapshot.forEach(
+            documento => {
+
+                const local =
+                    documento.data();
+
+
+                const idDocumento =
+                    documento.id;
+
+
+                const numero =
+                    Number(
+                        local.numero
+                    );
+
+
+                let tipo =
+                    local.tipo;
+
+
+                // =====================
+                // COMPATIBILIDADE
+                // =====================
+
+                if (!tipo) {
+
+                    if (
+                        idDocumento.startsWith(
+                            "quarto_"
+                        )
+                    ) {
+
+                        tipo = "quarto";
+
+                    } else {
+
+                        tipo = "mesa";
+
+                    }
+
+                }
+
+
+                // =====================
+                // MESA
+                // =====================
+
+                if (tipo === "mesa") {
+
+                    if (
+                        numero < 1 ||
+                        numero > 20
+                    ) {
+
+                        return;
+
+                    }
+
+
+                    if (
+                        local.status ===
+                        "pagamento"
+                    ) {
+
+                        definirStatusLocal(
+
+                            "mesa",
+
+                            numero,
+
+                            "pagamento"
+
+                        );
+
+                    }
+
+                    return;
+
+                }
+
+
+                // =====================
+                // QUARTO
+                // =====================
+
+                if (tipo === "quarto") {
+
+                    if (
+                        !quartosDisponiveis.includes(
+                            numero
+                        )
+                    ) {
+
+                        return;
+
+                    }
+
+
+                    if (
+                        local.status ===
+                        "pagamento"
+                    ) {
+
+                        definirStatusLocal(
+
+                            "quarto",
+
+                            numero,
+
+                            "pagamento"
+
+                        );
+
+                    }
+
+                }
+
+            }
+        );
+
+    },
+
+
+    erro => {
+
+        console.error(
+            "Erro ao carregar mesas e quartos:",
+            erro
+        );
+
+    }
+
+);
+    // =========================================
+    // VERIFICAR CONSUMO REAL DAS MESAS
+    // =========================================
+
+    function observarConsumo(
+        tipo,
+        numero
+    ) {
+
+
+        const idMesa =
+    tipo === "quarto"
+        ? `quarto_${String(numero).padStart(2, "0")}`
+        : `mesa_${String(numero).padStart(2, "0")}`;
+
+
+        const referenciaPedidos =
+            collection(
+
+                db,
+
+                "mesas",
+
+                idMesa,
+
+                "pedidos"
+
+            );
+
+
+        onSnapshot(
+
+            referenciaPedidos,
+
+            snapshot => {
+
+
+                // =================================
+                // SEM PEDIDOS = MESA LIVRE
+                // =================================
+
+            if (snapshot.empty) {
+
+    definirStatusLocal(
+        tipo,
+        numero,
+        "livre"
+    );
+
+} else {
+
+    definirStatusLocal(
+        tipo,
+        numero,
+        "ocupada"
+    );
+
+}
+
+            },
+
+
+            erro => {
+
+                console.error(
+                    `Erro ao verificar consumo de ${tipo} ${numero}:`,
+                    erro
+                );
+
+            }
+
+        );
+
+    }
+
+
+    // =========================================
+    // OBSERVAR MESAS 01 A 20
+    // =========================================
+
+    for (
+        let numero = 1;
+        numero <= 20;
+        numero++
+    ) {
+
+        observarConsumo(
+            "mesa",
+            numero
+        );
+
+    }
+
+
+    // =========================================
+    // OBSERVAR QUARTOS
+    // =========================================
+
+    quartosDisponiveis.forEach(
+        numero => {
+
+            observarConsumo(
+                "quarto",
+                numero
+            );
+
+        }
+    );
+
+}
+
+
+// =========================
+// INICIAR
+// =========================
+
+iniciarMesas();
+
+</script>
+
+</body>
+
+</html>

@@ -1,0 +1,1617 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Saídas - Hotel do Baú</title>
+
+    <link
+        rel="stylesheet"
+        href="css/style.css"
+    >
+
+    <style>
+
+        .saidas-page {
+            padding-bottom: 40px;
+        }
+
+
+        .filtro-saidas {
+
+            margin: 20px auto;
+
+            padding: 20px;
+
+            max-width: 1100px;
+
+            background: white;
+
+            border-radius: 14px;
+
+            box-shadow:
+                0 3px 12px
+                rgba(0,0,0,0.08);
+
+        }
+
+
+        .filtro-saidas label {
+
+            display: block;
+
+            margin-bottom: 8px;
+
+            font-weight: bold;
+
+        }
+
+
+        .filtro-saidas select {
+
+            width: 100%;
+
+            padding: 12px;
+
+            border-radius: 8px;
+
+            border: 1px solid #ccc;
+
+            font-size: 16px;
+
+            box-sizing: border-box;
+
+        }
+
+
+        .resumo-saidas {
+
+            max-width: 1100px;
+
+            margin: 20px auto;
+
+            padding: 20px;
+
+            background: #f5f5f5;
+
+            border-radius: 14px;
+
+            display: flex;
+
+            justify-content: space-between;
+
+            gap: 20px;
+
+            flex-wrap: wrap;
+
+        }
+
+
+        .resumo-saidas div {
+
+            flex: 1;
+
+            min-width: 180px;
+
+        }
+
+
+        .resumo-saidas span {
+
+            display: block;
+
+            font-size: 14px;
+
+            color: #666;
+
+            margin-bottom: 5px;
+
+        }
+
+
+        .resumo-saidas strong {
+
+            font-size: 22px;
+
+        }
+
+
+     .tabela-saidas-container {
+  width: 100%;
+
+    max-width: none;
+
+    margin: 20px auto;
+
+    overflow-x: auto;
+
+    background: white;
+
+    border-radius: 14px;
+
+    box-shadow:
+        0 3px 12px
+        rgba(0,0,0,0.08);
+
+}
+
+
+.tabela-saidas {
+    width: 100%;
+    min-width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+   .tabela-saidas th:nth-child(1),
+.tabela-saidas td:nth-child(1) {
+    width: 6%;
+}
+
+.tabela-saidas th:nth-child(2),
+.tabela-saidas td:nth-child(2) {
+    width: 30%;
+}
+
+.tabela-saidas th:nth-child(3),
+.tabela-saidas td:nth-child(3) {
+    width: 17%;
+}
+
+.tabela-saidas th:nth-child(4),
+.tabela-saidas td:nth-child(4) {
+    width: 12%;
+}
+
+.tabela-saidas th:nth-child(5),
+.tabela-saidas td:nth-child(5) {
+    width: 8%;
+}
+
+.tabela-saidas th:nth-child(6),
+.tabela-saidas td:nth-child(6) {
+    width: 17%;
+}
+
+.tabela-saidas th:nth-child(7),
+.tabela-saidas td:nth-child(7) {
+    width: 10%;
+}
+
+        .tabela-saidas th {
+
+            background: #245d88;
+
+            color: white;
+
+            padding: 12px;
+
+            text-align: left;
+
+            white-space: nowrap;
+
+        }
+
+
+        .tabela-saidas td {
+
+            padding: 11px 12px;
+
+            border-bottom:
+                1px solid #eee;
+
+        }
+
+
+        .tabela-saidas tr:last-child td {
+
+            border-bottom: none;
+
+        }
+
+
+        .tabela-saidas .numero {
+
+            text-align: center;
+
+        }
+
+
+        .tabela-saidas .valor {
+
+            text-align: right;
+
+            white-space: nowrap;
+
+        }
+
+
+        .produto-sem-venda {
+
+            color: #999;
+
+        }
+
+
+        .linha-total {
+
+            font-weight: bold;
+
+            background: #f5f5f5;
+
+        }
+
+
+        .mensagem-saidas {
+
+            text-align: center;
+
+            padding: 30px;
+
+            color: #666;
+
+        }
+
+
+        .btn-voltar-saidas {
+
+            display: block;
+
+            width: fit-content;
+
+            margin: 25px auto;
+
+            padding: 12px 20px;
+
+            border: none;
+
+            border-radius: 8px;
+
+            background: #555;
+
+            color: white;
+
+            text-decoration: none;
+
+            cursor: pointer;
+
+            font-size: 15px;
+
+        }
+
+.controles-produto {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    white-space: nowrap;
+}
+.btn-ajuste {
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 6px;
+    background: #245d88;
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.btn-ajuste:hover {
+    opacity: 0.85;
+}
+
+.btn-excluir {
+    margin-left: 2px;
+    padding: 7px 10px;
+    border: none;
+    border-radius: 6px;
+    background: #b3261e;
+    color: white;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.btn-excluir:hover {
+    opacity: 0.85;
+
+}
+
+        /* =========================================
+   TABELA OCUPA TODA A LARGURA DA TELA
+========================================= */
+
+.saidas-page main {
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.tabela-saidas-container {
+    width: 100%;
+    max-width: none;
+    margin-left: 0;
+    margin-right: 0;
+    box-sizing: border-box;
+}
+
+.tabela-saidas {
+    width: 100%;
+    min-width: 100%;
+}
+        @media (max-width: 600px) {
+
+            .tabela-saidas {
+
+                font-size: 13px;
+
+            }
+
+            .tabela-saidas th,
+            .tabela-saidas td {
+
+                padding: 9px 8px;
+
+            }
+
+            .resumo-saidas strong {
+
+                font-size: 19px;
+
+            }
+
+            
+
+        }
+    </style>
+
+</head>
+
+
+<body class="saidas-page">
+
+
+<header class="topo">
+
+    <h1>
+        Saídas / Vendas
+    </h1>
+
+    <p>
+        Controle de vendas do Hotel do Baú
+    </p>
+
+</header>
+
+
+<main>
+
+
+    <!-- ========================================= -->
+    <!-- FILTRO -->
+    <!-- ========================================= -->
+
+   <section class="filtro-saidas">
+
+    <label for="mesSelecionado">
+        Mês
+    </label>
+
+    <select id="mesSelecionado">
+
+        <option value="">
+            Carregando...
+        </option>
+
+    </select>
+
+
+    <label
+        for="buscarProduto"
+        style="margin-top: 18px;"
+    >
+        Buscar produto
+    </label>
+
+    <input
+        type="text"
+        id="buscarProduto"
+        placeholder="Digite o nome do produto..."
+        style="
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+            box-sizing: border-box;
+        "
+    >
+
+</section>
+
+
+    <!-- ========================================= -->
+    <!-- RESUMO -->
+    <!-- ========================================= -->
+
+    <section class="resumo-saidas">
+
+        <div>
+
+            <span>
+                Produtos vendidos
+            </span>
+
+            <strong id="quantidadeProdutos">
+                0
+            </strong>
+
+        </div>
+
+
+        <div>
+
+            <span>
+                Unidades vendidas
+            </span>
+
+            <strong id="quantidadeUnidades">
+                0
+            </strong>
+
+        </div>
+
+
+        <div>
+
+            <span>
+                Total vendido
+            </span>
+
+            <strong id="totalVendido">
+                R$ 0,00
+            </strong>
+
+        </div>
+
+    </section>
+
+
+    <!-- ========================================= -->
+    <!-- TABELA -->
+    <!-- ========================================= -->
+
+    <section class="tabela-saidas-container">
+
+        <table class="tabela-saidas">
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        ID
+                    </th>
+
+                    <th>
+                        Produto
+                    </th>
+
+                    <th>
+                        Categoria
+                    </th>
+
+                    <th>
+                        Valor unit.
+                    </th>
+
+                   <th class="numero">
+    Qtd.
+</th>
+
+<th class="numero">
+    Ajustar
+</th>
+                    <th class="valor">
+                        Total
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody id="corpoTabela">
+
+                <tr>
+
+                    <td
+                        colspan="7"
+                        class="mensagem-saidas"
+                    >
+
+                        Carregando...
+
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+
+        </table>
+
+    </section>
+
+
+    <button
+        class="btn-voltar-saidas"
+        onclick="window.location.href='index.html'"
+    >
+
+        ← Voltar
+
+    </button>
+
+
+</main>
+
+
+<script
+    type="module"
+    src="js/firebase.js?v=3"
+></script>
+
+
+<script
+    src="dados/produtos.js"
+></script>
+
+
+<script>
+
+
+/* =========================================
+   AGUARDAR FIREBASE
+========================================= */
+
+async function aguardarFirebase() {
+
+    let tentativas = 0;
+
+
+    while (
+        !window.firebaseHotel &&
+        tentativas < 50
+    ) {
+
+        await new Promise(
+            resolve =>
+                setTimeout(
+                    resolve,
+                    100
+                )
+        );
+
+        tentativas++;
+
+    }
+
+
+    return !!window.firebaseHotel;
+
+}
+
+
+/* =========================================
+   ELEMENTOS
+========================================= */
+
+const seletorMes =
+    document.getElementById(
+        "mesSelecionado"
+    );
+const buscarProduto =
+    document.getElementById(
+        "buscarProduto"
+    );
+
+const corpoTabela =
+    document.getElementById(
+        "corpoTabela"
+    );
+
+
+const quantidadeProdutos =
+    document.getElementById(
+        "quantidadeProdutos"
+    );
+
+
+const quantidadeUnidades =
+    document.getElementById(
+        "quantidadeUnidades"
+    );
+
+
+const totalVendido =
+    document.getElementById(
+        "totalVendido"
+    );
+
+
+let saidasFirebase = [];
+
+
+/* =========================================
+   FORMATAR VALOR
+========================================= */
+
+function formatarMoeda(valor) {
+
+    return (
+
+        "R$ " +
+
+        Number(valor || 0)
+            .toFixed(2)
+            .replace(".", ",")
+
+    );
+
+}
+
+
+/* =========================================
+   CRIAR MESES
+========================================= */
+
+function criarMeses() {
+
+    const agora =
+        new Date();
+
+    seletorMes.innerHTML =
+        "";
+
+    /*
+        Mostra o mês atual
+        e os próximos 12 meses.
+    */
+
+    for (
+        let i = 0;
+        i < 13;
+        i++
+    ) {
+
+        const data =
+            new Date(
+                agora.getFullYear(),
+                agora.getMonth() + i,
+                1
+            );
+
+        const ano =
+            data.getFullYear();
+
+        const mes =
+            String(
+                data.getMonth() + 1
+            ).padStart(
+                2,
+                "0"
+            );
+
+        const valor =
+            `${ano}-${mes}`;
+
+        const texto =
+            data.toLocaleDateString(
+                "pt-BR",
+                {
+                    month:
+                        "long",
+                    year:
+                        "numeric"
+                }
+            );
+
+        const option =
+            document.createElement(
+                "option"
+            );
+
+        option.value =
+            valor;
+
+        option.textContent =
+            texto.charAt(0).toUpperCase() +
+            texto.slice(1);
+
+        seletorMes.appendChild(
+            option
+        );
+
+    }
+
+}
+
+/* =========================================
+   CARREGAR SAÍDAS
+========================================= */
+
+async function carregarSaidas() {
+
+
+    const conectado =
+        await aguardarFirebase();
+
+
+    if (!conectado) {
+
+        corpoTabela.innerHTML = `
+
+            <tr>
+
+                <td
+                    colspan="7"
+                    class="mensagem-saidas"
+                >
+
+                    Não foi possível
+                    conectar ao Firebase.
+
+                </td>
+
+            </tr>
+
+        `;
+
+        return;
+
+    }
+
+
+    try {
+
+
+        const {
+
+            db,
+            collection,
+            getDocs
+
+        } = window.firebaseHotel;
+
+
+        const referencia =
+            collection(
+                db,
+                "saidas"
+            );
+
+
+        const snapshot =
+            await getDocs(
+                referencia
+            );
+
+
+        saidasFirebase = [];
+
+
+        snapshot.forEach(
+            documento => {
+
+                saidasFirebase.push({
+
+                    id:
+                        documento.id,
+
+                    ...documento.data()
+
+                });
+
+            }
+        );
+
+
+        mostrarSaidas();
+
+
+    }
+    catch (erro) {
+
+
+        console.error(
+            "Erro ao carregar saídas:",
+            erro
+        );
+
+
+        corpoTabela.innerHTML = `
+
+            <tr>
+
+                <td
+                    colspan="7"
+                    class="mensagem-saidas"
+                >
+
+                    Erro ao carregar
+                    as vendas.
+
+                </td>
+
+            </tr>
+
+        `;
+
+    }
+
+}
+
+
+/* =========================================
+   MOSTRAR SAÍDAS
+========================================= */
+
+function mostrarSaidas() {
+
+    const mes =
+        seletorMes.value;
+
+    const busca =
+        buscarProduto.value
+            .trim()
+            .toLowerCase();
+
+
+    /*
+        Guarda o total de cada produto.
+    */
+
+    const vendasPorProduto = {};
+
+
+    saidasFirebase.forEach(
+        saida => {
+
+            if (
+                saida.referenciaMes !==
+                mes
+            ) {
+                return;
+            }
+
+
+            const itens =
+                Array.isArray(
+                    saida.itens
+                )
+                    ? saida.itens
+                    : [];
+
+
+            itens.forEach(
+                item => {
+
+                    const id =
+                        String(
+                            item.id
+                        );
+
+
+                    if (
+                        !vendasPorProduto[id]
+                    ) {
+
+                        vendasPorProduto[id] = {
+
+                            quantidade:
+                                0,
+
+                            total:
+                                0,
+
+                            valorUnitario:
+                                Number(
+                                    item.valorUnitario || 0
+                                )
+
+                        };
+
+                    }
+
+
+                    vendasPorProduto[id]
+                        .quantidade +=
+                        Number(
+                            item.quantidade || 0
+                        );
+
+
+                    vendasPorProduto[id]
+                        .total +=
+                        Number(
+                            item.total || 0
+                        );
+
+                }
+            );
+
+        }
+    );
+
+
+    corpoTabela.innerHTML =
+        "";
+
+
+    let produtosVendidos =
+        0;
+
+
+    let unidadesVendidas =
+        0;
+
+
+    let totalGeral =
+        0;
+
+
+    /*
+        Usa todos os produtos
+        cadastrados no cardápio.
+    */
+
+    produtos.forEach(
+        produto => {
+
+            const id =
+                String(
+                    produto.id
+                );
+
+
+            /*
+                Filtro pelo nome.
+            */
+
+            if (
+                busca &&
+                !String(
+                    produto.nome || ""
+                )
+                    .toLowerCase()
+                    .includes(busca)
+            ) {
+
+                return;
+
+            }
+
+
+            const venda =
+                vendasPorProduto[id];
+
+
+            const quantidade =
+                venda
+                    ? venda.quantidade
+                    : 0;
+
+
+            const total =
+                venda
+                    ? venda.total
+                    : 0;
+
+
+            const valorUnitario =
+                venda
+                    ? venda.valorUnitario
+                    : Number(
+                        produto.preco || 0
+                    );
+
+
+            if (
+                quantidade > 0
+            ) {
+
+                produtosVendidos++;
+
+            }
+
+
+            unidadesVendidas +=
+                quantidade;
+
+
+            totalGeral +=
+                total;
+
+
+            const tr =
+                document.createElement(
+                    "tr"
+                );
+
+
+            if (
+                quantidade === 0
+            ) {
+
+                tr.className =
+                    "produto-sem-venda";
+
+            }
+
+
+            tr.innerHTML = `
+
+                <td>
+                    ${produto.id}
+                </td>
+
+                <td>
+                    ${produto.nome}
+                </td>
+
+                <td>
+                    ${produto.categoria || ""}
+                </td>
+
+                <td class="valor">
+
+                    ${formatarMoeda(
+                        valorUnitario
+                    )}
+
+                </td>
+
+                <td class="numero">
+
+                    ${quantidade}
+
+                </td>
+
+                <td>
+
+                    <div class="controles-produto">
+
+                        <button
+                            class="btn-ajuste"
+                            onclick="alterarQuantidadeProduto(${produto.id}, -1)"
+                            title="Diminuir 1"
+                        >
+                            −
+                        </button>
+
+                        <button
+                            class="btn-ajuste"
+                            onclick="alterarQuantidadeProduto(${produto.id}, 1)"
+                            title="Aumentar 1"
+                        >
+                            +
+                        </button>
+
+                        <button
+                            class="btn-excluir"
+                            onclick="excluirProdutoMes(${produto.id})"
+                            title="Excluir produto deste mês"
+                        >
+                            Excluir
+                        </button>
+
+                    </div>
+
+                </td>
+
+                <td class="valor">
+
+                    ${formatarMoeda(
+                        total
+                    )}
+
+                </td>
+
+            `;
+
+
+            corpoTabela.appendChild(
+                tr
+            );
+
+        }
+    );
+
+
+    /*
+        Se nenhum produto foi encontrado.
+    */
+
+    if (
+        corpoTabela.children.length === 0
+    ) {
+
+        corpoTabela.innerHTML = `
+
+            <tr>
+
+                <td
+                    colspan="7"
+                    class="mensagem-saidas"
+                >
+
+                    Nenhum produto encontrado.
+
+                </td>
+
+            </tr>
+
+        `;
+
+    }
+
+
+    /*
+        Linha final.
+    */
+
+    const trTotal =
+        document.createElement(
+            "tr"
+        );
+
+
+    trTotal.className =
+        "linha-total";
+
+
+    trTotal.innerHTML = `
+
+        <td colspan="4">
+
+            TOTAL DO MÊS
+
+        </td>
+
+        <td class="numero">
+
+            ${unidadesVendidas}
+
+        </td>
+
+        <td>
+
+        </td>
+
+        <td class="valor">
+
+            ${formatarMoeda(
+                totalGeral
+            )}
+
+        </td>
+
+    `;
+
+
+    corpoTabela.appendChild(
+        trTotal
+    );
+
+
+    quantidadeProdutos.textContent =
+        produtosVendidos;
+
+
+    quantidadeUnidades.textContent =
+        unidadesVendidas;
+
+
+    totalVendido.textContent =
+        formatarMoeda(
+            totalGeral
+        );
+
+}
+
+    /* =========================================
+   ALTERAR QUANTIDADE DO PRODUTO
+========================================= */
+
+async function alterarQuantidadeProduto(
+    idProduto,
+    variacao
+) {
+
+    const mes =
+        seletorMes.value;
+
+
+    /*
+        Procura os registros do mês
+        que possuem esse produto.
+    */
+
+    const registros =
+        saidasFirebase
+            .filter(
+                saida =>
+                    saida.referenciaMes ===
+                        mes &&
+                    Array.isArray(
+                        saida.itens
+                    ) &&
+                    saida.itens.some(
+                        item =>
+                            String(
+                                item.id
+                            ) ===
+                            String(
+                                idProduto
+                            )
+                    )
+            );
+
+
+    if (
+        registros.length === 0
+    ) {
+
+        alert(
+            "Esse produto não possui venda registrada neste mês."
+        );
+
+        return;
+
+    }
+
+
+    /*
+        Para diminuir, começamos
+        pelo registro mais recente.
+
+        Para aumentar, também usamos
+        o registro mais recente.
+    */
+
+    const registro =
+        registros[
+            registros.length - 1
+        ];
+
+
+    const itens =
+        Array.isArray(
+            registro.itens
+        )
+            ? [...registro.itens]
+            : [];
+
+
+    const indice =
+        itens.findIndex(
+            item =>
+                String(
+                    item.id
+                ) ===
+                String(
+                    idProduto
+                )
+        );
+
+
+    if (
+        indice === -1
+    ) {
+
+        return;
+
+    }
+
+
+    const item =
+        {
+            ...itens[indice]
+        };
+
+
+    const quantidadeAtual =
+        Number(
+            item.quantidade || 0
+        );
+
+
+    const novaQuantidade =
+        quantidadeAtual +
+        variacao;
+
+
+    /*
+        Nunca permite quantidade negativa.
+    */
+
+    if (
+        novaQuantidade < 0
+    ) {
+
+        return;
+
+    }
+
+
+    /*
+        Se zerou, remove o item
+        daquele fechamento.
+    */
+
+    if (
+        novaQuantidade === 0
+    ) {
+
+        itens.splice(
+            indice,
+            1
+        );
+
+    }
+    else {
+
+        item.quantidade =
+            novaQuantidade;
+
+
+        item.total =
+            Number(
+                (
+                    Number(
+                        item.valorUnitario || 0
+                    ) *
+                    novaQuantidade
+                ).toFixed(2)
+            );
+
+
+        itens[indice] =
+            item;
+
+    }
+
+
+    try {
+
+        const {
+
+            db,
+            doc,
+            updateDoc
+
+        } = window.firebaseHotel;
+
+
+        await updateDoc(
+            doc(
+                db,
+                "saidas",
+                registro.id
+            ),
+            {
+                itens:
+                    itens
+            }
+        );
+
+
+        /*
+            Atualiza os dados locais.
+        */
+
+        registro.itens =
+            itens;
+
+
+        mostrarSaidas();
+
+
+    }
+    catch (erro) {
+
+        console.error(
+            "Erro ao alterar quantidade:",
+            erro
+        );
+
+
+        alert(
+            "Não foi possível alterar a quantidade."
+        );
+
+    }
+
+}
+
+
+/* =========================================
+   EXCLUIR PRODUTO DO MÊS
+========================================= */
+
+async function excluirProdutoMes(
+    idProduto
+) {
+
+    const mes =
+        seletorMes.value;
+
+
+    const produto =
+        produtos.find(
+            item =>
+                String(
+                    item.id
+                ) ===
+                String(
+                    idProduto
+                )
+        );
+
+
+    if (!produto) {
+
+        return;
+
+    }
+
+
+    const confirmar =
+        confirm(
+            `Excluir todas as vendas de "${produto.nome}" deste mês?\n\nEssa ação não poderá ser desfeita.`
+        );
+
+
+    if (!confirmar) {
+
+        return;
+
+    }
+
+
+    try {
+
+        const {
+
+            db,
+            doc,
+            updateDoc
+
+        } = window.firebaseHotel;
+
+
+        /*
+            Localiza todos os fechamentos
+            do mês que possuem o produto.
+        */
+
+        const registros =
+            saidasFirebase.filter(
+                saida =>
+                    saida.referenciaMes ===
+                        mes &&
+                    Array.isArray(
+                        saida.itens
+                    ) &&
+                    saida.itens.some(
+                        item =>
+                            String(
+                                item.id
+                            ) ===
+                            String(
+                                idProduto
+                            )
+                    )
+            );
+
+
+        /*
+            Remove somente esse produto
+            de cada fechamento.
+        */
+
+        for (
+            const registro
+            of registros
+        ) {
+
+            const novosItens =
+                registro.itens.filter(
+                    item =>
+                        String(
+                            item.id
+                        ) !==
+                        String(
+                            idProduto
+                        )
+                );
+
+
+            await updateDoc(
+                doc(
+                    db,
+                    "saidas",
+                    registro.id
+                ),
+                {
+                    itens:
+                        novosItens
+                }
+            );
+
+
+            registro.itens =
+                novosItens;
+
+        }
+
+
+        mostrarSaidas();
+
+
+    }
+    catch (erro) {
+
+        console.error(
+            "Erro ao excluir produto:",
+            erro
+        );
+
+
+        alert(
+            "Não foi possível excluir o produto."
+        );
+
+    }
+
+}
+/* =========================================
+   TROCAR MÊS
+========================================= */
+
+seletorMes.addEventListener(
+    "change",
+    mostrarSaidas
+);
+buscarProduto.addEventListener(
+    "input",
+    mostrarSaidas
+);
+
+/* =========================================
+   INICIAR
+========================================= */
+
+criarMeses();
+
+carregarSaidas();
+
+
+</script>
+
+
+</body>
+
+</html>

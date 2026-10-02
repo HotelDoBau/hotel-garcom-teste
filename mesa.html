@@ -1,0 +1,1966 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Mesa - Hotel do Baú</title>
+
+    <link
+        rel="stylesheet"
+        href="css/style.css"
+    >
+
+</head>
+
+
+<body class="mesa-page">
+
+
+<header class="topo">
+
+    <h1 id="tituloMesa">
+        Mesa
+    </h1>
+
+    <p>
+        Comanda
+    </p>
+
+</header>
+
+
+<main>
+
+
+    <section class="resumo-mesa">
+
+        <div class="linha-resumo">
+
+            <span>
+                Status
+            </span>
+
+            <strong id="statusMesa">
+                Livre
+            </strong>
+
+        </div>
+
+
+        <div class="linha-resumo">
+
+            <span>
+                Consumo atual
+            </span>
+
+            <strong id="valorMesa">
+                R$ 0,00
+            </strong>
+
+        </div>
+
+    </section>
+
+
+    <section class="acoes-mesa">
+
+
+        <button
+            class="btn-pedido"
+            onclick="novoPedido()"
+        >
+
+            ➕ Novo pedido
+
+        </button>
+
+
+        <button
+            class="btn-consumo"
+            onclick="verConsumo()"
+        >
+
+            🧾 Ver consumo
+
+        </button>
+
+
+        <button
+            class="btn-fechar"
+            onclick="fecharMesa()"
+        >
+
+            💰 Fechar mesa
+
+        </button>
+
+
+    </section>
+
+
+    <section
+        class="consumo-mesa"
+        id="consumoMesa"
+    >
+
+        <h2>
+            Consumo da mesa
+        </h2>
+
+
+        <div id="listaConsumo">
+
+            <p class="mesa-vazia">
+                Nenhum item lançado nesta mesa.
+            </p>
+
+        </div>
+
+
+    </section>
+
+
+    <button
+        class="btn-voltar"
+        onclick="voltarMesas()"
+    >
+
+        ← Voltar para mesas
+
+    </button>
+
+
+</main>
+
+
+<!-- ========================================= -->
+<!-- MODAL DE FECHAMENTO -->
+<!-- ========================================= -->
+
+<section
+    id="modalFechamento"
+    class="modal-fechamento"
+>
+
+    <div class="caixa-fechamento">
+
+
+        <h2>
+            💰 Fechamento
+        </h2>
+
+
+        <div class="resumo-fechamento">
+
+
+            <div>
+
+                <span>
+                    Consumo
+                </span>
+
+                <strong id="subtotalFechamento">
+                    R$ 0,00
+                </strong>
+
+            </div>
+
+
+            <div class="campo-desconto">
+
+                <label for="descontoFechamento">
+                    Desconto
+                </label>
+
+
+                <div class="campo-valor">
+
+                    <span>
+                        R$
+                    </span>
+
+                    <input
+                        type="text"
+                        id="descontoFechamento"
+                        inputmode="decimal"
+                        placeholder="0,00"
+                        autocomplete="off"
+                    >
+
+                </div>
+
+            </div>
+
+
+            <div class="linha-total-fechamento">
+
+                <span>
+                    Total a pagar
+                </span>
+
+                <strong id="totalFechamento">
+                    R$ 0,00
+                </strong>
+
+            </div>
+
+
+        </div>
+
+
+        <div class="acoes-fechamento">
+
+
+            <button
+                class="btn-voltar"
+                onclick="cancelarFechamento()"
+            >
+
+                ← Cancelar
+
+            </button>
+
+
+            <button
+                class="btn-fechar"
+                onclick="confirmarFechamento()"
+            >
+
+                ✅ Confirmar fechamento
+
+            </button>
+
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+<script
+    type="module"
+    src="js/firebase.js?v=3"
+></script>
+
+
+<script>
+
+
+const numeroMesa =
+    localStorage.getItem(
+        "mesaSelecionada"
+    );
+
+
+const tipoSelecionado =
+    localStorage.getItem(
+        "tipoSelecionado"
+    ) || "mesa";
+
+
+const ehQuarto =
+    tipoSelecionado === "quarto";
+
+
+const nomeLocal =
+    ehQuarto
+        ? "Quarto"
+        : "Mesa";
+
+
+const prefixoLocal =
+    ehQuarto
+        ? "quarto_"
+        : "mesa_";
+
+
+if (!numeroMesa) {
+
+    window.location.href =
+        "index.html";
+
+}
+
+
+document.getElementById(
+    "tituloMesa"
+).textContent =
+
+    nomeLocal +
+    " " +
+    String(numeroMesa)
+        .padStart(2, "0");
+
+
+let pedidosMesa = [];
+
+let totalFechamentoAtual = 0;
+
+
+/* =========================================
+   AGUARDAR FIREBASE
+========================================= */
+
+async function aguardarFirebase() {
+
+    let tentativas = 0;
+
+
+    while (
+        !window.firebaseHotel &&
+        tentativas < 50
+    ) {
+
+        await new Promise(
+            resolve =>
+                setTimeout(
+                    resolve,
+                    100
+                )
+        );
+
+        tentativas++;
+
+    }
+
+
+    return !!window.firebaseHotel;
+
+}
+
+
+/* =========================================
+   ID DA MESA
+========================================= */
+function obterIdMesa() {
+
+    return (
+
+        prefixoLocal +
+
+        String(numeroMesa)
+            .padStart(2, "0")
+
+    );
+
+}
+
+
+/* =========================================
+   MOSTRAR DADOS DA MESA
+========================================= */
+
+function mostrarMesa() {
+
+
+    const statusMesa =
+        document.getElementById(
+            "statusMesa"
+        );
+
+
+    const valorMesa =
+        document.getElementById(
+            "valorMesa"
+        );
+
+
+    const listaConsumo =
+        document.getElementById(
+            "listaConsumo"
+        );
+
+
+    if (
+        pedidosMesa.length === 0
+    ) {
+
+
+        statusMesa.textContent =
+            "Livre";
+
+
+        statusMesa.style.color =
+            "#268542";
+
+
+        valorMesa.textContent =
+            "R$ 0,00";
+
+
+        listaConsumo.innerHTML = `
+
+            <p class="mesa-vazia">
+
+                Nenhum item lançado
+                nesta mesa.
+
+            </p>
+
+        `;
+
+
+        return;
+
+    }
+
+
+    statusMesa.textContent =
+        "Ocupada";
+
+
+    statusMesa.style.color =
+        "#245d88";
+
+
+    let totalMesa = 0;
+
+
+    const itensAcumulados = {};
+
+
+    pedidosMesa.forEach(
+        pedido => {
+
+
+            const itens =
+                Array.isArray(
+                    pedido.itens
+                )
+                    ? pedido.itens
+                    : [];
+
+
+            itens.forEach(
+                item => {
+
+
+                    const preco =
+                        Number(
+                            item.preco || 0
+                        );
+
+
+                    const quantidade =
+                        Number(
+                            item.quantidade || 0
+                        );
+
+
+                    totalMesa +=
+                        preco *
+                        quantidade;
+
+
+                    const chave =
+                        String(
+                            item.id
+                        );
+
+
+                    if (
+                        !itensAcumulados[
+                            chave
+                        ]
+                    ) {
+
+
+                        itensAcumulados[
+                            chave
+                        ] = {
+
+                            id:
+                                item.id,
+
+                            nome:
+                                item.nome,
+
+                            preco:
+                                preco,
+
+                            quantidade:
+                                0
+
+                        };
+
+                    }
+
+
+                    itensAcumulados[
+                        chave
+                    ].quantidade +=
+                        quantidade;
+
+                }
+
+            );
+
+        }
+    );
+
+
+    valorMesa.textContent =
+        "R$ " +
+        totalMesa.toFixed(2);
+
+
+    listaConsumo.innerHTML =
+        "";
+
+
+    Object.values(
+        itensAcumulados
+    )
+    .forEach(
+        item => {
+
+
+            if (
+                item.quantidade <= 0
+            ) {
+
+                return;
+
+            }
+
+
+            const subtotal =
+                item.preco *
+                item.quantidade;
+
+
+            const div =
+                document.createElement(
+                    "div"
+                );
+
+
+            div.className =
+                "item-consumo";
+
+
+            div.innerHTML = `
+
+                <div>
+
+                    <strong>
+
+                        ${item.nome}
+
+                    </strong>
+
+
+                    <small>
+
+                        R$
+                        ${item.preco.toFixed(2)}
+                        cada
+
+                    </small>
+
+                </div>
+
+
+                <div
+                    style="
+                        display:flex;
+                        align-items:center;
+                        gap:10px;
+                    "
+                >
+
+
+                    <button
+                        type="button"
+                        onclick="alterarConsumo(
+                            ${JSON.stringify(item.id)},
+                            -1
+                        )"
+                        style="
+                            width:38px;
+                            height:38px;
+                            border:none;
+                            border-radius:8px;
+                            font-size:22px;
+                            font-weight:bold;
+                            cursor:pointer;
+                        "
+                    >
+
+                        −
+
+                    </button>
+
+
+                    <strong
+                        style="
+                            min-width:30px;
+                            text-align:center;
+                            font-size:18px;
+                        "
+                    >
+
+                        ${item.quantidade}
+
+                    </strong>
+
+
+                    <button
+                        type="button"
+                        onclick="alterarConsumo(
+                            ${JSON.stringify(item.id)},
+                            1
+                        )"
+                        style="
+                            width:38px;
+                            height:38px;
+                            border:none;
+                            border-radius:8px;
+                            font-size:22px;
+                            font-weight:bold;
+                            cursor:pointer;
+                        "
+                    >
+
+                        +
+
+                    </button>
+
+
+                    <strong
+                        style="
+                            min-width:85px;
+                            text-align:right;
+                        "
+                    >
+
+                        R$
+                        ${subtotal.toFixed(2)}
+
+                    </strong>
+
+
+                </div>
+
+            `;
+
+
+            listaConsumo.appendChild(
+                div
+            );
+
+        }
+    );
+
+}
+
+
+/* =========================================
+   ALTERAR CONSUMO
+========================================= */
+
+async function alterarConsumo(
+    idProduto,
+    variacao
+) {
+
+
+    if (
+        variacao !== 1 &&
+        variacao !== -1
+    ) {
+
+        return;
+
+    }
+
+
+    const confirmado =
+        await aguardarFirebase();
+
+
+    if (!confirmado) {
+
+        alert(
+            "Não foi possível conectar ao Firebase."
+        );
+
+        return;
+
+    }
+
+
+    try {
+
+
+        const {
+
+            db,
+            collection,
+            getDocs,
+            updateDoc,
+            deleteDoc
+
+        } = window.firebaseHotel;
+
+
+        const referenciaMesa =
+            collection(
+                db,
+                "mesas",
+                obterIdMesa(),
+                "pedidos"
+            );
+
+
+        const snapshot =
+            await getDocs(
+                referenciaMesa
+            );
+
+
+        const documentos = [];
+
+
+        snapshot.forEach(
+            documento => {
+
+                documentos.push({
+
+                    referencia:
+                        documento,
+
+                    dados:
+                        documento.data()
+
+                });
+
+            }
+        );
+
+
+        /*
+            Trabalhamos primeiro
+            com o pedido mais recente.
+        */
+
+        documentos.reverse();
+
+
+        /* =====================================
+           AUMENTAR QUANTIDADE
+        ===================================== */
+
+        if (
+            variacao === 1
+        ) {
+
+
+            let alterado =
+                false;
+
+
+            for (
+                const registro
+                of documentos
+            ) {
+
+
+                const itens =
+                    Array.isArray(
+                        registro.dados.itens
+                    )
+                        ? [
+                            ...registro.dados.itens
+                        ]
+                        : [];
+
+
+                const indice =
+                    itens.findIndex(
+                        item =>
+                            String(
+                                item.id
+                            ) ===
+                            String(
+                                idProduto
+                            )
+                    );
+
+
+                if (
+                    indice === -1
+                ) {
+
+                    continue;
+
+                }
+
+
+                const item =
+                    itens[indice];
+
+
+                item.quantidade =
+                    Number(
+                        item.quantidade || 0
+                    ) + 1;
+
+
+                item.subtotal =
+                    Number(
+                        item.preco || 0
+                    ) *
+                    item.quantidade;
+
+
+                const novoTotal =
+                    itens.reduce(
+                        (
+                            soma,
+                            itemAtual
+                        ) =>
+
+                            soma +
+
+                            Number(
+                                itemAtual.preco || 0
+                            ) *
+
+                            Number(
+                                itemAtual.quantidade || 0
+                            ),
+
+                        0
+                    );
+
+
+                await updateDoc(
+
+                    registro.referencia
+                        .ref,
+
+                    {
+
+                        itens:
+                            itens,
+
+                        total:
+                            Number(
+                                novoTotal.toFixed(2)
+                            )
+
+                    }
+
+                );
+
+
+                alterado =
+                    true;
+
+
+                break;
+
+            }
+
+
+            if (!alterado) {
+
+                alert(
+                    "Não foi possível localizar este item na comanda."
+                );
+
+            }
+
+
+        }
+
+
+        /* =====================================
+           DIMINUIR QUANTIDADE
+        ===================================== */
+
+        if (
+            variacao === -1
+        ) {
+
+
+            let alterado =
+                false;
+
+
+            for (
+                const registro
+                of documentos
+            ) {
+
+
+                const itens =
+                    Array.isArray(
+                        registro.dados.itens
+                    )
+                        ? [
+                            ...registro.dados.itens
+                        ]
+                        : [];
+
+
+                const indice =
+                    itens.findIndex(
+                        item =>
+                            String(
+                                item.id
+                            ) ===
+                            String(
+                                idProduto
+                            ) &&
+                            Number(
+                                item.quantidade || 0
+                            ) > 0
+                    );
+
+
+                if (
+                    indice === -1
+                ) {
+
+                    continue;
+
+                }
+
+
+                const item =
+                    itens[indice];
+
+
+                item.quantidade =
+                    Number(
+                        item.quantidade || 0
+                    ) - 1;
+
+
+                /*
+                    Se chegou a zero,
+                    remove o item daquele
+                    pedido.
+                */
+
+                if (
+                    item.quantidade <= 0
+                ) {
+
+                    itens.splice(
+                        indice,
+                        1
+                    );
+
+                }
+                else {
+
+                    item.subtotal =
+                        Number(
+                            item.preco || 0
+                        ) *
+                        item.quantidade;
+
+                }
+
+
+                const novoTotal =
+                    itens.reduce(
+                        (
+                            soma,
+                            itemAtual
+                        ) =>
+
+                            soma +
+
+                            Number(
+                                itemAtual.preco || 0
+                            ) *
+
+                            Number(
+                                itemAtual.quantidade || 0
+                            ),
+
+                        0
+                    );
+
+
+                /*
+                    Se não restou nenhum item
+                    naquele pedido, remove
+                    somente o documento da
+                    comanda da mesa.
+                */
+
+                if (
+                    itens.length === 0
+                ) {
+
+
+                    await deleteDoc(
+                        registro.referencia.ref
+                    );
+
+
+                }
+                else {
+
+
+                    await updateDoc(
+
+                        registro.referencia.ref,
+
+                        {
+
+                            itens:
+                                itens,
+
+                            total:
+                                Number(
+                                    novoTotal.toFixed(2)
+                                )
+
+                        }
+
+                    );
+
+                }
+
+
+                alterado =
+                    true;
+
+
+                break;
+
+            }
+
+
+            if (!alterado) {
+
+                alert(
+                    "Não foi possível localizar este item na comanda."
+                );
+
+            }
+
+        }
+
+
+        /*
+            O onSnapshot irá atualizar
+            automaticamente a tela.
+        */
+
+    }
+    catch (erro) {
+
+
+        console.error(
+            "Erro ao alterar consumo:",
+            erro
+        );
+
+
+        alert(
+
+            "Não foi possível alterar o consumo.\n\n" +
+
+            (erro.code || "sem código") +
+
+            "\n\n" +
+
+            (erro.message || erro)
+
+        );
+
+    }
+
+}
+
+
+/* =========================================
+   ESCUTAR PEDIDOS DA MESA
+========================================= */
+
+async function iniciarMesa() {
+
+
+    const conectado =
+        await aguardarFirebase();
+
+
+    if (!conectado) {
+
+        alert(
+            "Não foi possível conectar ao Firebase."
+        );
+
+        return;
+
+    }
+
+
+    const {
+
+        db,
+        collection,
+        onSnapshot
+
+    } = window.firebaseHotel;
+
+
+    const referenciaPedidos =
+        collection(
+
+            db,
+
+            "mesas",
+
+            obterIdMesa(),
+
+            "pedidos"
+
+        );
+
+
+    onSnapshot(
+
+        referenciaPedidos,
+
+
+        snapshot => {
+
+
+            pedidosMesa = [];
+
+
+            snapshot.forEach(
+                documento => {
+
+
+                    pedidosMesa.push({
+
+                        id:
+                            documento.id,
+
+                        ...documento.data()
+
+                    });
+
+                }
+            );
+
+
+            mostrarMesa();
+
+        },
+
+
+        erro => {
+
+
+            console.error(
+                "Erro ao carregar mesa:",
+                erro
+            );
+
+
+            alert(
+                "Não foi possível carregar os pedidos desta mesa."
+            );
+
+        }
+
+    );
+
+}
+
+
+/* =========================================
+   NOVO PEDIDO
+========================================= */
+
+function novoPedido() {
+
+    window.location.href =
+        "novo-pedido.html";
+
+}
+
+
+/* =========================================
+   VER CONSUMO
+========================================= */
+
+function verConsumo() {
+
+
+    const consumo =
+        document.getElementById(
+            "consumoMesa"
+        );
+
+
+    consumo.classList.toggle(
+        "mostrar"
+    );
+
+}
+
+
+/* =========================================
+   CALCULAR TOTAL DA MESA
+========================================= */
+
+function calcularTotalMesa() {
+
+
+    let totalMesa = 0;
+
+
+    pedidosMesa.forEach(
+        pedido => {
+
+
+            const itens =
+                Array.isArray(
+                    pedido.itens
+                )
+                    ? pedido.itens
+                    : [];
+
+
+            itens.forEach(
+                item => {
+
+
+                    const preco =
+                        Number(
+                            item.preco || 0
+                        );
+
+
+                    const quantidade =
+                        Number(
+                            item.quantidade || 0
+                        );
+
+
+                    totalMesa +=
+                        preco *
+                        quantidade;
+
+                }
+            );
+
+        }
+    );
+
+
+    return Number(
+        totalMesa.toFixed(2)
+    );
+
+}
+
+
+/* =========================================
+   ABRIR FECHAMENTO
+========================================= */
+
+function fecharMesa() {
+
+
+    if (
+        pedidosMesa.length === 0
+    ) {
+
+        alert(
+            "Esta mesa não possui consumo."
+        );
+
+        return;
+
+    }
+
+
+    const totalMesa =
+        calcularTotalMesa();
+
+
+    totalFechamentoAtual =
+        totalMesa;
+
+
+    document.getElementById(
+        "subtotalFechamento"
+    ).textContent =
+
+        "R$ " +
+        totalMesa.toFixed(2);
+
+
+    document.getElementById(
+        "descontoFechamento"
+    ).value =
+        "";
+
+
+    document.getElementById(
+        "totalFechamento"
+    ).textContent =
+
+        "R$ " +
+        totalMesa.toFixed(2);
+
+
+    document.getElementById(
+        "modalFechamento"
+    ).classList.add(
+        "mostrar"
+    );
+
+
+    setTimeout(
+        () => {
+
+
+            document.getElementById(
+                "descontoFechamento"
+            ).focus();
+
+
+        },
+        100
+    );
+
+}
+
+
+/* =========================================
+   ATUALIZAR TOTAL COM DESCONTO
+========================================= */
+
+document.addEventListener(
+    "input",
+    function(evento) {
+
+
+        if (
+            evento.target.id !==
+            "descontoFechamento"
+        ) {
+
+            return;
+
+        }
+
+
+        let valor =
+            evento.target.value;
+
+
+        valor =
+            valor
+                .replace(/\./g, "")
+                .replace(",", ".");
+
+
+        let desconto =
+            Number(valor);
+
+
+        if (
+            isNaN(desconto) ||
+            desconto < 0
+        ) {
+
+            desconto = 0;
+
+        }
+
+
+        if (
+            desconto >
+            totalFechamentoAtual
+        ) {
+
+            desconto =
+                totalFechamentoAtual;
+
+        }
+
+
+        const totalFinal =
+            totalFechamentoAtual -
+            desconto;
+
+
+        document.getElementById(
+            "totalFechamento"
+        ).textContent =
+
+            "R$ " +
+            totalFinal.toFixed(2);
+
+    }
+);
+
+
+/* =========================================
+   CANCELAR FECHAMENTO
+========================================= */
+
+function cancelarFechamento() {
+
+    document.getElementById(
+        "modalFechamento"
+    ).classList.remove(
+        "mostrar"
+    );
+
+}
+
+
+/* =========================================
+   CONFIRMAR FECHAMENTO
+========================================= */
+
+async function confirmarFechamento() {
+
+
+    let valorDesconto =
+        document.getElementById(
+            "descontoFechamento"
+        ).value;
+
+
+    valorDesconto =
+        valorDesconto
+            .replace(/\./g, "")
+            .replace(",", ".");
+
+
+    let desconto =
+        Number(valorDesconto);
+
+
+    if (
+        isNaN(desconto) ||
+        desconto < 0
+    ) {
+
+        desconto = 0;
+
+    }
+
+
+    if (
+        desconto >
+        totalFechamentoAtual
+    ) {
+
+        desconto =
+            totalFechamentoAtual;
+
+    }
+
+
+    const totalFinal =
+        Number(
+
+            (
+                totalFechamentoAtual -
+                desconto
+            ).toFixed(2)
+
+        );
+
+
+    const quartoMesa =
+        pedidosMesa
+            .map(
+                pedido =>
+                    pedido.quarto
+            )
+            .find(
+                quarto =>
+                    quarto &&
+                    String(
+                        quarto
+                    ).trim() !== ""
+            )
+        || "";
+
+
+    const confirmar =
+        confirm(
+
+            "Fechar " +
+
+            nomeLocal +
+
+            " " +
+
+            String(numeroMesa)
+                .padStart(2, "0") +
+
+            "?\n\n" +
+
+            "Consumo: R$ " +
+
+            totalFechamentoAtual
+                .toFixed(2) +
+
+            "\nDesconto: R$ " +
+
+            desconto.toFixed(2) +
+
+            "\n\nTotal a pagar: R$ " +
+
+            totalFinal.toFixed(2) +
+
+            "\n\nA conta será enviada para impressão no computador."
+
+        );
+
+
+    if (!confirmar) {
+
+        return;
+
+    }
+
+
+    const conectado =
+        await aguardarFirebase();
+
+
+    if (!conectado) {
+
+        alert(
+            "Não foi possível conectar ao Firebase."
+        );
+
+        return;
+
+    }
+
+
+    try {
+
+
+        const {
+
+            db,
+            doc,
+            setDoc,
+            serverTimestamp
+
+        } = window.firebaseHotel;
+
+
+        const {
+
+            addDoc,
+            collection
+
+        } = await import(
+
+            "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"
+
+        );
+
+
+        const idMesa =
+            obterIdMesa();
+
+
+        /* ==============================
+           MARCA A MESA COMO PAGAMENTO
+        ============================== */
+
+        await setDoc(
+
+            doc(
+                db,
+                "mesas",
+                idMesa
+            ),
+
+            {
+
+                numero:
+                    Number(numeroMesa),
+
+                status:
+                    "pagamento",
+
+                atualizadoEm:
+                    serverTimestamp()
+
+            },
+
+            {
+
+                merge:
+                    true
+
+            }
+
+        );
+
+
+             /* ==============================
+           MONTAR ITENS DO FECHAMENTO
+        ============================== */
+
+        const acumulados = {};
+
+
+        pedidosMesa.forEach(
+            pedido => {
+
+                const itens =
+                    Array.isArray(
+                        pedido.itens
+                    )
+                        ? pedido.itens
+                        : [];
+
+
+                itens.forEach(
+                    item => {
+
+                        const chave =
+                            String(
+                                item.id
+                            );
+
+
+                        if (
+                            !acumulados[chave]
+                        ) {
+
+                            acumulados[chave] = {
+
+                                id:
+                                    item.id,
+
+                                nome:
+                                    item.nome,
+
+                                preco:
+                                    Number(
+                                        item.preco || 0
+                                    ),
+
+                                quantidade:
+                                    0
+
+                            };
+
+                        }
+
+
+                        acumulados[chave].quantidade +=
+                            Number(
+                                item.quantidade || 0
+                            );
+
+                    }
+
+                );
+
+            }
+        );
+
+
+        const itensFechamento =
+            Object.values(
+                acumulados
+            );
+
+
+        /* ==============================
+           CRIAR FECHAMENTO
+        ============================== */
+
+        const fechamentoRef =
+            await addDoc(
+
+                collection(
+                    db,
+                    "fechamentos"
+                ),
+
+                {
+
+                    mesa:
+                        ehQuarto
+                            ? null
+                            : Number(numeroMesa),
+
+                    quarto:
+                        ehQuarto
+                            ? Number(numeroMesa)
+                            : quartoMesa,
+
+                    tipo:
+                        tipoSelecionado,
+
+                    numero:
+                        Number(numeroMesa),
+
+                    idMesa:
+                        idMesa,
+
+                    itens:
+                        itensFechamento,
+
+                    subtotal:
+                        Number(
+                            totalFechamentoAtual
+                                .toFixed(2)
+                        ),
+
+                    desconto:
+                        Number(
+                            desconto.toFixed(2)
+                        ),
+
+                    total:
+                        totalFinal,
+
+                    dataHora:
+                        new Date()
+                            .toLocaleString(
+                                "pt-BR"
+                            ),
+
+                    status:
+                        "novo",
+
+                    criadoEm:
+                        serverTimestamp()
+
+                }
+
+            );
+
+
+        /* ==============================
+           REGISTRAR SAÍDAS
+        ============================== */
+
+        const agora =
+            new Date();
+
+
+        const ano =
+            agora.getFullYear();
+
+
+        const mes =
+            String(
+                agora.getMonth() + 1
+            ).padStart(
+                2,
+                "0"
+            );
+
+
+        const referenciaMes =
+            `${ano}-${mes}`;
+
+
+        await addDoc(
+
+            collection(
+                db,
+                "saidas"
+            ),
+
+            {
+
+                fechamentoId:
+                    fechamentoRef.id,
+
+                mesa:
+                    ehQuarto
+                        ? null
+                        : Number(numeroMesa),
+
+                quarto:
+                    ehQuarto
+                        ? Number(numeroMesa)
+                        : quartoMesa,
+
+                tipo:
+                    tipoSelecionado,
+
+                numero:
+                    Number(numeroMesa),
+
+                idMesa:
+                    idMesa,
+
+                itens:
+                    itensFechamento.map(
+                        item => ({
+
+                            id:
+                                item.id,
+
+                            nome:
+                                item.nome,
+
+                            valorUnitario:
+                                Number(
+                                    item.preco || 0
+                                ),
+
+                            quantidade:
+                                Number(
+                                    item.quantidade || 0
+                                ),
+
+                            total:
+                                Number(
+
+                                    (
+                                        Number(
+                                            item.preco || 0
+                                        ) *
+
+                                        Number(
+                                            item.quantidade || 0
+                                        )
+
+                                    ).toFixed(2)
+
+                                )
+
+                        })
+                    ),
+
+                referenciaMes:
+                    referenciaMes,
+
+                dataHora:
+                    new Date()
+                        .toLocaleString(
+                            "pt-BR"
+                        ),
+
+                criadoEm:
+                    serverTimestamp()
+
+            }
+
+        );
+
+                /* ==============================
+           FINALIZAR FECHAMENTO
+        ============================== */
+
+        document.getElementById(
+            "modalFechamento"
+        ).classList.remove(
+            "mostrar"
+        );
+
+
+        alert(
+
+            "✅ Fechamento do " +
+
+            nomeLocal +
+
+            " " +
+
+            String(numeroMesa)
+                .padStart(2, "0") +
+
+            " enviado para o computador.\n\n" +
+
+            "Total a pagar: R$ " +
+
+            totalFinal.toFixed(2) +
+
+            "\n\nO atendimento ficará em PAGAMENTO até a conta ser impressa."
+
+        );
+
+
+        window.location.href =
+            "index.html";
+
+
+    }
+
+
+    catch (erro) {
+
+
+        console.error(
+            "Erro ao enviar fechamento:",
+            erro
+        );
+
+
+        alert(
+
+            "❌ Não foi possível enviar o fechamento.\n\n" +
+
+            (erro.code || "sem código") +
+
+            "\n\n" +
+
+            (erro.message || erro)
+
+        );
+
+    }
+
+}
+
+
+/* =========================================
+   VOLTAR
+========================================= */
+
+function voltarMesas() {
+
+    window.location.href =
+        "index.html";
+
+}
+
+
+/* =========================================
+   INICIAR
+========================================= */
+
+iniciarMesa();
+
+
+</script>
+
+
+</body>
+
+</html>
+
