@@ -1,0 +1,1109 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>Relatórios - Hotel do Baú</title>
+
+<link
+    rel="stylesheet"
+    href="css/style.css"
+>
+
+<style>
+
+    /* =========================================
+       PÁGINA
+    ========================================= */
+
+    .relatorios-page {
+        padding-bottom: 40px;
+        background: #f4f6f8;
+    }
+
+
+    /* =========================================
+       CABEÇALHO
+    ========================================= */
+
+    .cabecalho-relatorios {
+        text-align: center;
+        padding: 20px 15px 10px;
+    }
+
+
+    .cabecalho-relatorios h2 {
+        margin: 0;
+        color: #17212b;
+        font-size: 24px;
+    }
+
+
+    .cabecalho-relatorios p {
+        margin: 6px 0 0;
+        color: #6b737a;
+        font-size: 14px;
+    }
+
+
+    /* =========================================
+       FILTROS
+    ========================================= */
+
+    .filtros-relatorios {
+        width: calc(100% - 30px);
+        max-width: 700px;
+        margin: 20px auto;
+        padding: 20px;
+        box-sizing: border-box;
+        background: white;
+        border-radius: 14px;
+        box-shadow:
+            0 3px 12px
+            rgba(0,0,0,0.08);
+    }
+
+
+    .filtro-relatorio {
+        margin-bottom: 16px;
+    }
+
+
+    .filtro-relatorio:last-child {
+        margin-bottom: 0;
+    }
+
+
+    .filtro-relatorio label {
+        display: block;
+        margin-bottom: 8px;
+        color: #333;
+        font-weight: 600;
+    }
+
+
+    .filtro-relatorio select,
+    .filtro-relatorio input {
+        width: 100%;
+        padding: 13px;
+        box-sizing: border-box;
+        border: 1px solid #ccc;
+        border-radius: 9px;
+        background: white;
+        color: #333;
+        font-size: 16px;
+        outline: none;
+    }
+
+
+    .filtro-relatorio select:focus,
+    .filtro-relatorio input:focus {
+        border-color: #245d88;
+    }
+
+
+    /* =========================================
+       RESUMO
+    ========================================= */
+
+    .resumo-relatorio {
+        width: calc(100% - 30px);
+        max-width: 700px;
+        margin: 20px auto;
+        padding: 18px 20px;
+        box-sizing: border-box;
+        background: white;
+        border-radius: 14px;
+        box-shadow:
+            0 3px 12px
+            rgba(0,0,0,0.06);
+        display: flex;
+        justify-content: space-between;
+        gap: 20px;
+        flex-wrap: wrap;
+    }
+
+
+    .resumo-relatorio-item {
+        flex: 1;
+        min-width: 130px;
+    }
+
+
+    .resumo-relatorio-item span {
+        display: block;
+        margin-bottom: 5px;
+        color: #727a80;
+        font-size: 13px;
+    }
+
+
+    .resumo-relatorio-item strong {
+        display: block;
+        color: #17212b;
+        font-size: 21px;
+    }
+
+
+    /* =========================================
+       LISTA DE PRODUTOS
+    ========================================= */
+
+    .lista-relatorio {
+        width: calc(100% - 30px);
+        max-width: 700px;
+        margin: 20px auto;
+    }
+
+
+    .produto-relatorio {
+        margin-bottom: 12px;
+        padding: 17px;
+        background: white;
+        border-radius: 14px;
+        box-shadow:
+            0 3px 12px
+            rgba(0,0,0,0.07);
+    }
+
+
+    .produto-relatorio-topo {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+    }
+
+
+    .produto-relatorio-nome {
+        flex: 1;
+        color: #17212b;
+        font-size: 17px;
+        font-weight: 600;
+    }
+
+
+    .produto-relatorio-total {
+        color: #17212b;
+        font-size: 17px;
+        font-weight: bold;
+        white-space: nowrap;
+    }
+
+
+    .produto-relatorio-detalhes {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        margin-top: 10px;
+        padding-top: 10px;
+        border-top: 1px solid #edf0f2;
+        color: #737b82;
+        font-size: 13px;
+    }
+
+
+    /* =========================================
+       MENSAGEM
+    ========================================= */
+
+    .mensagem-relatorio {
+        padding: 35px 20px;
+        text-align: center;
+        color: #6d757b;
+        background: white;
+        border-radius: 14px;
+        box-shadow:
+            0 3px 12px
+            rgba(0,0,0,0.06);
+    }
+
+
+    /* =========================================
+       VOLTAR
+    ========================================= */
+
+    .btn-voltar-relatorios {
+        display: block;
+        width: fit-content;
+        margin: 25px auto;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 8px;
+        background: #555;
+        color: white;
+        text-decoration: none;
+        cursor: pointer;
+        font-size: 15px;
+    }
+
+
+    .btn-voltar-relatorios:hover {
+        opacity: 0.88;
+    }
+
+
+    /* =========================================
+       RESPONSIVO
+    ========================================= */
+
+    @media (max-width: 600px) {
+
+        .produto-relatorio-topo {
+            align-items: flex-start;
+        }
+
+
+        .produto-relatorio-nome {
+            font-size: 16px;
+        }
+
+
+        .produto-relatorio-total {
+            font-size: 16px;
+        }
+
+
+        .produto-relatorio-detalhes {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+    }
+
+</style>
+
+</head>
+
+
+<body class="relatorios-page">
+
+
+<header class="topo">
+
+    <h1>
+        Relatórios
+    </h1>
+
+    <p>
+        Produtos vendidos
+    </p>
+
+</header>
+
+
+<main>
+
+
+<!-- =========================================
+     VOLTAR
+========================================= -->
+
+<button
+    class="btn-voltar-relatorios"
+    onclick="window.location.href='index.html'"
+>
+
+    ← Voltar
+
+</button>
+
+
+<!-- =========================================
+     TÍTULO
+========================================= -->
+
+<section class="cabecalho-relatorios">
+
+    <h2>
+        Vendas por produto
+    </h2>
+
+    <p>
+        Consulte os produtos vendidos no mês selecionado.
+    </p>
+
+</section>
+
+
+<!-- =========================================
+     FILTROS
+========================================= -->
+
+<section class="filtros-relatorios">
+
+
+    <div class="filtro-relatorio">
+
+        <label for="mesSelecionado">
+
+            Mês
+
+        </label>
+
+
+        <select id="mesSelecionado">
+
+            <option value="">
+
+                Carregando...
+
+            </option>
+
+        </select>
+
+    </div>
+
+
+    <div class="filtro-relatorio">
+
+        <label for="pesquisaProduto">
+
+            Pesquisar produto
+
+        </label>
+
+
+        <input
+            type="search"
+            id="pesquisaProduto"
+            placeholder="Digite o nome do produto..."
+            autocomplete="off"
+        >
+
+    </div>
+
+
+</section>
+
+
+<!-- =========================================
+     RESUMO
+========================================= -->
+
+<section class="resumo-relatorio">
+
+
+    <div class="resumo-relatorio-item">
+
+        <span>
+            Itens vendidos
+        </span>
+
+        <strong id="quantidadeItens">
+            0
+        </strong>
+
+    </div>
+
+
+    <div class="resumo-relatorio-item">
+
+        <span>
+            Total vendido
+        </span>
+
+        <strong id="totalVendido">
+            R$ 0,00
+        </strong>
+
+    </div>
+
+
+</section>
+
+
+<!-- =========================================
+     LISTA
+========================================= -->
+
+<section
+    id="listaRelatorio"
+    class="lista-relatorio"
+>
+
+    <div class="mensagem-relatorio">
+
+        Carregando...
+
+    </div>
+
+</section>
+
+
+<button
+    class="btn-voltar-relatorios"
+    onclick="window.location.href='index.html'"
+>
+
+    ← Voltar
+
+</button>
+
+
+</main>
+
+
+<script
+    type="module"
+    src="js/firebase.js?v=3"
+></script>
+
+
+<script>
+
+
+/* =========================================
+   AGUARDAR FIREBASE
+========================================= */
+
+async function aguardarFirebase() {
+
+    let tentativas = 0;
+
+
+    while (
+        !window.firebaseHotel &&
+        tentativas < 50
+    ) {
+
+        await new Promise(
+            resolve =>
+                setTimeout(
+                    resolve,
+                    100
+                )
+        );
+
+        tentativas++;
+
+    }
+
+
+    return !!window.firebaseHotel;
+
+}
+
+
+/* =========================================
+   ELEMENTOS
+========================================= */
+
+const seletorMes =
+    document.getElementById(
+        "mesSelecionado"
+    );
+
+
+const pesquisaProduto =
+    document.getElementById(
+        "pesquisaProduto"
+    );
+
+
+const listaRelatorio =
+    document.getElementById(
+        "listaRelatorio"
+    );
+
+
+const quantidadeItens =
+    document.getElementById(
+        "quantidadeItens"
+    );
+
+
+const totalVendido =
+    document.getElementById(
+        "totalVendido"
+    );
+
+
+let saidasFirebase = [];
+
+
+/* =========================================
+   FORMATAR MOEDA
+========================================= */
+
+function formatarMoeda(valor) {
+
+    return (
+        "R$ " +
+        Number(valor || 0)
+            .toFixed(2)
+            .replace(".", ",")
+    );
+
+}
+
+
+/* =========================================
+   CRIAR MESES
+========================================= */
+
+function criarMeses() {
+
+    const agora =
+        new Date();
+
+
+    seletorMes.innerHTML =
+        "";
+
+
+    for (
+        let i = -12;
+        i <= 12;
+        i++
+    ) {
+
+        const data =
+            new Date(
+                agora.getFullYear(),
+                agora.getMonth() + i,
+                1
+            );
+
+
+        const ano =
+            data.getFullYear();
+
+
+        const mes =
+            String(
+                data.getMonth() + 1
+            ).padStart(
+                2,
+                "0"
+            );
+
+
+        const valor =
+            `${ano}-${mes}`;
+
+
+        const texto =
+            data.toLocaleDateString(
+                "pt-BR",
+                {
+                    month:
+                        "long",
+                    year:
+                        "numeric"
+                }
+            );
+
+
+        const option =
+            document.createElement(
+                "option"
+            );
+
+
+        option.value =
+            valor;
+
+
+        option.textContent =
+            texto.charAt(0).toUpperCase() +
+            texto.slice(1);
+
+
+        seletorMes.appendChild(
+            option
+        );
+
+    }
+
+
+    const mesAtual =
+        `${agora.getFullYear()}-` +
+        `${String(
+            agora.getMonth() + 1
+        ).padStart(
+            2,
+            "0"
+        )}`;
+
+
+    seletorMes.value =
+        mesAtual;
+
+}
+
+
+/* =========================================
+   CARREGAR VENDAS
+========================================= */
+
+async function carregarSaidas() {
+
+    const conectado =
+        await aguardarFirebase();
+
+
+    if (!conectado) {
+
+        listaRelatorio.innerHTML = `
+
+            <div class="mensagem-relatorio">
+
+                Não foi possível conectar
+                ao Firebase.
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    try {
+
+        const {
+            db,
+            collection,
+            getDocs
+        } = window.firebaseHotel;
+
+
+        const referencia =
+            collection(
+                db,
+                "saidas"
+            );
+
+
+        const snapshot =
+            await getDocs(
+                referencia
+            );
+
+
+        saidasFirebase = [];
+
+
+        snapshot.forEach(
+            documento => {
+
+                saidasFirebase.push({
+
+                    id:
+                        documento.id,
+
+                    ...documento.data()
+
+                });
+
+            }
+        );
+
+
+        mostrarRelatorio();
+
+    }
+    catch (erro) {
+
+        console.error(
+            "Erro ao carregar vendas:",
+            erro
+        );
+
+
+        listaRelatorio.innerHTML = `
+
+            <div class="mensagem-relatorio">
+
+                Erro ao carregar
+                os dados do relatório.
+
+            </div>
+
+        `;
+
+    }
+
+}
+
+
+/* =========================================
+   OBTER VALOR UNITÁRIO
+========================================= */
+
+function obterValorUnitario(item) {
+
+    return Number(
+        item.valorUnitario ??
+        item.preco ??
+        0
+    );
+
+}
+
+
+/* =========================================
+   OBTER TOTAL DO ITEM
+========================================= */
+
+function obterTotalItem(item) {
+
+    const quantidade =
+        Number(
+            item.quantidade || 0
+        );
+
+
+    const valorUnitario =
+        obterValorUnitario(
+            item
+        );
+
+
+    return Number(
+        item.total ??
+        (
+            valorUnitario *
+            quantidade
+        )
+    );
+
+}
+
+
+/* =========================================
+   MOSTRAR RELATÓRIO
+========================================= */
+
+function mostrarRelatorio() {
+
+    const mes =
+        seletorMes.value;
+
+
+    const pesquisa =
+        pesquisaProduto.value
+            .trim()
+            .toLowerCase();
+
+
+    /*
+        Primeiro pegamos somente
+        as vendas do mês selecionado.
+    */
+
+    const vendasDoMes =
+        saidasFirebase.filter(
+            venda =>
+                String(
+                    venda.referenciaMes ||
+                    ""
+                ) === mes
+        );
+
+
+    /*
+        Agrupa os produtos.
+    */
+
+    const produtos = {};
+
+
+    vendasDoMes.forEach(
+        venda => {
+
+            const itens =
+                Array.isArray(
+                    venda.itens
+                )
+                    ? venda.itens
+                    : [];
+
+
+            itens.forEach(
+                item => {
+
+                    const nome =
+                        String(
+                            item.nome ||
+                            "Produto"
+                        ).trim();
+
+
+                    if (!produtos[nome]) {
+
+                        produtos[nome] = {
+
+                            nome:
+                                nome,
+
+                            quantidade:
+                                0,
+
+                            total:
+                                0,
+
+                            valorUnitario:
+                                obterValorUnitario(
+                                    item
+                                )
+
+                        };
+
+                    }
+
+
+                    const quantidade =
+                        Number(
+                            item.quantidade ||
+                            0
+                        );
+
+
+                    produtos[nome].quantidade +=
+                        quantidade;
+
+
+                    produtos[nome].total +=
+                        obterTotalItem(
+                            item
+                        );
+
+                }
+            );
+
+        }
+    );
+
+
+    /*
+        Transforma em lista.
+    */
+
+    let listaProdutos =
+        Object.values(
+            produtos
+        );
+
+
+    /*
+        Pesquisa pelo nome.
+    */
+
+    if (pesquisa) {
+
+        listaProdutos =
+            listaProdutos.filter(
+                produto =>
+                    produto.nome
+                        .toLowerCase()
+                        .includes(
+                            pesquisa
+                        )
+            );
+
+    }
+
+
+    /*
+        Ordena alfabeticamente.
+    */
+
+    listaProdutos.sort(
+        (
+            a,
+            b
+        ) =>
+            a.nome.localeCompare(
+                b.nome,
+                "pt-BR"
+            )
+    );
+
+
+    /*
+        Limpa a lista.
+    */
+
+    listaRelatorio.innerHTML =
+        "";
+
+
+    /*
+        Calcula resumo com os
+        produtos atualmente exibidos.
+    */
+
+    let totalItens =
+        0;
+
+
+    let totalGeral =
+        0;
+
+
+    listaProdutos.forEach(
+        produto => {
+
+            totalItens +=
+                produto.quantidade;
+
+
+            totalGeral +=
+                produto.total;
+
+
+            const card =
+                document.createElement(
+                    "div"
+                );
+
+
+            card.className =
+                "produto-relatorio";
+
+
+            card.innerHTML = `
+
+                <div
+                    class="produto-relatorio-topo"
+                >
+
+                    <div
+                        class="produto-relatorio-nome"
+                    >
+
+                        ${produto.nome}
+
+                    </div>
+
+
+                    <div
+                        class="produto-relatorio-total"
+                    >
+
+                        ${formatarMoeda(
+                            produto.total
+                        )}
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    class="produto-relatorio-detalhes"
+                >
+
+                    <span>
+
+                        Quantidade:
+                        <strong>
+                            ${produto.quantidade}
+                        </strong>
+
+                    </span>
+
+
+                    <span>
+
+                        Valor unitário:
+                        <strong>
+                            ${formatarMoeda(
+                                produto.valorUnitario
+                            )}
+                        </strong>
+
+                    </span>
+
+                </div>
+
+            `;
+
+
+            listaRelatorio.appendChild(
+                card
+            );
+
+        }
+    );
+
+
+    /*
+        Nenhum resultado.
+    */
+
+    if (
+        listaProdutos.length === 0
+    ) {
+
+        listaRelatorio.innerHTML = `
+
+            <div class="mensagem-relatorio">
+
+                ${
+                    pesquisa
+                        ? "Nenhum produto encontrado para a pesquisa."
+                        : "Nenhum produto vendido neste mês."
+                }
+
+            </div>
+
+        `;
+
+    }
+
+
+    quantidadeItens.textContent =
+        totalItens;
+
+
+    totalVendido.textContent =
+        formatarMoeda(
+            totalGeral
+        );
+
+}
+
+
+/* =========================================
+   EVENTOS
+========================================= */
+
+seletorMes.addEventListener(
+    "change",
+    mostrarRelatorio
+);
+
+
+pesquisaProduto.addEventListener(
+    "input",
+    mostrarRelatorio
+);
+
+
+/* =========================================
+   INICIAR
+========================================= */
+
+criarMeses();
+
+carregarSaidas();
+
+</script>
+
+
+</body>
+
+</html>
