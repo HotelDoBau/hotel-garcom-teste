@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Produtos - Hotel do Baú</title>
+
+    <link
+        rel="stylesheet"
+        href="css/style.css"
+    >
+
+    <style>
+
+        body {
+            margin: 0;
+            background: #f4f6f8;
+            font-family: Arial, sans-serif;
+        }
+
+        .pagina {
+            width: 100%;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .topo-pagina {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            background: #17212b;
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+        .titulo-area h1 {
+            margin: 0 0 6px;
+            font-size: 26px;
+        }
+
+        .titulo-area p {
+            margin: 0;
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        .botoes-topo {
+            display: flex;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+
+        .botao {
+            display: inline-block;
+            border: none;
+            border-radius: 8px;
+            padding: 11px 16px;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .botao-voltar {
+            background: #ffffff;
+            color: #17212b;
+        }
+
+        .botao-novo {
+            background: #2f80ed;
+            color: #ffffff;
+        }
+
+        .botao:hover {
+            opacity: 0.9;
+        }
+
+        .area-produtos {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .mensagem-vazia {
+            text-align: center;
+            padding: 50px 20px;
+            color: #68737d;
+        }
+
+        .mensagem-vazia h2 {
+            margin: 0 0 10px;
+            color: #17212b;
+            font-size: 21px;
+        }
+
+        .mensagem-vazia p {
+            margin: 0;
+            font-size: 15px;
+        }
+
+        @media (max-width: 600px) {
+
+            .pagina {
+                padding: 12px;
+            }
+
+            .topo-pagina {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .botoes-topo {
+                width: 100%;
+                flex-direction: column;
+            }
+
+            .botao {
+                width: 100%;
+                text-align: center;
+                box-sizing: border-box;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <main class="pagina">
+
+
+        <section class="topo-pagina">
+
+
+            <div class="titulo-area">
+
+                <h1>
+                    Produtos
+                </h1>
+
+                <p>
+                    Gerencie os produtos do cardápio
+                </p>
+
+            </div>
+
+
+            <div class="botoes-topo">
+
+                <a
+                    href="index.html"
+                    class="botao botao-voltar"
+                >
+                    ← Voltar
+                </a>
+
+                <a
+                    href="produtos.html"
+                    class="botao botao-novo"
+                >
+                    + Novo produto
+                </a>
+
+            </div>
+
+
+        </section>
+
+
+        <section class="area-produtos">
+
+
+            <div class="mensagem-vazia">
+
+                <h2>
+                    Nenhum produto cadastrado
+                </h2>
+
+                <p>
+                    Os produtos cadastrados aparecerão aqui.
+                </p>
+
+            </div>
+
+
+        </section>
+
+
+    </main>
+
+
+</body>
+
+</html>
