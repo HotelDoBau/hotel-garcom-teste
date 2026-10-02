@@ -940,7 +940,34 @@ async function iniciarMesas() {
 // =========================
 
 iniciarMesas();
+// =========================
+// MENU LATERAL
+// =========================
 
+function abrirMenu() {
+
+    document
+        .getElementById("menuLateral")
+        .classList.add("mostrar");
+
+    document
+        .getElementById("fundoMenu")
+        .classList.add("mostrar");
+
+}
+
+
+function fecharMenu() {
+
+    document
+        .getElementById("menuLateral")
+        .classList.remove("mostrar");
+
+    document
+        .getElementById("fundoMenu")
+        .classList.remove("mostrar");
+
+}
 </script>
 <script type="module" src="js/impressao.js"></script>
 </body>
