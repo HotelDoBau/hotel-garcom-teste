@@ -5,6 +5,7 @@ import {
     doc,
     getDocs,
     deleteDoc,
+    setDoc,
     serverTimestamp
 } from "./firebase.js";
 
@@ -752,7 +753,422 @@ onSnapshot(
 
 );
 
+/* =========================================
+   IMPRESSÃO DO FECHAMENTO
+========================================= */
 
+async function imprimirFechamentoAutomaticamente(fechamento) {
+
+    try {
+
+        console.log(
+            "FECHAMENTO PARA IMPRESSÃO:",
+            fechamento
+        );
+
+
+        const ehQuarto =
+            fechamento.tipo === "quarto";
+
+
+        const nomeLocal =
+            ehQuarto
+                ? "QUARTO"
+                : "MESA";
+
+
+        const numero =
+            String(
+                fechamento.numero || 0
+            ).padStart(
+                2,
+                "0"
+            );
+
+
+        const itens =
+            Array.isArray(
+                fechamento.itens
+            )
+                ? fechamento.itens
+                : [];
+
+
+        let conteudo = `
+
+            <div
+                style="
+                    text-align:center;
+                    font-family:Arial,sans-serif;
+                "
+            >
+
+                <strong
+                    style="
+                        font-size:18px;
+                    "
+                >
+                    HOTEL DO BAÚ
+                </strong>
+
+                <br>
+
+                <strong
+                    style="
+                        font-size:16px;
+                    "
+                >
+                    CONTA FINAL
+                </strong>
+
+                <hr>
+
+                <div
+                    style="
+                        text-align:left;
+                    "
+                >
+
+                    <strong>
+                        ${nomeLocal} ${numero}
+                    </strong>
+
+                    <br><br>
+
+        `;
+
+
+        itens.forEach(
+            item => {
+
+                const quantidade =
+                    Number(
+                        item.quantidade || 0
+                    );
+
+
+                const preco =
+                    Number(
+                        item.preco || 0
+                    );
+
+
+                const subtotal =
+                    preco *
+                    quantidade;
+
+
+                conteudo += `
+
+                    <div
+                        style="
+                            margin-bottom:8px;
+                        "
+                    >
+
+                        ${quantidade}x
+                        ${item.nome}
+
+                        <br>
+
+                        <span
+                            style="
+                                display:block;
+                                text-align:right;
+                            "
+                        >
+                            R$
+                            ${subtotal.toFixed(2)}
+                        </span>
+
+                    </div>
+
+                `;
+
+            }
+        );
+
+
+        const subtotal =
+            Number(
+                fechamento.subtotal || 0
+            );
+
+
+        const desconto =
+            Number(
+                fechamento.desconto || 0
+            );
+
+
+        const total =
+            Number(
+                fechamento.total || 0
+            );
+
+
+        conteudo += `
+
+                </div>
+
+                <hr>
+
+                <div
+                    style="
+                        text-align:right;
+                        font-size:14px;
+                    "
+                >
+
+                    Subtotal:
+                    R$ ${subtotal.toFixed(2)}
+
+                    <br>
+
+                    Desconto:
+                    R$ ${desconto.toFixed(2)}
+
+                    <br><br>
+
+                    <strong
+                        style="
+                            font-size:18px;
+                        "
+                    >
+                        TOTAL:
+                        R$ ${total.toFixed(2)}
+                    </strong>
+
+                </div>
+
+                <br>
+
+                <div
+                    style="
+                        text-align:center;
+                        font-size:12px;
+                    "
+                >
+
+                    ${fechamento.dataHora || ""}
+
+                    <br><br>
+
+                    Obrigado pela preferência!
+
+                </div>
+
+            </div>
+
+        `;
+
+
+        /*
+            IMPRIME PRIMEIRO.
+            A limpeza só acontece depois.
+        */
+
+        await abrirImpressao(
+            conteudo
+        );
+
+
+        console.log(
+            "Fechamento impresso:",
+            fechamento.id
+        );
+
+
+        /* =====================================
+           LIMPAR CONSUMO DA MESA/QUARTO
+        ===================================== */
+
+        if (
+            fechamento.idMesa
+        ) {
+
+            const referenciaPedidos =
+                collection(
+                    db,
+                    "mesas",
+                    fechamento.idMesa,
+                    "pedidos"
+                );
+
+
+            const snapshot =
+                await getDocs(
+                    referenciaPedidos
+                );
+
+
+            for (
+                const documento
+                of snapshot.docs
+            ) {
+
+                await deleteDoc(
+                    documento.ref
+                );
+
+            }
+
+        }
+
+
+        /* =====================================
+           LIBERAR MESA / QUARTO
+        ===================================== */
+
+        if (
+            fechamento.idMesa
+        ) {
+
+            await setDoc(
+
+                doc(
+                    db,
+                    "mesas",
+                    fechamento.idMesa
+                ),
+
+                {
+
+                    status:
+                        "livre",
+
+                    atualizadoEm:
+                        serverTimestamp()
+
+                },
+
+                {
+                    merge: true
+                }
+
+            );
+
+        }
+
+
+        /* =====================================
+           REMOVER FECHAMENTO DA FILA
+        ===================================== */
+
+        await deleteDoc(
+
+            doc(
+                db,
+                "fechamentos",
+                fechamento.id
+            )
+
+        );
+
+
+        console.log(
+            "Fechamento finalizado e mesa liberada:",
+            fechamento.idMesa
+        );
+
+    }
+    catch (erro) {
+
+        console.error(
+            "Erro ao imprimir fechamento:",
+            erro
+        );
+
+    }
+
+}
+
+
+/* =========================================
+   ESCUTAR FECHAMENTOS
+========================================= */
+
+let primeiraLeituraFechamentos = true;
+
+
+onSnapshot(
+
+    collection(
+        db,
+        "fechamentos"
+    ),
+
+    snapshot => {
+
+        /*
+            Não imprime fechamentos antigos
+            existentes quando o módulo inicia.
+        */
+
+        if (
+            primeiraLeituraFechamentos
+        ) {
+
+            primeiraLeituraFechamentos =
+                false;
+
+            console.log(
+                "Fechamentos existentes carregados. Nenhum será reimpresso."
+            );
+
+            return;
+
+        }
+
+
+        snapshot.docChanges().forEach(
+            alteracao => {
+
+                if (
+                    alteracao.type !==
+                    "added"
+                ) {
+
+                    return;
+
+                }
+
+
+                const fechamento = {
+
+                    id:
+                        alteracao.doc.id,
+
+                    ...alteracao.doc.data()
+
+                };
+
+
+                console.log(
+                    "NOVO FECHAMENTO PARA IMPRESSÃO:",
+                    fechamento
+                );
+
+
+                imprimirFechamentoAutomaticamente(
+                    fechamento
+                );
+
+            }
+        );
+
+    },
+
+    erro => {
+
+        console.error(
+            "Erro ao observar fechamentos:",
+            erro
+        );
+
+    }
+
+);
 console.log(
     "Módulo de impressão Hotel Garcom TESTE carregado."
 );
