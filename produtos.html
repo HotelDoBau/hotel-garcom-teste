@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Produtos - Hotel do Baú</title>
+
+    <link
+        rel="stylesheet"
+        href="css/style.css"
+    >
+
+    <style>
+
+        body {
+            margin: 0;
+            background: #f4f6f8;
+            font-family: Arial, sans-serif;
+        }
+
+        .produtos-container {
+            width: 100%;
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .cabecalho-produtos {
+            background: #17212b;
+            color: white;
+            padding: 25px 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+        .cabecalho-produtos h1 {
+            margin: 0 0 6px;
+            font-size: 25px;
+        }
+
+        .cabecalho-produtos p {
+            margin: 0;
+            opacity: 0.8;
+            font-size: 14px;
+        }
+
+        .botao-voltar {
+            display: inline-block;
+            margin-bottom: 18px;
+            padding: 10px 16px;
+            background: #17212b;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+
+        .formulario-produto {
+            background: white;
+            padding: 22px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .campo {
+            margin-bottom: 18px;
+        }
+
+        .campo label {
+            display: block;
+            margin-bottom: 7px;
+            font-weight: 600;
+            color: #17212b;
+        }
+
+        .campo input,
+        .campo select {
+            width: 100%;
+            padding: 12px;
+            box-sizing: border-box;
+            border: 1px solid #d5dbe0;
+            border-radius: 8px;
+            font-size: 16px;
+            background: white;
+        }
+
+        .campo input:focus,
+        .campo select:focus {
+            outline: none;
+            border-color: #17212b;
+        }
+
+        .foto-preview {
+            margin-top: 12px;
+            display: none;
+            width: 140px;
+            height: 140px;
+            object-fit: cover;
+            border-radius: 10px;
+            border: 1px solid #d5dbe0;
+        }
+
+        .botao-concluir {
+            width: 100%;
+            border: none;
+            padding: 14px;
+            background: #17212b;
+            color: white;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .botao-concluir:hover {
+            opacity: 0.9;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <div class="produtos-container">
+
+
+        <a
+            href="index.html"
+            class="botao-voltar"
+        >
+            ← Voltar
+        </a>
+
+
+        <div class="cabecalho-produtos">
+
+            <h1>Produtos</h1>
+
+            <p>
+                Cadastre os produtos do cardápio
+            </p>
+
+        </div>
+
+
+        <div class="formulario-produto">
+
+
+            <div class="campo">
+
+                <label for="nomeProduto">
+                    Nome do produto
+                </label>
+
+                <input
+                    type="text"
+                    id="nomeProduto"
+                    placeholder="Ex.: Coca-Cola 350ml"
+                >
+
+            </div>
+
+
+            <div class="campo">
+
+                <label for="fotoProduto">
+                    Foto do produto
+                </label>
+
+                <input
+                    type="file"
+                    id="fotoProduto"
+                    accept="image/*"
+                >
+
+                <img
+                    id="fotoPreview"
+                    class="foto-preview"
+                    alt="Pré-visualização da foto"
+                >
+
+            </div>
+
+
+            <div class="campo">
+
+                <label for="categoriaProduto">
+                    Categoria
+                </label>
+
+                <select id="categoriaProduto">
+
+                    <option value="">
+                        Selecione uma categoria
+                    </option>
+
+                    <option value="Bebidas">
+                        Bebidas
+                    </option>
+
+                    <option value="Porções">
+                        Porções
+                    </option>
+
+                    <option value="Lanches">
+                        Lanches
+                    </option>
+
+                    <option value="Pratos">
+                        Pratos
+                    </option>
+
+                    <option value="Sobremesas">
+                        Sobremesas
+                    </option>
+
+                    <option value="Outros">
+                        Outros
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="campo">
+
+                <label for="precoProduto">
+                    Preço
+                </label>
+
+                <input
+                    type="number"
+                    id="precoProduto"
+                    placeholder="Ex.: 7,00"
+                    min="0"
+                    step="0.01"
+                >
+
+            </div>
+
+
+            <button
+                type="button"
+                class="botao-concluir"
+                id="btnConcluir"
+            >
+                Concluir cadastro
+            </button>
+
+
+        </div>
+
+
+    </div>
+
+
+    <script>
+
+        const fotoProduto =
+            document.getElementById("fotoProduto");
+
+        const fotoPreview =
+            document.getElementById("fotoPreview");
+
+
+        fotoProduto.addEventListener(
+            "change",
+            function () {
+
+                const arquivo =
+                    fotoProduto.files[0];
+
+                if (!arquivo) {
+
+                    fotoPreview.style.display = "none";
+
+                    fotoPreview.src = "";
+
+                    return;
+
+                }
+
+
+                const leitor =
+                    new FileReader();
+
+
+                leitor.onload =
+                    function (evento) {
+
+                        fotoPreview.src =
+                            evento.target.result;
+
+                        fotoPreview.style.display =
+                            "block";
+
+                    };
+
+
+                leitor.readAsDataURL(arquivo);
+
+            }
+        );
+
+
+        document
+            .getElementById("btnConcluir")
+            .addEventListener(
+                "click",
+                function () {
+
+                    alert(
+                        "Tela de cadastro funcionando. O salvamento será configurado na próxima etapa."
+                    );
+
+                }
+            );
+
+    </script>
+
+
+</body>
+
+</html>
