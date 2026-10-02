@@ -68,3 +68,19 @@ window.firebaseHotel = {
 console.log("Firebase Hotel Garcom TESTE carregado com sucesso");
 
 window.firebasePronto = true;
+export {
+    db,
+    collection,
+    addDoc,
+    deleteDoc,
+    doc,
+    onSnapshot,
+    query,
+    orderBy,
+    serverTimestamp,
+    setDoc,
+    updateDoc,
+    getDocs,
+    getDoc,
+    runTransaction
+};
