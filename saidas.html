@@ -207,11 +207,24 @@
     }
 
 
-    .btn-ver-comanda {
+    /* =========================================
+       BOTÕES DA VENDA
+    ========================================= */
+
+    .venda-botoes {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+    }
+
+
+    .btn-ver-comanda,
+    .btn-excluir-venda {
         border: none;
         border-radius: 8px;
         padding: 10px 14px;
-        background: #245d88;
         color: white;
         font-size: 13px;
         font-weight: 600;
@@ -219,7 +232,18 @@
     }
 
 
-    .btn-ver-comanda:hover {
+    .btn-ver-comanda {
+        background: #245d88;
+    }
+
+
+    .btn-excluir-venda {
+        background: #b42318;
+    }
+
+
+    .btn-ver-comanda:hover,
+    .btn-excluir-venda:hover {
         opacity: 0.88;
     }
 
@@ -438,7 +462,19 @@
         }
 
 
-        .btn-ver-comanda {
+        .venda-linha {
+            align-items: flex-start;
+        }
+
+
+        .venda-botoes {
+            width: 100%;
+            justify-content: flex-end;
+        }
+
+
+        .btn-ver-comanda,
+        .btn-excluir-venda {
             padding: 9px 11px;
         }
 
@@ -964,6 +1000,132 @@ async function carregarSaidas() {
 
 
 /* =========================================
+   EXCLUIR VENDA
+========================================= */
+
+async function excluirVenda(idVenda) {
+
+    const venda =
+        saidasFirebase.find(
+            item =>
+                item.id === idVenda
+        );
+
+
+    if (!venda) {
+
+        alert(
+            "Não foi possível localizar esta venda."
+        );
+
+        return;
+
+    }
+
+
+    const confirmar =
+        confirm(
+            "Tem certeza que deseja excluir esta venda?\n\n" +
+            "Esta ação não poderá ser desfeita."
+        );
+
+
+    if (!confirmar) {
+
+        return;
+
+    }
+
+
+    const conectado =
+        await aguardarFirebase();
+
+
+    if (!conectado) {
+
+        alert(
+            "Não foi possível conectar ao Firebase."
+        );
+
+        return;
+
+    }
+
+
+    try {
+
+        const {
+            db,
+            doc,
+            deleteDoc
+        } = window.firebaseHotel;
+
+
+        if (
+            typeof doc !== "function" ||
+            typeof deleteDoc !== "function"
+        ) {
+
+            alert(
+                "A função de exclusão não está disponível no Firebase."
+            );
+
+            console.error(
+                "doc ou deleteDoc não encontrados em window.firebaseHotel."
+            );
+
+            return;
+
+        }
+
+
+        await deleteDoc(
+            doc(
+                db,
+                "saidas",
+                idVenda
+            )
+        );
+
+
+        /*
+            Remove imediatamente da memória
+            para atualizar a tela.
+        */
+
+        saidasFirebase =
+            saidasFirebase.filter(
+                venda =>
+                    venda.id !== idVenda
+            );
+
+
+        mostrarVendas();
+
+
+        alert(
+            "Venda excluída com sucesso."
+        );
+
+    }
+    catch (erro) {
+
+        console.error(
+            "Erro ao excluir venda:",
+            erro
+        );
+
+
+        alert(
+            "Não foi possível excluir esta venda."
+        );
+
+    }
+
+}
+
+
+/* =========================================
    OBTER DATA DO FECHAMENTO
 ========================================= */
 
@@ -1198,14 +1360,28 @@ function mostrarVendas() {
                     </span>
 
 
-                    <button
-                        class="btn-ver-comanda"
-                        onclick="verComanda('${venda.id}')"
-                    >
+                    <div class="venda-botoes">
 
-                        Ver comanda
+                        <button
+                            class="btn-ver-comanda"
+                            onclick="verComanda('${venda.id}')"
+                        >
 
-                    </button>
+                            Ver comanda
+
+                        </button>
+
+
+                        <button
+                            class="btn-excluir-venda"
+                            onclick="excluirVenda('${venda.id}')"
+                        >
+
+                            Excluir
+
+                        </button>
+
+                    </div>
 
                 </div>
 
@@ -1583,6 +1759,9 @@ window.verComanda =
 
 window.fecharComanda =
     fecharComanda;
+
+window.excluirVenda =
+    excluirVenda;
 
 </script>
 
