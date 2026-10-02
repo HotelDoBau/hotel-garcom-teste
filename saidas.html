@@ -1,795 +1,574 @@
 <!DOCTYPE html>
+
 <html lang="pt-BR">
 
 <head>
 
-    <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
-    <title>Consultar vendas - Hotel do Baú</title>
-
-    <link
-        rel="stylesheet"
-        href="css/style.css"
-    >
-
-    <style>
-
-        /* =========================================
-           PÁGINA
-        ========================================= */
-
-        .saidas-page {
-            padding-bottom: 40px;
-            background: #f4f6f8;
-        }
-
-
-        /* =========================================
-           CABEÇALHO
-        ========================================= */
-
-        .cabecalho-vendas {
-            text-align: center;
-            padding: 20px 15px 10px;
-        }
-
-        .cabecalho-vendas h2 {
-            margin: 0;
-            color: #17212b;
-            font-size: 24px;
-        }
-
-        .cabecalho-vendas p {
-            margin: 6px 0 0;
-            color: #6b737a;
-            font-size: 14px;
-        }
-
-
-        /* =========================================
-           FILTRO
-        ========================================= */
-
-        .filtro-saidas {
-
-            margin: 20px auto;
-
-            padding: 20px;
-
-            width: calc(100% - 30px);
-
-            max-width: 700px;
-
-            box-sizing: border-box;
-
-            background: white;
-
-            border-radius: 14px;
-
-            box-shadow:
-                0 3px 12px
-                rgba(0,0,0,0.08);
-
-        }
-
-
-        .filtro-saidas label {
-
-            display: block;
-
-            margin-bottom: 8px;
-
-            color: #333;
-
-            font-weight: 600;
-
-        }
-
-
-        .filtro-saidas select {
-
-            width: 100%;
-
-            padding: 13px;
-
-            border-radius: 9px;
-
-            border: 1px solid #ccc;
-
-            background: white;
-
-            font-size: 16px;
-
-            box-sizing: border-box;
-
-            outline: none;
-
-        }
-
-
-        .filtro-saidas select:focus {
-
-            border-color: #245d88;
-
-        }
-
-
-        /* =========================================
-           RESUMO
-        ========================================= */
-
-        .resumo-saidas {
-
-            width: calc(100% - 30px);
-
-            max-width: 700px;
-
-            margin: 20px auto;
-
-            padding: 18px 20px;
-
-            box-sizing: border-box;
-
-            background: white;
-
-            border-radius: 14px;
-
-            box-shadow:
-                0 3px 12px
-                rgba(0,0,0,0.06);
-
-            display: flex;
-
-            justify-content: space-between;
-
-            gap: 20px;
-
-            flex-wrap: wrap;
-
-        }
-
-
-        .resumo-item {
-
-            flex: 1;
-
-            min-width: 130px;
-
-        }
-
-
-        .resumo-item span {
-
-            display: block;
-
-            margin-bottom: 5px;
-
-            color: #727a80;
-
-            font-size: 13px;
-
-        }
-
-
-        .resumo-item strong {
-
-            display: block;
-
-            color: #17212b;
-
-            font-size: 21px;
-
-        }
-
-
-        /* =========================================
-           LISTA DE FECHAMENTOS
-        ========================================= */
-
-        .lista-vendas {
-
-            width: calc(100% - 30px);
-
-            max-width: 700px;
-
-            margin: 20px auto;
-
-        }
-
-
-        .venda-card {
-
-            margin-bottom: 14px;
-
-            padding: 18px;
-
-            background: white;
-
-            border-radius: 14px;
-
-            box-shadow:
-                0 3px 12px
-                rgba(0,0,0,0.07);
-
-            box-sizing: border-box;
-
-        }
-
-
-        .venda-data {
-
-            margin-bottom: 12px;
-
-            color: #6b737a;
-
-            font-size: 13px;
-
-        }
-
-
-        .venda-local {
-
-            display: flex;
-
-            align-items: center;
-
-            justify-content: space-between;
-
-            gap: 15px;
-
-            margin-bottom: 12px;
-
-        }
-
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>Consultar vendas - Hotel do Baú</title>
+
+<link
+    rel="stylesheet"
+    href="css/style.css"
+>
+
+<style>
+
+    /* =========================================
+       PÁGINA
+    ========================================= */
+
+    .saidas-page {
+        padding-bottom: 40px;
+        background: #f4f6f8;
+    }
+
+
+    /* =========================================
+       CABEÇALHO
+    ========================================= */
+
+    .cabecalho-vendas {
+        text-align: center;
+        padding: 20px 15px 10px;
+    }
+
+    .cabecalho-vendas h2 {
+        margin: 0;
+        color: #17212b;
+        font-size: 24px;
+    }
+
+    .cabecalho-vendas p {
+        margin: 6px 0 0;
+        color: #6b737a;
+        font-size: 14px;
+    }
+
+
+    /* =========================================
+       FILTRO
+    ========================================= */
+
+    .filtro-saidas {
+        margin: 20px auto;
+        padding: 20px;
+        width: calc(100% - 30px);
+        max-width: 700px;
+        box-sizing: border-box;
+        background: white;
+        border-radius: 14px;
+        box-shadow:
+            0 3px 12px
+            rgba(0,0,0,0.08);
+    }
+
+
+    .filtro-saidas label {
+        display: block;
+        margin-bottom: 8px;
+        color: #333;
+        font-weight: 600;
+    }
+
+
+    .filtro-saidas select {
+        width: 100%;
+        padding: 13px;
+        border-radius: 9px;
+        border: 1px solid #ccc;
+        background: white;
+        font-size: 16px;
+        box-sizing: border-box;
+        outline: none;
+    }
+
+
+    .filtro-saidas select:focus {
+        border-color: #245d88;
+    }
+
+
+    /* =========================================
+       RESUMO
+    ========================================= */
+
+    .resumo-saidas {
+        width: calc(100% - 30px);
+        max-width: 700px;
+        margin: 20px auto;
+        padding: 18px 20px;
+        box-sizing: border-box;
+        background: white;
+        border-radius: 14px;
+        box-shadow:
+            0 3px 12px
+            rgba(0,0,0,0.06);
+        display: flex;
+        justify-content: space-between;
+        gap: 20px;
+        flex-wrap: wrap;
+    }
+
+
+    .resumo-item {
+        flex: 1;
+        min-width: 130px;
+    }
+
+
+    .resumo-item span {
+        display: block;
+        margin-bottom: 5px;
+        color: #727a80;
+        font-size: 13px;
+    }
+
+
+    .resumo-item strong {
+        display: block;
+        color: #17212b;
+        font-size: 21px;
+    }
+
+
+    /* =========================================
+       LISTA DE FECHAMENTOS
+    ========================================= */
+
+    .lista-vendas {
+        width: calc(100% - 30px);
+        max-width: 700px;
+        margin: 20px auto;
+    }
+
+
+    .venda-card {
+        margin-bottom: 14px;
+        padding: 18px;
+        background: white;
+        border-radius: 14px;
+        box-shadow:
+            0 3px 12px
+            rgba(0,0,0,0.07);
+        box-sizing: border-box;
+    }
+
+
+    .venda-data {
+        margin-bottom: 12px;
+        color: #6b737a;
+        font-size: 13px;
+    }
+
+
+    .venda-local {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+        margin-bottom: 12px;
+    }
+
+
+    .venda-local strong {
+        color: #17212b;
+        font-size: 18px;
+    }
+
+
+    .venda-total {
+        color: #17212b;
+        font-size: 18px;
+        font-weight: bold;
+        white-space: nowrap;
+    }
+
+
+    .venda-linha {
+        border-top: 1px solid #edf0f2;
+        padding-top: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+    }
+
+
+    .venda-info {
+        color: #737b82;
+        font-size: 13px;
+    }
+
+
+    .btn-ver-comanda {
+        border: none;
+        border-radius: 8px;
+        padding: 10px 14px;
+        background: #245d88;
+        color: white;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+
+    .btn-ver-comanda:hover {
+        opacity: 0.88;
+    }
+
+
+    /* =========================================
+       MENSAGEM
+    ========================================= */
+
+    .mensagem-saidas {
+        padding: 35px 20px;
+        text-align: center;
+        color: #6d757b;
+        background: white;
+        border-radius: 14px;
+        box-shadow:
+            0 3px 12px
+            rgba(0,0,0,0.06);
+    }
+
+
+    /* =========================================
+       MODAL DA COMANDA
+    ========================================= */
+
+    .modal-comanda {
+        position: fixed;
+        inset: 0;
+        z-index: 2000;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 15px;
+        box-sizing: border-box;
+        background:
+            rgba(0,0,0,0.55);
+    }
+
+
+    .modal-comanda.mostrar {
+        display: flex;
+    }
+
+
+    .comanda-conteudo {
+        width: 100%;
+        max-width: 500px;
+        max-height: 90vh;
+        overflow-y: auto;
+        padding: 22px;
+        box-sizing: border-box;
+        background: white;
+        border-radius: 16px;
+        box-shadow:
+            0 10px 35px
+            rgba(0,0,0,0.25);
+    }
+
+
+    .comanda-cabecalho {
+        text-align: center;
+        margin-bottom: 18px;
+    }
+
+
+    .comanda-cabecalho h2 {
+        margin: 0;
+        color: #17212b;
+        font-size: 21px;
+    }
+
+
+    .comanda-cabecalho p {
+        margin: 5px 0 0;
+        color: #727a80;
+        font-size: 13px;
+    }
+
+
+    .comanda-local {
+        margin-bottom: 18px;
+        padding: 13px;
+        border-radius: 9px;
+        background: #f1f4f6;
+        color: #17212b;
+        font-weight: 600;
+        text-align: center;
+    }
+
+
+    .item-comanda {
+        padding: 12px 0;
+        border-bottom:
+            1px solid #eceff1;
+    }
+
+
+    .item-comanda:last-child {
+        border-bottom: none;
+    }
+
+
+    .item-comanda-principal {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        color: #27313a;
+        font-size: 14px;
+    }
+
+
+    .item-comanda-nome {
+        flex: 1;
+    }
+
+
+    .item-comanda-total {
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+
+    .item-comanda-detalhe {
+        margin-top: 4px;
+        color: #7a8288;
+        font-size: 12px;
+    }
+
+
+    .totais-comanda {
+        margin-top: 15px;
+        padding-top: 15px;
+        border-top:
+            1px solid #dfe3e6;
+    }
+
+
+    .linha-total-comanda {
+        display: flex;
+        justify-content: space-between;
+        gap: 15px;
+        margin: 7px 0;
+        color: #555;
+        font-size: 14px;
+    }
+
+
+    .linha-total-comanda.final {
+        margin-top: 12px;
+        padding-top: 12px;
+        border-top:
+            1px dashed #cfd4d8;
+        color: #17212b;
+        font-size: 19px;
+        font-weight: bold;
+    }
+
+
+    .comanda-data {
+        margin-top: 18px;
+        text-align: center;
+        color: #7a8288;
+        font-size: 12px;
+    }
+
+
+    .btn-fechar-comanda {
+        width: 100%;
+        margin-top: 20px;
+        padding: 13px;
+        border: none;
+        border-radius: 9px;
+        background: #555;
+        color: white;
+        font-size: 15px;
+        cursor: pointer;
+    }
+
+
+    .btn-fechar-comanda:hover {
+        opacity: 0.88;
+    }
+
+
+    /* =========================================
+       VOLTAR
+    ========================================= */
+
+    .btn-voltar-saidas {
+        display: block;
+        width: fit-content;
+        margin: 25px auto;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 8px;
+        background: #555;
+        color: white;
+        text-decoration: none;
+        cursor: pointer;
+        font-size: 15px;
+    }
+
+
+    /* =========================================
+       RESPONSIVO
+    ========================================= */
+
+    @media (max-width: 600px) {
 
         .venda-local strong {
-
-            color: #17212b;
-
-            font-size: 18px;
-
+            font-size: 16px;
         }
 
 
         .venda-total {
-
-            color: #17212b;
-
-            font-size: 18px;
-
-            font-weight: bold;
-
-            white-space: nowrap;
-
-        }
-
-
-        .venda-linha {
-
-            border-top: 1px solid #edf0f2;
-
-            padding-top: 12px;
-
-            display: flex;
-
-            align-items: center;
-
-            justify-content: space-between;
-
-            gap: 10px;
-
-        }
-
-
-        .venda-info {
-
-            color: #737b82;
-
-            font-size: 13px;
-
+            font-size: 16px;
         }
 
 
         .btn-ver-comanda {
-
-            border: none;
-
-            border-radius: 8px;
-
-            padding: 10px 14px;
-
-            background: #245d88;
-
-            color: white;
-
-            font-size: 13px;
-
-            font-weight: 600;
-
-            cursor: pointer;
-
+            padding: 9px 11px;
         }
 
+    }
 
-        .btn-ver-comanda:hover {
+</style>
 
-            opacity: 0.88;
-
-        }
-
-
-        /* =========================================
-           MENSAGEM
-        ========================================= */
-
-        .mensagem-saidas {
-
-            padding: 35px 20px;
-
-            text-align: center;
-
-            color: #6d757b;
-
-            background: white;
-
-            border-radius: 14px;
-
-            box-shadow:
-                0 3px 12px
-                rgba(0,0,0,0.06);
-
-        }
-
-
-        /* =========================================
-           MODAL DA COMANDA
-        ========================================= */
-
-        .modal-comanda {
-
-            position: fixed;
-
-            inset: 0;
-
-            z-index: 2000;
-
-            display: none;
-
-            align-items: center;
-
-            justify-content: center;
-
-            padding: 15px;
-
-            box-sizing: border-box;
-
-            background:
-                rgba(0,0,0,0.55);
-
-        }
-
-
-        .modal-comanda.mostrar {
-
-            display: flex;
-
-        }
-
-
-        .comanda-conteudo {
-
-            width: 100%;
-
-            max-width: 500px;
-
-            max-height: 90vh;
-
-            overflow-y: auto;
-
-            padding: 22px;
-
-            box-sizing: border-box;
-
-            background: white;
-
-            border-radius: 16px;
-
-            box-shadow:
-                0 10px 35px
-                rgba(0,0,0,0.25);
-
-        }
-
-
-        .comanda-cabecalho {
-
-            text-align: center;
-
-            margin-bottom: 18px;
-
-        }
-
-
-        .comanda-cabecalho h2 {
-
-            margin: 0;
-
-            color: #17212b;
-
-            font-size: 21px;
-
-        }
-
-
-        .comanda-cabecalho p {
-
-            margin: 5px 0 0;
-
-            color: #727a80;
-
-            font-size: 13px;
-
-        }
-
-
-        .comanda-local {
-
-            margin-bottom: 18px;
-
-            padding: 13px;
-
-            border-radius: 9px;
-
-            background: #f1f4f6;
-
-            color: #17212b;
-
-            font-weight: 600;
-
-            text-align: center;
-
-        }
-
-
-        .item-comanda {
-
-            padding: 12px 0;
-
-            border-bottom:
-                1px solid #eceff1;
-
-        }
-
-
-        .item-comanda:last-child {
-
-            border-bottom: none;
-
-        }
-
-
-        .item-comanda-principal {
-
-            display: flex;
-
-            justify-content: space-between;
-
-            gap: 10px;
-
-            color: #27313a;
-
-            font-size: 14px;
-
-        }
-
-
-        .item-comanda-nome {
-
-            flex: 1;
-
-        }
-
-
-        .item-comanda-total {
-
-            font-weight: 600;
-
-            white-space: nowrap;
-
-        }
-
-
-        .item-comanda-detalhe {
-
-            margin-top: 4px;
-
-            color: #7a8288;
-
-            font-size: 12px;
-
-        }
-
-
-        .totais-comanda {
-
-            margin-top: 15px;
-
-            padding-top: 15px;
-
-            border-top:
-                1px solid #dfe3e6;
-
-        }
-
-
-        .linha-total-comanda {
-
-            display: flex;
-
-            justify-content: space-between;
-
-            gap: 15px;
-
-            margin: 7px 0;
-
-            color: #555;
-
-            font-size: 14px;
-
-        }
-
-
-        .linha-total-comanda.final {
-
-            margin-top: 12px;
-
-            padding-top: 12px;
-
-            border-top:
-                1px dashed #cfd4d8;
-
-            color: #17212b;
-
-            font-size: 19px;
-
-            font-weight: bold;
-
-        }
-
-
-        .comanda-data {
-
-            margin-top: 18px;
-
-            text-align: center;
-
-            color: #7a8288;
-
-            font-size: 12px;
-
-        }
-
-
-        .btn-fechar-comanda {
-
-            width: 100%;
-
-            margin-top: 20px;
-
-            padding: 13px;
-
-            border: none;
-
-            border-radius: 9px;
-
-            background: #555;
-
-            color: white;
-
-            font-size: 15px;
-
-            cursor: pointer;
-
-        }
-
-
-        .btn-fechar-comanda:hover {
-
-            opacity: 0.88;
-
-        }
-
-
-        /* =========================================
-           VOLTAR
-        ========================================= */
-
-        .btn-voltar-saidas {
-
-            display: block;
-
-            width: fit-content;
-
-            margin: 25px auto;
-
-            padding: 12px 20px;
-
-            border: none;
-
-            border-radius: 8px;
-
-            background: #555;
-
-            color: white;
-
-            text-decoration: none;
-
-            cursor: pointer;
-
-            font-size: 15px;
-
-        }
-
-
-        /* =========================================
-           RESPONSIVO
-        ========================================= */
-
-        @media (max-width: 600px) {
-
-            .venda-local strong {
-
-                font-size: 16px;
-
-            }
-
-
-            .venda-total {
-
-                font-size: 16px;
-
-            }
-
-
-            .btn-ver-comanda {
-
-                padding: 9px 11px;
-
-            }
-
-        }
-
-    </style>
 
 </head>
 
-
 <body class="saidas-page">
-
 
 <header class="topo">
 
-    <h1>
-        Consultar vendas
-    </h1>
 
-    <p>
-        Fechamentos realizados
-    </p>
+<h1>
+    Consultar vendas
+</h1>
+
+<p>
+    Fechamentos realizados
+</p>
+
 
 </header>
-
 
 <main>
 
 
-    <!-- =========================================
-         TÍTULO
-    ========================================= -->
+<!-- =========================================
+     TÍTULO
+========================================= -->
 
-    <section class="cabecalho-vendas">
+<section class="cabecalho-vendas">
 
-        <h2>
-            Vendas do período
-        </h2>
+    <h2>
+        Vendas do período
+    </h2>
 
-        <p>
-            Consulte cada fechamento realizado no mês selecionado.
-        </p>
+    <p>
+        Consulte cada fechamento realizado no mês selecionado.
+    </p>
 
-    </section>
-
-
-    <!-- =========================================
-         FILTRO
-    ========================================= -->
-
-    <section class="filtro-saidas">
-
-        <label for="mesSelecionado">
-            Mês
-        </label>
-
-        <select id="mesSelecionado">
-
-            <option value="">
-                Carregando...
-            </option>
-
-        </select>
-
-    </section>
+</section>
 
 
-    <!-- =========================================
-         RESUMO
-    ========================================= -->
+<!-- =========================================
+     FILTRO
+========================================= -->
 
-    <section class="resumo-saidas">
+<section class="filtro-saidas">
 
-        <div class="resumo-item">
+    <label for="mesSelecionado">
+        Mês
+    </label>
 
-            <span>
-                Fechamentos
-            </span>
+    <select id="mesSelecionado">
 
-            <strong id="quantidadeFechamentos">
-                0
-            </strong>
-
-        </div>
-
-
-        <div class="resumo-item">
-
-            <span>
-                Total vendido
-            </span>
-
-            <strong id="totalVendido">
-                R$ 0,00
-            </strong>
-
-        </div>
-
-    </section>
-
-
-    <!-- =========================================
-         LISTA
-    ========================================= -->
-
-    <section
-        id="listaVendas"
-        class="lista-vendas"
-    >
-
-        <div class="mensagem-saidas">
-
+        <option value="">
             Carregando...
+        </option>
 
-        </div>
+    </select>
 
-    </section>
+</section>
 
 
-    <button
-        class="btn-voltar-saidas"
-        onclick="window.location.href='index.html'"
-    >
+<!-- =========================================
+     RESUMO
+========================================= -->
 
-        ← Voltar
+<section class="resumo-saidas">
 
-    </button>
+    <div class="resumo-item">
+
+        <span>
+            Fechamentos
+        </span>
+
+        <strong id="quantidadeFechamentos">
+            0
+        </strong>
+
+    </div>
+
+
+    <div class="resumo-item">
+
+        <span>
+            Total vendido
+        </span>
+
+        <strong id="totalVendido">
+            R$ 0,00
+        </strong>
+
+    </div>
+
+</section>
+
+
+<!-- =========================================
+     LISTA
+========================================= -->
+
+<section
+    id="listaVendas"
+    class="lista-vendas"
+>
+
+    <div class="mensagem-saidas">
+
+        Carregando...
+
+    </div>
+
+</section>
+
+
+<button
+    class="btn-voltar-saidas"
+    onclick="window.location.href='index.html'"
+>
+
+    ← Voltar
+
+</button>
 
 
 </main>
-
 
 <!-- =========================================
      MODAL COMANDA
@@ -800,31 +579,31 @@
     class="modal-comanda"
 >
 
-    <div class="comanda-conteudo">
 
-        <div
-            id="conteudoComanda"
-        ></div>
+<div class="comanda-conteudo">
 
-        <button
-            class="btn-fechar-comanda"
-            onclick="fecharComanda()"
-        >
+    <div
+        id="conteudoComanda"
+    ></div>
 
-            Fechar
+    <button
+        class="btn-fechar-comanda"
+        onclick="fecharComanda()"
+    >
 
-        </button>
+        Fechar
 
-    </div>
+    </button>
 
 </div>
 
+
+</div>
 
 <script
     type="module"
     src="js/firebase.js?v=3"
 ></script>
-
 
 <script>
 
@@ -916,6 +695,84 @@ function formatarMoeda(valor) {
 
 
 /* =========================================
+   OBTER TOTAL DA VENDA
+========================================= */
+
+function obterTotalVenda(venda) {
+
+    /*
+        Se o total já estiver salvo,
+        usa o valor gravado.
+    */
+
+    if (
+        venda.total !== undefined &&
+        venda.total !== null
+    ) {
+
+        return Number(
+            venda.total
+        );
+
+    }
+
+
+    /*
+        Caso não exista total salvo,
+        calcula através dos itens.
+    */
+
+    const itens =
+        Array.isArray(
+            venda.itens
+        )
+            ? venda.itens
+            : [];
+
+
+    return itens.reduce(
+        (
+            soma,
+            item
+        ) => {
+
+            const quantidade =
+                Number(
+                    item.quantidade || 0
+                );
+
+
+            const valorUnitario =
+                Number(
+                    item.valorUnitario ??
+                    item.preco ??
+                    0
+                );
+
+
+            const totalItem =
+                Number(
+                    item.total ??
+                    (
+                        valorUnitario *
+                        quantidade
+                    )
+                );
+
+
+            return (
+                soma +
+                totalItem
+            );
+
+        },
+        0
+    );
+
+}
+
+
+/* =========================================
    CRIAR MESES
 ========================================= */
 
@@ -924,16 +781,10 @@ function criarMeses() {
     const agora =
         new Date();
 
+
     seletorMes.innerHTML =
         "";
 
-    /*
-        Mostra alguns meses anteriores
-        e os próximos meses.
-
-        Assim os fechamentos antigos
-        continuam acessíveis.
-    */
 
     for (
         let i = -12;
@@ -948,8 +799,10 @@ function criarMeses() {
                 1
             );
 
+
         const ano =
             data.getFullYear();
+
 
         const mes =
             String(
@@ -959,8 +812,10 @@ function criarMeses() {
                 "0"
             );
 
+
         const valor =
             `${ano}-${mes}`;
+
 
         const texto =
             data.toLocaleDateString(
@@ -973,17 +828,21 @@ function criarMeses() {
                 }
             );
 
+
         const option =
             document.createElement(
                 "option"
             );
 
+
         option.value =
             valor;
+
 
         option.textContent =
             texto.charAt(0).toUpperCase() +
             texto.slice(1);
+
 
         seletorMes.appendChild(
             option
@@ -996,7 +855,10 @@ function criarMeses() {
         `${agora.getFullYear()}-` +
         `${String(
             agora.getMonth() + 1
-        ).padStart(2, "0")}`;
+        ).padStart(
+            2,
+            "0"
+        )}`;
 
 
     seletorMes.value =
@@ -1127,6 +989,7 @@ function obterDataVenda(venda) {
                 1000
             );
 
+
         return data.toLocaleString(
             "pt-BR"
         );
@@ -1175,11 +1038,21 @@ function obterTimestampVenda(venda) {
         if (partes) {
 
             return new Date(
-                Number(partes[3]),
-                Number(partes[2]) - 1,
-                Number(partes[1]),
-                Number(partes[4]),
-                Number(partes[5])
+                Number(
+                    partes[3]
+                ),
+                Number(
+                    partes[2]
+                ) - 1,
+                Number(
+                    partes[1]
+                ),
+                Number(
+                    partes[4]
+                ),
+                Number(
+                    partes[5]
+                )
             ).getTime() / 1000;
 
         }
@@ -1267,10 +1140,14 @@ function mostrarVendas() {
     vendas.forEach(
         venda => {
 
-            total +=
-                Number(
-                    venda.total || 0
+            const totalVenda =
+                obterTotalVenda(
+                    venda
                 );
+
+
+            total +=
+                totalVenda;
 
 
             const card =
@@ -1295,13 +1172,16 @@ function mostrarVendas() {
                 <div class="venda-local">
 
                     <strong>
+
                         ${obterLocalVenda(venda)}
+
                     </strong>
+
 
                     <span class="venda-total">
 
                         ${formatarMoeda(
-                            venda.total
+                            totalVenda
                         )}
 
                     </span>
@@ -1316,6 +1196,7 @@ function mostrarVendas() {
                         Fechamento realizado
 
                     </span>
+
 
                     <button
                         class="btn-ver-comanda"
@@ -1487,6 +1368,7 @@ function verComanda(idVenda) {
 
                             </span>
 
+
                             <span
                                 class="item-comanda-total"
                             >
@@ -1507,6 +1389,7 @@ function verComanda(idVenda) {
                             ${formatarMoeda(
                                 valorUnitario
                             )}
+
                             por unidade
 
                         </div>
@@ -1534,8 +1417,8 @@ function verComanda(idVenda) {
 
 
     const total =
-        Number(
-            venda.total || 0
+        obterTotalVenda(
+            venda
         );
 
 
@@ -1548,6 +1431,7 @@ function verComanda(idVenda) {
                 <span>
                     Subtotal
                 </span>
+
 
                 <strong>
                     ${formatarMoeda(
@@ -1563,6 +1447,7 @@ function verComanda(idVenda) {
                 <span>
                     Desconto
                 </span>
+
 
                 <strong>
                     ${formatarMoeda(
@@ -1583,6 +1468,7 @@ function verComanda(idVenda) {
                 <span>
                     Total
                 </span>
+
 
                 <strong>
                     ${formatarMoeda(
@@ -1699,7 +1585,6 @@ window.fecharComanda =
     fecharComanda;
 
 </script>
-
 
 </body>
 
