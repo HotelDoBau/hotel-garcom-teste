@@ -14,11 +14,135 @@
 
 <header class="topo">
 
-    <h1>Hotel do Baú</h1>
-    <p>Comandas</p>
+    <button
+        class="btn-menu"
+        onclick="abrirMenu()"
+        aria-label="Abrir menu"
+    >
+        ☰
+    </button>
+
+    <div class="titulo-topo">
+
+        <h1>Hotel do Baú</h1>
+
+        <p>Comandas</p>
+
+    </div>
 
 </header>
 
+    <!-- =========================================
+     MENU LATERAL
+========================================= -->
+
+<div
+    id="fundoMenu"
+    class="fundo-menu"
+    onclick="fecharMenu()"
+></div>
+
+
+<aside
+    id="menuLateral"
+    class="menu-lateral"
+>
+
+    <div class="menu-cabecalho">
+
+        <div>
+
+            <strong>
+                HOTEL DO BAÚ
+            </strong>
+
+            <span>
+                Sistema de comandas
+            </span>
+
+        </div>
+
+
+        <button
+            class="btn-fechar-menu"
+            onclick="fecharMenu()"
+            aria-label="Fechar menu"
+        >
+            ×
+        </button>
+
+    </div>
+
+
+    <nav class="menu-opcoes">
+
+        <a
+            href="index.html"
+            class="menu-item ativo"
+        >
+            <span class="menu-icone">⌂</span>
+            <span>Início</span>
+        </a>
+
+
+        <a
+            href="saidas.html"
+            class="menu-item"
+        >
+            <span class="menu-icone">▣</span>
+            <span>Consultar vendas</span>
+        </a>
+
+
+        <button
+            class="menu-item menu-bloqueado"
+            type="button"
+        >
+            <span class="menu-icone">▤</span>
+            <span>Relatórios</span>
+        </button>
+
+
+        <button
+            class="menu-item menu-bloqueado"
+            type="button"
+        >
+            <span class="menu-icone">□</span>
+            <span>Produtos</span>
+        </button>
+
+
+        <button
+            class="menu-item menu-bloqueado"
+            type="button"
+        >
+            <span class="menu-icone">▦</span>
+            <span>Mesas e quartos</span>
+        </button>
+
+
+        <button
+            class="menu-item menu-bloqueado"
+            type="button"
+        >
+            <span class="menu-icone">⚙</span>
+            <span>Configurações</span>
+        </button>
+
+    </nav>
+
+
+    <div class="menu-rodape">
+
+        Hotel do Baú
+
+        <br>
+
+        Sistema de comandas
+
+    </div>
+
+</aside>
 
 <main>
 
