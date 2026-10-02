@@ -1088,9 +1088,6 @@ async function imprimirFechamentoAutomaticamente(fechamento) {
    ESCUTAR FECHAMENTOS
 ========================================= */
 
-let primeiraLeituraFechamentos = true;
-
-
 onSnapshot(
 
     collection(
@@ -1100,37 +1097,14 @@ onSnapshot(
 
     snapshot => {
 
-        /*
-            Não imprime fechamentos antigos
-            existentes quando o módulo inicia.
-        */
-
-        if (
-            primeiraLeituraFechamentos
-        ) {
-
-            primeiraLeituraFechamentos =
-                false;
-
-            console.log(
-                "Fechamentos existentes carregados. Nenhum será reimpresso."
-            );
-
-            return;
-
-        }
-
-
-        snapshot.docChanges().forEach(
-            alteracao => {
+        snapshot.docChanges()
+            .forEach(alteracao => {
 
                 if (
-                    alteracao.type !==
-                    "added"
+                    alteracao.type !== "added"
                 ) {
 
                     return;
-
                 }
 
 
@@ -1144,6 +1118,20 @@ onSnapshot(
                 };
 
 
+                /*
+                    Só entram na impressão
+                    fechamentos ainda novos.
+                */
+
+                if (
+                    fechamento.status !== "novo"
+                ) {
+
+                    return;
+
+                }
+
+
                 console.log(
                     "NOVO FECHAMENTO PARA IMPRESSÃO:",
                     fechamento
@@ -1154,8 +1142,7 @@ onSnapshot(
                     fechamento
                 );
 
-            }
-        );
+            });
 
     },
 
