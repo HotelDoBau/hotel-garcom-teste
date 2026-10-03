@@ -1533,7 +1533,6 @@ window.abrirTrocaGarcom =
 
     async function () {
 
-
         const fundo =
             document.getElementById(
                 "fundoTrocaGarcom"
@@ -1558,7 +1557,6 @@ window.abrirTrocaGarcom =
             );
 
 
-
         fundo.classList.add(
             "mostrar"
         );
@@ -1572,15 +1570,17 @@ window.abrirTrocaGarcom =
             "";
 
 
+        mensagem.style.color =
+            "#333";
+
 
         select.innerHTML = `
 
             <option value="">
-                Selecione o garçom
+                Carregando garçons...
             </option>
 
         `;
-
 
 
         try {
@@ -1589,6 +1589,13 @@ window.abrirTrocaGarcom =
                 window.firebaseHotel.db;
 
 
+            /*
+             * O usuário já está autenticado.
+             *
+             * A regra do Firestore permite que
+             * usuários autenticados leiam a lista
+             * de garçons.
+             */
 
             const resultado =
                 await getDocs(
@@ -1601,10 +1608,17 @@ window.abrirTrocaGarcom =
                 );
 
 
-
             const garcomAtual =
                 obterGarcomAtual();
 
+
+            select.innerHTML = `
+
+                <option value="">
+                    Selecione o garçom
+                </option>
+
+            `;
 
 
             resultado.forEach(
@@ -1615,6 +1629,10 @@ window.abrirTrocaGarcom =
                         documento.data();
 
 
+                    /*
+                     * Mostra somente garçons
+                     * ativos.
+                     */
 
                     if (
                         dados.ativo !== true
@@ -1625,6 +1643,11 @@ window.abrirTrocaGarcom =
                     }
 
 
+                    /*
+                     * O usuário é necessário
+                     * porque será usado para montar
+                     * o e-mail interno do Firebase Auth.
+                     */
 
                     if (
                         !dados.usuario
@@ -1635,17 +1658,14 @@ window.abrirTrocaGarcom =
                     }
 
 
-
                     const option =
                         document.createElement(
                             "option"
                         );
 
 
-
                     option.value =
                         dados.usuario;
-
 
 
                     option.textContent =
@@ -1653,6 +1673,10 @@ window.abrirTrocaGarcom =
                         dados.usuario;
 
 
+                    /*
+                     * Mantém selecionado
+                     * o garçom atualmente logado.
+                     */
 
                     if (
 
@@ -1669,7 +1693,6 @@ window.abrirTrocaGarcom =
                     }
 
 
-
                     select.appendChild(
                         option
                     );
@@ -1678,6 +1701,27 @@ window.abrirTrocaGarcom =
 
             );
 
+
+            /*
+             * Verifica se realmente encontrou
+             * algum garçom ativo.
+             */
+
+            if (
+                select.options.length <= 1
+            ) {
+
+                mensagem.style.color =
+                    "#c0392b";
+
+
+                mensagem.textContent =
+                    "Nenhum garçom ativo encontrado.";
+
+
+                return;
+
+            }
 
 
             senha.focus();
@@ -1702,6 +1746,7 @@ window.abrirTrocaGarcom =
         }
 
     };
+
 
 
 
