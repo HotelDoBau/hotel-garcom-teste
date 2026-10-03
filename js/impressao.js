@@ -301,7 +301,6 @@ async function imprimirGarcom(
                 PRODUÇÃO
             </div>
 
-        </div>
 
         <div class="separador"></div>
 
