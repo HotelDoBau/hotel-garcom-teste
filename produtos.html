@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 
@@ -164,11 +165,11 @@
 
         <div class="cabecalho-produtos">
 
-            <h1>
+            <h1 id="tituloPagina">
                 Novo produto
             </h1>
 
-            <p>
+            <p id="descricaoPagina">
                 Cadastre um novo produto no cardápio
             </p>
 
@@ -302,160 +303,110 @@
     </div>
 
 
- <script type="module">
+    <script type="module">
 
-    try {
+        try {
 
-        const firebase =
-            await import("./js/firebase.js");
-
-
-        const {
-            db,
-            collection,
-            addDoc,
-            serverTimestamp
-        } = firebase;
+            const firebase =
+                await import("./js/firebase.js");
 
 
-        const nomeProduto =
-            document.getElementById("nomeProduto");
+            const {
+                db,
+                collection,
+                addDoc,
+                serverTimestamp,
+                doc,
+                getDoc,
+                updateDoc
+            } = firebase;
 
 
-        const fotoProduto =
-            document.getElementById("fotoProduto");
-
-
-        const fotoPreview =
-            document.getElementById("fotoPreview");
-
-
-        const categoriaProduto =
-            document.getElementById("categoriaProduto");
-
-
-        const descricaoProduto =
-            document.getElementById("descricaoProduto");
-
-
-        const precoProduto =
-            document.getElementById("precoProduto");
-
-
-        const btnConcluir =
-            document.getElementById("btnConcluir");
-
-
-        /* =========================
-           PRÉ-VISUALIZAÇÃO DA FOTO
-        ========================= */
-
-        fotoProduto.addEventListener(
-            "change",
-            function () {
-
-                const arquivo =
-                    fotoProduto.files[0];
-
-
-                if (!arquivo) {
-
-                    fotoPreview.style.display =
-                        "none";
-
-                    fotoPreview.src = "";
-
-                    return;
-
-                }
-
-
-                const leitor =
-                    new FileReader();
-
-
-                leitor.onload =
-                    function (evento) {
-
-                        fotoPreview.src =
-                            evento.target.result;
-
-                        fotoPreview.style.display =
-                            "block";
-
-                    };
-
-
-                leitor.readAsDataURL(
-                    arquivo
+            const nomeProduto =
+                document.getElementById(
+                    "nomeProduto"
                 );
 
-            }
-        );
+
+            const fotoProduto =
+                document.getElementById(
+                    "fotoProduto"
+                );
 
 
-        /* =========================
-           CADASTRAR PRODUTO
-        ========================= */
-
-        btnConcluir.addEventListener(
-            "click",
-            async function () {
-
-                const nome =
-                    nomeProduto.value.trim();
+            const fotoPreview =
+                document.getElementById(
+                    "fotoPreview"
+                );
 
 
-                const categoria =
-                    categoriaProduto.value;
+            const categoriaProduto =
+                document.getElementById(
+                    "categoriaProduto"
+                );
 
 
-                const descricao =
-                    descricaoProduto.value.trim();
+            const descricaoProduto =
+                document.getElementById(
+                    "descricaoProduto"
+                );
 
 
-                const preco =
-                    Number(
-                        precoProduto.value
-                    );
+            const precoProduto =
+                document.getElementById(
+                    "precoProduto"
+                );
 
 
-                if (!nome) {
-
-                    alert(
-                        "Digite o nome do produto."
-                    );
-
-                    nomeProduto.focus();
-
-                    return;
-
-                }
+            const btnConcluir =
+                document.getElementById(
+                    "btnConcluir"
+                );
 
 
-                if (!categoria) {
-
-                    alert(
-                        "Selecione uma categoria."
-                    );
-
-                    categoriaProduto.focus();
-
-                    return;
-
-                }
+            const tituloPagina =
+                document.getElementById(
+                    "tituloPagina"
+                );
 
 
-                if (
-                    !Number.isFinite(preco) ||
-                    preco < 0
-                ) {
+            const descricaoPagina =
+                document.getElementById(
+                    "descricaoPagina"
+                );
 
-                    alert(
-                        "Digite um preço válido."
-                    );
 
-                    precoProduto.focus();
+            /*
+             * Verifica se existe um ID na URL.
+             *
+             * Sem ID:
+             * cadastro de novo produto.
+             *
+             * Com ID:
+             * edição de produto existente.
+             */
+
+            const parametros =
+                new URLSearchParams(
+                    window.location.search
+                );
+
+
+            const produtoId =
+                parametros.get("id");
+
+
+            const modoEdicao =
+                Boolean(produtoId);
+
+
+            /* =========================
+               MODO EDIÇÃO
+            ========================= */
+
+            async function carregarProduto() {
+
+                if (!modoEdicao) {
 
                     return;
 
@@ -464,99 +415,442 @@
 
                 try {
 
-                    btnConcluir.disabled =
-                        true;
+                    tituloPagina.textContent =
+                        "Editar produto";
+
+
+                    descricaoPagina.textContent =
+                        "Altere os dados do produto";
+
 
                     btnConcluir.textContent =
-                        "Salvando...";
+                        "Salvar alterações";
 
 
-                    await addDoc(
-                        collection(
+                    const referencia =
+                        doc(
                             db,
-                            "produtos"
-                        ),
-                        {
-
-                            nome: nome,
-
-                            categoria: categoria,
-
-                            descricao: descricao,
-
-                            preco: preco,
-
-                            criadoEm:
-                                serverTimestamp()
-
-                        }
-                    );
+                            "produtos",
+                            produtoId
+                        );
 
 
-                    alert(
-                        "Produto cadastrado com sucesso!"
-                    );
+                    const resultado =
+                        await getDoc(
+                            referencia
+                        );
 
 
-                    nomeProduto.value = "";
+                    if (!resultado.exists()) {
 
-                    categoriaProduto.value = "";
+                        alert(
+                            "Produto não encontrado."
+                        );
 
-                    descricaoProduto.value = "";
 
-                    precoProduto.value = "";
+                        window.location.href =
+                            "cardapio.html";
 
-                    fotoProduto.value = "";
 
-                    fotoPreview.src = "";
+                        return;
 
-                    fotoPreview.style.display =
-                        "none";
+                    }
+
+
+                    const dados =
+                        resultado.data();
+
+
+                    nomeProduto.value =
+                        dados.nome || "";
+
+
+                    categoriaProduto.value =
+                        dados.categoria || "";
+
+
+                    descricaoProduto.value =
+                        dados.descricao || "";
+
+
+                    if (
+                        dados.preco !== undefined &&
+                        dados.preco !== null
+                    ) {
+
+                        precoProduto.value =
+                            dados.preco;
+
+                    }
+
+
+                    /*
+                     * Se futuramente houver uma foto
+                     * salva no Firebase, ela poderá
+                     * ser carregada aqui.
+                     */
+
+                    if (dados.foto) {
+
+                        fotoPreview.src =
+                            dados.foto;
+
+                        fotoPreview.style.display =
+                            "block";
+
+                    }
 
 
                 } catch (erro) {
 
                     console.error(
-                        "ERRO AO SALVAR PRODUTO:",
+                        "ERRO AO CARREGAR PRODUTO:",
                         erro
                     );
 
 
                     alert(
-                        "Erro ao salvar produto:\n\n" +
+                        "Erro ao carregar o produto:\n\n" +
                         erro.message
                     );
 
-                } finally {
 
-                    btnConcluir.disabled =
-                        false;
-
-                    btnConcluir.textContent =
-                        "Concluir cadastro";
+                    window.location.href =
+                        "cardapio.html";
 
                 }
 
             }
-        );
 
 
-    } catch (erro) {
+            /* =========================
+               PRÉ-VISUALIZAÇÃO DA FOTO
+            ========================= */
 
-        console.error(
-            "ERRO AO CARREGAR FIREBASE:",
-            erro
-        );
+            fotoProduto.addEventListener(
+                "change",
+                function () {
+
+                    const arquivo =
+                        fotoProduto.files[0];
 
 
-        alert(
-            "Erro ao carregar o Firebase:\n\n" +
-            erro.message
-        );
+                    if (!arquivo) {
 
-    }
+                        /*
+                         * Se estiver editando e já existir
+                         * uma foto salva, não apagamos a
+                         * visualização dela simplesmente
+                         * por cancelar a seleção.
+                         */
 
-</script>
+                        if (!dadosFotoExistente) {
+
+                            fotoPreview.style.display =
+                                "none";
+
+                            fotoPreview.src =
+                                "";
+
+                        }
+
+                        return;
+
+                    }
+
+
+                    const leitor =
+                        new FileReader();
+
+
+                    leitor.onload =
+                        function (evento) {
+
+                            fotoPreview.src =
+                                evento.target.result;
+
+                            fotoPreview.style.display =
+                                "block";
+
+                        };
+
+
+                    leitor.readAsDataURL(
+                        arquivo
+                    );
+
+                }
+            );
+
+
+            /*
+             * Guarda a informação de que já havia
+             * uma foto cadastrada.
+             */
+
+            let dadosFotoExistente =
+                false;
+
+
+            /* =========================
+               SALVAR PRODUTO
+            ========================= */
+
+            btnConcluir.addEventListener(
+                "click",
+                async function () {
+
+                    const nome =
+                        nomeProduto.value.trim();
+
+
+                    const categoria =
+                        categoriaProduto.value;
+
+
+                    const descricao =
+                        descricaoProduto.value.trim();
+
+
+                    const preco =
+                        Number(
+                            precoProduto.value
+                        );
+
+
+                    if (!nome) {
+
+                        alert(
+                            "Digite o nome do produto."
+                        );
+
+                        nomeProduto.focus();
+
+                        return;
+
+                    }
+
+
+                    if (!categoria) {
+
+                        alert(
+                            "Selecione uma categoria."
+                        );
+
+                        categoriaProduto.focus();
+
+                        return;
+
+                    }
+
+
+                    if (
+                        !Number.isFinite(preco) ||
+                        preco < 0
+                    ) {
+
+                        alert(
+                            "Digite um preço válido."
+                        );
+
+                        precoProduto.focus();
+
+                        return;
+
+                    }
+
+
+                    try {
+
+                        btnConcluir.disabled =
+                            true;
+
+
+                        btnConcluir.textContent =
+                            modoEdicao
+                                ? "Salvando alterações..."
+                                : "Salvando...";
+
+
+                        if (modoEdicao) {
+
+                            /*
+                             * ATUALIZA O MESMO DOCUMENTO.
+                             */
+
+                            await updateDoc(
+                                doc(
+                                    db,
+                                    "produtos",
+                                    produtoId
+                                ),
+                                {
+
+                                    nome: nome,
+
+                                    categoria: categoria,
+
+                                    descricao: descricao,
+
+                                    preco: preco
+
+                                }
+                            );
+
+
+                            alert(
+                                "Produto atualizado com sucesso!"
+                            );
+
+
+                            window.location.href =
+                                "cardapio.html";
+
+
+                            return;
+
+                        }
+
+
+                        /*
+                         * CADASTRO NORMAL
+                         */
+
+                        await addDoc(
+                            collection(
+                                db,
+                                "produtos"
+                            ),
+                            {
+
+                                nome: nome,
+
+                                categoria: categoria,
+
+                                descricao: descricao,
+
+                                preco: preco,
+
+                                criadoEm:
+                                    serverTimestamp()
+
+                            }
+                        );
+
+
+                        alert(
+                            "Produto cadastrado com sucesso!"
+                        );
+
+
+                        nomeProduto.value = "";
+
+                        categoriaProduto.value = "";
+
+                        descricaoProduto.value = "";
+
+                        precoProduto.value = "";
+
+                        fotoProduto.value = "";
+
+                        fotoPreview.src = "";
+
+                        fotoPreview.style.display =
+                            "none";
+
+
+                    } catch (erro) {
+
+                        console.error(
+                            "ERRO AO SALVAR PRODUTO:",
+                            erro
+                        );
+
+
+                        alert(
+                            "Erro ao salvar produto:\n\n" +
+                            erro.message
+                        );
+
+                    } finally {
+
+                        btnConcluir.disabled =
+                            false;
+
+
+                        if (!modoEdicao) {
+
+                            btnConcluir.textContent =
+                                "Concluir cadastro";
+
+                        }
+
+                    }
+
+                }
+            );
+
+
+            /*
+             * Primeiro carregamos o produto
+             * caso seja uma edição.
+             */
+
+            await carregarProduto();
+
+
+            if (modoEdicao) {
+
+                /*
+                 * Marca se existe foto salva.
+                 */
+
+                const referencia =
+                    doc(
+                        db,
+                        "produtos",
+                        produtoId
+                    );
+
+
+                const resultado =
+                    await getDoc(
+                        referencia
+                    );
+
+
+                if (resultado.exists()) {
+
+                    const dados =
+                        resultado.data();
+
+
+                    dadosFotoExistente =
+                        Boolean(
+                            dados.foto
+                        );
+
+                }
+
+            }
+
+
+        } catch (erro) {
+
+            console.error(
+                "ERRO AO CARREGAR FIREBASE:",
+                erro
+            );
+
+
+            alert(
+                "Erro ao carregar o Firebase:\n\n" +
+                erro.message
+            );
+
+        }
+
+    </script>
 
 
 </body>
