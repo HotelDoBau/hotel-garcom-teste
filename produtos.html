@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 
@@ -313,12 +312,16 @@
 
             const {
                 db,
+                storage,
                 collection,
                 addDoc,
                 serverTimestamp,
                 doc,
                 getDoc,
-                updateDoc
+                updateDoc,
+                ref,
+                uploadBytes,
+                getDownloadURL
             } = firebase;
 
 
@@ -376,16 +379,6 @@
                 );
 
 
-            /*
-             * Verifica se existe um ID na URL.
-             *
-             * Sem ID:
-             * cadastro de novo produto.
-             *
-             * Com ID:
-             * edição de produto existente.
-             */
-
             const parametros =
                 new URLSearchParams(
                     window.location.search
@@ -398,6 +391,10 @@
 
             const modoEdicao =
                 Boolean(produtoId);
+
+
+            let dadosFotoExistente =
+                false;
 
 
             /* =========================
@@ -484,12 +481,6 @@
                     }
 
 
-                    /*
-                     * Se futuramente houver uma foto
-                     * salva no Firebase, ela poderá
-                     * ser carregada aqui.
-                     */
-
                     if (dados.foto) {
 
                         fotoPreview.src =
@@ -498,8 +489,10 @@
                         fotoPreview.style.display =
                             "block";
 
-                    }
+                        dadosFotoExistente =
+                            true;
 
+                    }
 
                 } catch (erro) {
 
@@ -536,13 +529,6 @@
 
 
                     if (!arquivo) {
-
-                        /*
-                         * Se estiver editando e já existir
-                         * uma foto salva, não apagamos a
-                         * visualização dela simplesmente
-                         * por cancelar a seleção.
-                         */
 
                         if (!dadosFotoExistente) {
 
@@ -583,13 +569,45 @@
             );
 
 
-            /*
-             * Guarda a informação de que já havia
-             * uma foto cadastrada.
-             */
+            /* =========================
+               ENVIO DA FOTO
+            ========================= */
 
-            let dadosFotoExistente =
-                false;
+            async function enviarFoto(arquivo) {
+
+                if (!arquivo) {
+
+                    return null;
+
+                }
+
+
+                const nomeArquivo =
+                    `${Date.now()}_${arquivo.name}`;
+
+
+                const referenciaFoto =
+                    ref(
+                        storage,
+                        `produtos/${nomeArquivo}`
+                    );
+
+
+                await uploadBytes(
+                    referenciaFoto,
+                    arquivo
+                );
+
+
+                const urlFoto =
+                    await getDownloadURL(
+                        referenciaFoto
+                    );
+
+
+                return urlFoto;
+
+            }
 
 
             /* =========================
@@ -616,6 +634,10 @@
                         Number(
                             precoProduto.value
                         );
+
+
+                    const arquivoFoto =
+                        fotoProduto.files[0];
 
 
                     if (!nome) {
@@ -667,16 +689,68 @@
 
 
                         btnConcluir.textContent =
-                            modoEdicao
-                                ? "Salvando alterações..."
-                                : "Salvando...";
+                            arquivoFoto
+                                ? "Enviando foto..."
+                                : (
+                                    modoEdicao
+                                        ? "Salvando alterações..."
+                                        : "Salvando..."
+                                );
 
+
+                        /*
+                         * Se foi escolhida uma foto,
+                         * envia para o Firebase Storage.
+                         */
+
+                        let fotoUrl =
+                            null;
+
+
+                        if (arquivoFoto) {
+
+                            fotoUrl =
+                                await enviarFoto(
+                                    arquivoFoto
+                                );
+
+                        }
+
+
+                        /* =========================
+                           MODO EDIÇÃO
+                        ========================= */
 
                         if (modoEdicao) {
 
+                            const dadosAtualizacao = {
+
+                                nome: nome,
+
+                                categoria: categoria,
+
+                                descricao: descricao,
+
+                                preco: preco
+
+                            };
+
+
                             /*
-                             * ATUALIZA O MESMO DOCUMENTO.
+                             * Só altera a foto se o usuário
+                             * tiver escolhido uma nova.
+                             *
+                             * Se não escolher outra,
+                             * a foto existente permanece.
                              */
+
+                            if (fotoUrl) {
+
+                                dadosAtualizacao.foto =
+                                    fotoUrl;
+
+                            }
+
 
                             await updateDoc(
                                 doc(
@@ -684,17 +758,7 @@
                                     "produtos",
                                     produtoId
                                 ),
-                                {
-
-                                    nome: nome,
-
-                                    categoria: categoria,
-
-                                    descricao: descricao,
-
-                                    preco: preco
-
-                                }
+                                dadosAtualizacao
                             );
 
 
@@ -712,29 +776,40 @@
                         }
 
 
-                        /*
-                         * CADASTRO NORMAL
-                         */
+                        /* =========================
+                           NOVO PRODUTO
+                        ========================= */
+
+                        const dadosProduto = {
+
+                            nome: nome,
+
+                            categoria: categoria,
+
+                            descricao: descricao,
+
+                            preco: preco,
+
+                            criadoEm:
+                                serverTimestamp()
+
+                        };
+
+
+                        if (fotoUrl) {
+
+                            dadosProduto.foto =
+                                fotoUrl;
+
+                        }
+
 
                         await addDoc(
                             collection(
                                 db,
                                 "produtos"
                             ),
-                            {
-
-                                nome: nome,
-
-                                categoria: categoria,
-
-                                descricao: descricao,
-
-                                preco: preco,
-
-                                criadoEm:
-                                    serverTimestamp()
-
-                            }
+                            dadosProduto
                         );
 
 
@@ -783,6 +858,11 @@
                             btnConcluir.textContent =
                                 "Concluir cadastro";
 
+                        } else {
+
+                            btnConcluir.textContent =
+                                "Salvar alterações";
+
                         }
 
                     }
@@ -791,48 +871,7 @@
             );
 
 
-            /*
-             * Primeiro carregamos o produto
-             * caso seja uma edição.
-             */
-
             await carregarProduto();
-
-
-            if (modoEdicao) {
-
-                /*
-                 * Marca se existe foto salva.
-                 */
-
-                const referencia =
-                    doc(
-                        db,
-                        "produtos",
-                        produtoId
-                    );
-
-
-                const resultado =
-                    await getDoc(
-                        referencia
-                    );
-
-
-                if (resultado.exists()) {
-
-                    const dados =
-                        resultado.data();
-
-
-                    dadosFotoExistente =
-                        Boolean(
-                            dados.foto
-                        );
-
-                }
-
-            }
 
 
         } catch (erro) {
