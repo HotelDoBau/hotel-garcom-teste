@@ -95,7 +95,7 @@
         } from "./js/firebase.js";
 
 
-        import "./dados/produtos.js";
+        import { produtos } from "./dados/produtos.js";
 
 
         const btnMigrar =
@@ -151,7 +151,7 @@
                 let ignorados = 0;
 
 
-                for (const produto of window.produtos) {
+                for (const produto of produtos) {
 
                     const nomeNormalizado =
                         normalizarNome(produto.nome);
@@ -232,7 +232,7 @@
                     <br>
 
                     Total analisado:
-                    <strong>${window.produtos.length}</strong>
+                    <strong>${produtos.length}</strong>
 
                     <br><br>
 
