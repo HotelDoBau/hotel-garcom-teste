@@ -105,16 +105,28 @@
         }
 
 
+        /* ========================= */
+        /* FILTROS */
+        /* ========================= */
+
+        .filtros-produtos {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+
         .barra-pesquisa {
+            flex: 1;
             width: 100%;
-            margin-bottom: 20px;
         }
 
 
         .barra-pesquisa input {
             width: 100%;
+            height: 46px;
             box-sizing: border-box;
-            padding: 13px 16px;
+            padding: 0 16px;
             border: 1px solid #d5dbe0;
             border-radius: 8px;
             font-size: 16px;
@@ -128,100 +140,236 @@
         }
 
 
+        .filtro-categoria {
+            width: 240px;
+            flex-shrink: 0;
+        }
+
+
+        .filtro-categoria select {
+            width: 100%;
+            height: 46px;
+            box-sizing: border-box;
+            padding: 0 12px;
+            border: 1px solid #d5dbe0;
+            border-radius: 8px;
+            background: #ffffff;
+            color: #17212b;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+
+        .filtro-categoria select:focus {
+            outline: none;
+            border-color: #17212b;
+        }
+
+
+        /* ========================= */
+        /* LISTA DE PRODUTOS */
+        /* ========================= */
+
         .lista-produtos {
-            display: grid;
-            grid-template-columns: repeat(
-                auto-fill,
-                minmax(260px, 1fr)
-            );
-            gap: 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
         }
 
 
         .produto {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+
+            width: 100%;
+            min-height: 96px;
+
+            box-sizing: border-box;
+
             border: 1px solid #e0e4e8;
-            border-radius: 12px;
-            overflow: hidden;
+            border-radius: 10px;
+
+            padding: 8px 10px;
+
             background: #ffffff;
+
+            transition:
+                box-shadow 0.15s ease,
+                border-color 0.15s ease;
         }
 
 
+        .produto:hover {
+            border-color: #cbd3da;
+            box-shadow: 0 2px 7px rgba(0, 0, 0, 0.06);
+        }
+
+
+        /* ========================= */
+        /* FOTO */
+        /* ========================= */
+
+        .produto-imagem,
         .produto-sem-imagem {
-            width: 100%;
-            height: 180px;
+
+            width: 80px;
+            height: 80px;
+
+            min-width: 80px;
+            min-height: 80px;
+
+            border-radius: 8px;
+
+            object-fit: cover;
+
             display: flex;
             align-items: center;
             justify-content: center;
+
             background: #eef1f3;
+
             color: #7a858f;
-            font-size: 14px;
+
+            font-size: 12px;
+
+            flex-shrink: 0;
         }
 
 
-        .produto-imagem {
-            width: 100%;
-            height: 180px;
-            object-fit: cover;
-            display: block;
-            background: #eef1f3;
-        }
-
+        /* ========================= */
+        /* INFORMAÇÕES */
+        /* ========================= */
 
         .produto-conteudo {
-            padding: 16px;
+
+            flex: 1;
+
+            min-width: 0;
+
+            display: grid;
+
+            grid-template-columns:
+                minmax(180px, 1.5fr)
+                minmax(140px, 1fr)
+                auto
+                auto;
+
+            align-items: center;
+
+            column-gap: 18px;
         }
 
 
         .produto-nome {
-            margin: 0 0 8px;
-            font-size: 19px;
+
+            margin: 0;
+
             color: #17212b;
-        }
 
+            font-size: 16px;
 
-        .produto-categoria {
-            display: inline-block;
-            margin-bottom: 10px;
-            padding: 5px 9px;
-            border-radius: 6px;
-            background: #eef2f5;
-            color: #53606b;
-            font-size: 12px;
-            font-weight: 600;
+            font-weight: 700;
+
+            line-height: 1.25;
+
+            overflow: hidden;
+
+            text-overflow: ellipsis;
+
+            white-space: nowrap;
         }
 
 
         .produto-descricao {
-            margin: 0 0 14px;
+
+            margin: 0;
+
             color: #68737d;
-            font-size: 14px;
-            line-height: 1.5;
+
+            font-size: 13px;
+
+            line-height: 1.3;
+
+            overflow: hidden;
+
+            text-overflow: ellipsis;
+
+            white-space: nowrap;
+        }
+
+
+        .produto-categoria {
+
+            display: inline-block;
+
+            width: fit-content;
+
+            margin: 0;
+
+            padding: 5px 8px;
+
+            border-radius: 6px;
+
+            background: #eef2f5;
+
+            color: #53606b;
+
+            font-size: 11px;
+
+            font-weight: 600;
+
+            white-space: nowrap;
         }
 
 
         .produto-preco {
-            font-size: 20px;
-            font-weight: 700;
+
             color: #17212b;
-            margin-bottom: 16px;
+
+            font-size: 16px;
+
+            font-weight: 700;
+
+            white-space: nowrap;
         }
 
 
+        /* ========================= */
+        /* BOTÕES */
+        /* ========================= */
+
         .produto-acoes {
+
             display: flex;
-            gap: 10px;
+
+            flex-direction: column;
+
+            gap: 5px;
+
+            width: 78px;
+
+            flex-shrink: 0;
         }
 
 
         .botao-editar,
         .botao-excluir {
-            flex: 1;
+
+            width: 100%;
+
             border: none;
-            border-radius: 8px;
-            padding: 11px;
+
+            border-radius: 6px;
+
+            padding: 7px 8px;
+
             color: white;
-            font-size: 14px;
+
+            font-size: 12px;
+
             font-weight: 600;
+
             cursor: pointer;
         }
 
@@ -248,22 +396,31 @@
         }
 
 
+        /* ========================= */
+        /* MENSAGEM */
+        /* ========================= */
+
         .mensagem {
             text-align: center;
+
             padding: 50px 20px;
+
             color: #68737d;
         }
 
 
         .mensagem h2 {
             margin: 0 0 10px;
+
             color: #17212b;
+
             font-size: 21px;
         }
 
 
         .mensagem p {
             margin: 0;
+
             font-size: 15px;
         }
 
@@ -273,7 +430,11 @@
         }
 
 
-        @media (max-width: 600px) {
+        /* ========================= */
+        /* CELULAR */
+        /* ========================= */
+
+        @media (max-width: 700px) {
 
             .pagina {
                 padding: 12px;
@@ -282,25 +443,130 @@
 
             .topo-pagina {
                 flex-direction: column;
+
                 align-items: stretch;
+
+                padding: 16px;
+            }
+
+
+            .titulo-area h1 {
+                font-size: 23px;
             }
 
 
             .botoes-topo {
                 width: 100%;
+
                 flex-direction: column;
             }
 
 
             .botao {
                 width: 100%;
+
                 text-align: center;
+
                 box-sizing: border-box;
             }
 
 
-            .lista-produtos {
-                grid-template-columns: 1fr;
+            .area-produtos {
+                padding: 12px;
+            }
+
+
+            .filtros-produtos {
+                flex-direction: column;
+                gap: 8px;
+            }
+
+
+            .filtro-categoria {
+                width: 100%;
+            }
+
+
+            .produto {
+                gap: 10px;
+
+                padding: 7px;
+            }
+
+
+            .produto-imagem,
+            .produto-sem-imagem {
+
+                width: 70px;
+                height: 70px;
+
+                min-width: 70px;
+                min-height: 70px;
+            }
+
+
+            .produto-conteudo {
+
+                display: grid;
+
+                grid-template-columns: 1fr auto;
+
+                grid-template-rows: auto auto auto;
+
+                gap: 4px 8px;
+            }
+
+
+            .produto-nome {
+
+                grid-column: 1 / 3;
+
+                font-size: 14px;
+            }
+
+
+            .produto-descricao {
+
+                grid-column: 1 / 3;
+
+                font-size: 12px;
+            }
+
+
+            .produto-categoria {
+
+                grid-column: 1;
+
+                grid-row: 3;
+
+                font-size: 10px;
+            }
+
+
+            .produto-preco {
+
+                grid-column: 2;
+
+                grid-row: 3;
+
+                font-size: 14px;
+
+                text-align: right;
+            }
+
+
+            .produto-acoes {
+
+                width: 62px;
+            }
+
+
+            .botao-editar,
+            .botao-excluir {
+
+                padding: 6px 4px;
+
+                font-size: 10px;
             }
 
         }
@@ -358,14 +624,77 @@
         <section class="area-produtos">
 
 
-            <div class="barra-pesquisa">
+            <div class="filtros-produtos">
 
-                <input
-                    type="search"
-                    id="pesquisaProduto"
-                    placeholder="Pesquisar produto..."
-                    autocomplete="off"
-                >
+
+                <div class="barra-pesquisa">
+
+                    <input
+                        type="search"
+                        id="pesquisaProduto"
+                        placeholder="Pesquisar produto..."
+                        autocomplete="off"
+                    >
+
+                </div>
+
+
+                <div class="filtro-categoria">
+
+                    <select id="filtroCategoria">
+
+                        <option value="">
+                            Todas as categorias
+                        </option>
+
+                        <option value="Cafeteria">
+                            Cafeteria
+                        </option>
+
+                        <option value="Salgados">
+                            Salgados
+                        </option>
+
+                        <option value="Lanches">
+                            Lanches
+                        </option>
+
+                        <option value="Pratos Feitos">
+                            Pratos Feitos
+                        </option>
+
+                        <option value="Bebidas">
+                            Bebidas
+                        </option>
+
+                        <option value="Cervejas e Vinhos">
+                            Cervejas e Vinhos
+                        </option>
+
+                        <option value="Adicionais">
+                            Adicionais
+                        </option>
+
+                        <option value="Doces">
+                            Doces
+                        </option>
+
+                        <option value="Petiscos">
+                            Petiscos
+                        </option>
+
+                        <option value="Drinks">
+                            Drinks
+                        </option>
+
+                        <option value="Outros">
+                            Outros
+                        </option>
+
+                    </select>
+
+                </div>
+
 
             </div>
 
@@ -426,6 +755,12 @@
         const pesquisaProduto =
             document.getElementById(
                 "pesquisaProduto"
+            );
+
+
+        const filtroCategoria =
+            document.getElementById(
+                "filtroCategoria"
             );
 
 
@@ -505,9 +840,7 @@
                     );
 
 
-                mostrarProdutos(
-                    produtosCarregados
-                );
+                pesquisarProdutos();
 
 
             } catch (erro) {
@@ -557,7 +890,7 @@
                     </h2>
 
                     <p>
-                        Tente pesquisar por outro nome.
+                        Tente alterar a pesquisa ou a categoria.
                     </p>
 
                 `;
@@ -629,143 +962,99 @@
                         "produto";
 
 
-                    if (foto) {
+                    const imagemHTML =
+                        foto
+                            ? `
+                                <img
+                                    class="produto-imagem"
+                                    src="${foto}"
+                                    alt="${nome}"
+                                >
+                            `
+                            : `
+                                <div
+                                    class="produto-sem-imagem"
+                                >
+                                    Sem foto
+                                </div>
+                            `;
 
-                        card.innerHTML = `
 
-                            <img
-                                class="produto-imagem"
-                                src="${foto}"
-                                alt="${nome}"
+                    card.innerHTML = `
+
+                        ${imagemHTML}
+
+
+                        <div
+                            class="produto-conteudo"
+                        >
+
+                            <h2
+                                class="produto-nome"
+                                title="${nome}"
                             >
+                                ${nome}
+                            </h2>
+
+
+                            ${
+                                descricao
+                                    ? `
+                                        <p
+                                            class="produto-descricao"
+                                            title="${descricao}"
+                                        >
+                                            ${descricao}
+                                        </p>
+                                    `
+                                    : `
+                                        <p
+                                            class="produto-descricao"
+                                        >
+                                            Sem descrição
+                                        </p>
+                                    `
+                            }
+
+
+                            <span
+                                class="produto-categoria"
+                            >
+                                ${categoria || "Sem categoria"}
+                            </span>
+
 
                             <div
-                                class="produto-conteudo"
+                                class="produto-preco"
                             >
-
-                                <h2
-                                    class="produto-nome"
-                                >
-                                    ${nome}
-                                </h2>
-
-                                <span
-                                    class="produto-categoria"
-                                >
-                                    ${categoria}
-                                </span>
-
-                                ${
-                                    descricao
-                                        ? `
-                                            <p
-                                                class="produto-descricao"
-                                            >
-                                                ${descricao}
-                                            </p>
-                                        `
-                                        : ""
-                                }
-
-                                <div
-                                    class="produto-preco"
-                                >
-                                    ${preco}
-                                </div>
-
-                                <div
-                                    class="produto-acoes"
-                                >
-
-                                    <button
-                                        type="button"
-                                        class="botao-editar"
-                                    >
-                                        Editar
-                                    </button>
-
-                                    <button
-                                        type="button"
-                                        class="botao-excluir"
-                                    >
-                                        Excluir
-                                    </button>
-
-                                </div>
-
+                                ${preco}
                             </div>
 
-                        `;
+                        </div>
 
-                    } else {
 
-                        card.innerHTML = `
+                        <div
+                            class="produto-acoes"
+                        >
 
-                            <div
-                                class="produto-sem-imagem"
+                            <button
+                                type="button"
+                                class="botao-editar"
                             >
-                                Sem foto
-                            </div>
+                                Editar
+                            </button>
 
-                            <div
-                                class="produto-conteudo"
+
+                            <button
+                                type="button"
+                                class="botao-excluir"
                             >
+                                Excluir
+                            </button>
 
-                                <h2
-                                    class="produto-nome"
-                                >
-                                    ${nome}
-                                </h2>
+                        </div>
 
-                                <span
-                                    class="produto-categoria"
-                                >
-                                    ${categoria}
-                                </span>
-
-                                ${
-                                    descricao
-                                        ? `
-                                            <p
-                                                class="produto-descricao"
-                                            >
-                                                ${descricao}
-                                            </p>
-                                        `
-                                        : ""
-                                }
-
-                                <div
-                                    class="produto-preco"
-                                >
-                                    ${preco}
-                                </div>
-
-                                <div
-                                    class="produto-acoes"
-                                >
-
-                                    <button
-                                        type="button"
-                                        class="botao-editar"
-                                    >
-                                        Editar
-                                    </button>
-
-                                    <button
-                                        type="button"
-                                        class="botao-excluir"
-                                    >
-                                        Excluir
-                                    </button>
-
-                                </div>
-
-                            </div>
-
-                        `;
-
-                    }
+                    `;
 
 
                     const botaoEditar =
@@ -824,15 +1113,8 @@
                     .toLowerCase();
 
 
-            if (!termo) {
-
-                mostrarProdutos(
-                    produtosCarregados
-                );
-
-                return;
-
-            }
+            const categoriaSelecionada =
+                filtroCategoria.value;
 
 
             const produtosFiltrados =
@@ -851,8 +1133,28 @@
                             ).toLowerCase();
 
 
-                        return nome.includes(
-                            termo
+                        const categoria =
+                            String(
+                                dados.categoria || ""
+                            );
+
+
+                        const correspondeNome =
+                            !termo ||
+                            nome.includes(
+                                termo
+                            );
+
+
+                        const correspondeCategoria =
+                            !categoriaSelecionada ||
+                            categoria ===
+                                categoriaSelecionada;
+
+
+                        return (
+                            correspondeNome &&
+                            correspondeCategoria
                         );
 
                     }
@@ -868,6 +1170,12 @@
 
         pesquisaProduto.addEventListener(
             "input",
+            pesquisarProdutos
+        );
+
+
+        filtroCategoria.addEventListener(
+            "change",
             pesquisarProdutos
         );
 
