@@ -1197,3 +1197,5 @@ const produtos = [
         preco: 9.00
     }
 ];
+
+window.produtos = produtos;
