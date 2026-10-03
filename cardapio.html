@@ -180,6 +180,37 @@
             font-size: 20px;
             font-weight: 700;
             color: #17212b;
+            margin-bottom: 16px;
+        }
+
+
+        .produto-acoes {
+            display: flex;
+            gap: 10px;
+        }
+
+
+        .botao-excluir {
+            width: 100%;
+            border: none;
+            border-radius: 8px;
+            padding: 11px;
+            background: #b42318;
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+
+        .botao-excluir:hover {
+            opacity: 0.9;
+        }
+
+
+        .botao-excluir:disabled {
+            opacity: 0.6;
+            cursor: wait;
         }
 
 
@@ -328,7 +359,9 @@
             collection,
             getDocs,
             query,
-            orderBy
+            orderBy,
+            deleteDoc,
+            doc
         } from "./js/firebase.js";
 
 
@@ -373,9 +406,107 @@
         }
 
 
+        async function excluirProduto(
+            id,
+            nome,
+            botao
+        ) {
+
+            const confirmou =
+                confirm(
+                    `Deseja realmente excluir o produto "${nome}"?`
+                );
+
+
+            if (!confirmou) {
+
+                return;
+
+            }
+
+
+            try {
+
+                botao.disabled =
+                    true;
+
+                botao.textContent =
+                    "Excluindo...";
+
+
+                await deleteDoc(
+                    doc(
+                        db,
+                        "produtos",
+                        id
+                    )
+                );
+
+
+                const card =
+                    botao.closest(
+                        ".produto"
+                    );
+
+
+                if (card) {
+
+                    card.remove();
+
+                }
+
+
+                if (
+                    listaProdutos.children.length === 0
+                ) {
+
+                    mensagem.innerHTML = `
+
+                        <h2>
+                            Nenhum produto cadastrado
+                        </h2>
+
+                        <p>
+                            Clique em "+ Novo produto"
+                            para cadastrar o primeiro item.
+                        </p>
+
+                    `;
+
+                    mensagem.style.display =
+                        "block";
+
+                }
+
+
+            } catch (erro) {
+
+                console.error(
+                    "Erro ao excluir produto:",
+                    erro
+                );
+
+
+                alert(
+                    "Não foi possível excluir o produto."
+                );
+
+
+                botao.disabled =
+                    false;
+
+                botao.textContent =
+                    "Excluir";
+
+            }
+
+        }
+
+
         function mostrarProdutos(produtos) {
 
-            listaProdutos.innerHTML = "";
+            listaProdutos.innerHTML =
+                "";
 
 
             if (produtos.length === 0) {
@@ -412,9 +543,13 @@
                         produto.data();
 
 
+                    const nomeOriginal =
+                        dados.nome || "";
+
+
                     const nome =
                         escaparHTML(
-                            dados.nome
+                            nomeOriginal
                         );
 
 
@@ -494,6 +629,19 @@
                                     ${preco}
                                 </div>
 
+                                <div
+                                    class="produto-acoes"
+                                >
+
+                                    <button
+                                        type="button"
+                                        class="botao-excluir"
+                                    >
+                                        Excluir
+                                    </button>
+
+                                </div>
+
                             </div>
 
                         `;
@@ -542,11 +690,44 @@
                                     ${preco}
                                 </div>
 
+                                <div
+                                    class="produto-acoes"
+                                >
+
+                                    <button
+                                        type="button"
+                                        class="botao-excluir"
+                                    >
+                                        Excluir
+                                    </button>
+
+                                </div>
+
                             </div>
 
                         `;
 
                     }
+
+
+                    const botaoExcluir =
+                        card.querySelector(
+                            ".botao-excluir"
+                        );
+
+
+                    botaoExcluir.addEventListener(
+                        "click",
+                        function () {
+
+                            excluirProduto(
+                                produto.id,
+                                nomeOriginal,
+                                botaoExcluir
+                            );
+
+                        }
+                    );
 
 
                     listaProdutos.appendChild(
