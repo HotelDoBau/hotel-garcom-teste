@@ -105,6 +105,29 @@
         }
 
 
+        .barra-pesquisa {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+
+        .barra-pesquisa input {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 13px 16px;
+            border: 1px solid #d5dbe0;
+            border-radius: 8px;
+            font-size: 16px;
+            background: #ffffff;
+        }
+
+
+        .barra-pesquisa input:focus {
+            outline: none;
+            border-color: #17212b;
+        }
+
+
         .lista-produtos {
             display: grid;
             grid-template-columns: repeat(
@@ -335,6 +358,18 @@
         <section class="area-produtos">
 
 
+            <div class="barra-pesquisa">
+
+                <input
+                    type="search"
+                    id="pesquisaProduto"
+                    placeholder="Pesquisar produto..."
+                    autocomplete="off"
+                >
+
+            </div>
+
+
             <div
                 id="listaProdutos"
                 class="lista-produtos"
@@ -386,6 +421,15 @@
             document.getElementById(
                 "mensagem"
             );
+
+
+        const pesquisaProduto =
+            document.getElementById(
+                "pesquisaProduto"
+            );
+
+
+        let produtosCarregados = [];
 
 
         function formatarPreco(valor) {
@@ -454,40 +498,16 @@
                 );
 
 
-                const card =
-                    botao.closest(
-                        ".produto"
+                produtosCarregados =
+                    produtosCarregados.filter(
+                        produto =>
+                            produto.id !== id
                     );
 
 
-                if (card) {
-
-                    card.remove();
-
-                }
-
-
-                if (
-                    listaProdutos.children.length === 0
-                ) {
-
-                    mensagem.innerHTML = `
-
-                        <h2>
-                            Nenhum produto cadastrado
-                        </h2>
-
-                        <p>
-                            Clique em "+ Novo produto"
-                            para cadastrar o primeiro item.
-                        </p>
-
-                    `;
-
-                    mensagem.style.display =
-                        "block";
-
-                }
+                mostrarProdutos(
+                    produtosCarregados
+                );
 
 
             } catch (erro) {
@@ -533,12 +553,11 @@
                 mensagem.innerHTML = `
 
                     <h2>
-                        Nenhum produto cadastrado
+                        Nenhum produto encontrado
                     </h2>
 
                     <p>
-                        Clique em "+ Novo produto"
-                        para cadastrar o primeiro item.
+                        Tente pesquisar por outro nome.
                     </p>
 
                 `;
@@ -559,7 +578,13 @@
                 produto => {
 
                     const dados =
-                        produto.data();
+                        produto.data
+                            ? produto.data()
+                            : produto;
+
+
+                    const id =
+                        produto.id;
 
 
                     const nomeOriginal =
@@ -754,7 +779,7 @@
                         function () {
 
                             editarProduto(
-                                produto.id
+                                id
                             );
 
                         }
@@ -772,7 +797,7 @@
                         function () {
 
                             excluirProduto(
-                                produto.id,
+                                id,
                                 nomeOriginal,
                                 botaoExcluir
                             );
@@ -789,6 +814,62 @@
             );
 
         }
+
+
+        function pesquisarProdutos() {
+
+            const termo =
+                pesquisaProduto.value
+                    .trim()
+                    .toLowerCase();
+
+
+            if (!termo) {
+
+                mostrarProdutos(
+                    produtosCarregados
+                );
+
+                return;
+
+            }
+
+
+            const produtosFiltrados =
+                produtosCarregados.filter(
+                    produto => {
+
+                        const dados =
+                            produto.data
+                                ? produto.data()
+                                : produto;
+
+
+                        const nome =
+                            String(
+                                dados.nome || ""
+                            ).toLowerCase();
+
+
+                        return nome.includes(
+                            termo
+                        );
+
+                    }
+                );
+
+
+            mostrarProdutos(
+                produtosFiltrados
+            );
+
+        }
+
+
+        pesquisaProduto.addEventListener(
+            "input",
+            pesquisarProdutos
+        );
 
 
         async function carregarProdutos() {
@@ -822,8 +903,12 @@
                     );
 
 
+                produtosCarregados =
+                    resultado.docs;
+
+
                 mostrarProdutos(
-                    resultado.docs
+                    produtosCarregados
                 );
 
 
