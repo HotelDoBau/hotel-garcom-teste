@@ -25,6 +25,7 @@
             font-family: Arial, sans-serif;
         }
 
+
         .produtos-container {
             width: 100%;
             max-width: 700px;
@@ -32,6 +33,7 @@
             padding: 20px;
             box-sizing: border-box;
         }
+
 
         .cabecalho-produtos {
             background: #17212b;
@@ -41,16 +43,19 @@
             margin-bottom: 20px;
         }
 
+
         .cabecalho-produtos h1 {
             margin: 0 0 6px;
             font-size: 25px;
         }
+
 
         .cabecalho-produtos p {
             margin: 0;
             opacity: 0.8;
             font-size: 14px;
         }
+
 
         .botao-voltar {
             display: inline-block;
@@ -63,6 +68,7 @@
             font-weight: 600;
         }
 
+
         .formulario-produto {
             background: white;
             padding: 22px;
@@ -70,9 +76,11 @@
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
         }
 
+
         .campo {
             margin-bottom: 18px;
         }
+
 
         .campo label {
             display: block;
@@ -80,6 +88,7 @@
             font-weight: 600;
             color: #17212b;
         }
+
 
         .campo input,
         .campo select {
@@ -92,11 +101,13 @@
             background: white;
         }
 
+
         .campo input:focus,
         .campo select:focus {
             outline: none;
             border-color: #17212b;
         }
+
 
         .foto-preview {
             margin-top: 12px;
@@ -107,6 +118,7 @@
             border-radius: 10px;
             border: 1px solid #d5dbe0;
         }
+
 
         .botao-concluir {
             width: 100%;
@@ -120,8 +132,15 @@
             cursor: pointer;
         }
 
+
         .botao-concluir:hover {
             opacity: 0.9;
+        }
+
+
+        .botao-concluir:disabled {
+            opacity: 0.6;
+            cursor: wait;
         }
 
     </style>
@@ -136,7 +155,7 @@
 
 
         <a
-            href="index.html"
+            href="cardapio.html"
             class="botao-voltar"
         >
             ← Voltar
@@ -145,10 +164,12 @@
 
         <div class="cabecalho-produtos">
 
-            <h1>Produtos</h1>
+            <h1>
+                Novo produto
+            </h1>
 
             <p>
-                Cadastre os produtos do cardápio
+                Cadastre um novo produto no cardápio
             </p>
 
         </div>
@@ -236,6 +257,21 @@
 
             <div class="campo">
 
+                <label for="descricaoProduto">
+                    Descrição
+                </label>
+
+                <input
+                    type="text"
+                    id="descricaoProduto"
+                    placeholder="Ex.: Refrigerante gelado 350ml"
+                >
+
+            </div>
+
+
+            <div class="campo">
+
                 <label for="precoProduto">
                     Preço
                 </label>
@@ -266,13 +302,56 @@
     </div>
 
 
-    <script>
+    <script type="module">
+
+        import {
+            db,
+            collection,
+            addDoc,
+            serverTimestamp
+        } from "./js/firebase.js";
+
+
+        const nomeProduto =
+            document.getElementById(
+                "nomeProduto"
+            );
+
 
         const fotoProduto =
-            document.getElementById("fotoProduto");
+            document.getElementById(
+                "fotoProduto"
+            );
+
 
         const fotoPreview =
-            document.getElementById("fotoPreview");
+            document.getElementById(
+                "fotoPreview"
+            );
+
+
+        const categoriaProduto =
+            document.getElementById(
+                "categoriaProduto"
+            );
+
+
+        const descricaoProduto =
+            document.getElementById(
+                "descricaoProduto"
+            );
+
+
+        const precoProduto =
+            document.getElementById(
+                "precoProduto"
+            );
+
+
+        const btnConcluir =
+            document.getElementById(
+                "btnConcluir"
+            );
 
 
         fotoProduto.addEventListener(
@@ -282,9 +361,11 @@
                 const arquivo =
                     fotoProduto.files[0];
 
+
                 if (!arquivo) {
 
-                    fotoPreview.style.display = "none";
+                    fotoPreview.style.display =
+                        "none";
 
                     fotoPreview.src = "";
 
@@ -309,24 +390,154 @@
                     };
 
 
-                leitor.readAsDataURL(arquivo);
+                leitor.readAsDataURL(
+                    arquivo
+                );
 
             }
         );
 
 
-        document
-            .getElementById("btnConcluir")
-            .addEventListener(
-                "click",
-                function () {
+        btnConcluir.addEventListener(
+            "click",
+            async function () {
 
-                    alert(
-                        "Tela de cadastro funcionando. O salvamento será configurado na próxima etapa."
+                const nome =
+                    nomeProduto.value.trim();
+
+
+                const categoria =
+                    categoriaProduto.value;
+
+
+                const descricao =
+                    descricaoProduto.value.trim();
+
+
+                const preco =
+                    Number(
+                        precoProduto.value
                     );
 
+
+                if (!nome) {
+
+                    alert(
+                        "Digite o nome do produto."
+                    );
+
+                    nomeProduto.focus();
+
+                    return;
+
                 }
-            );
+
+
+                if (!categoria) {
+
+                    alert(
+                        "Selecione uma categoria."
+                    );
+
+                    categoriaProduto.focus();
+
+                    return;
+
+                }
+
+
+                if (
+                    !Number.isFinite(preco) ||
+                    preco < 0
+                ) {
+
+                    alert(
+                        "Digite um preço válido."
+                    );
+
+                    precoProduto.focus();
+
+                    return;
+
+                }
+
+
+                try {
+
+                    btnConcluir.disabled =
+                        true;
+
+                    btnConcluir.textContent =
+                        "Salvando...";
+
+
+                    await addDoc(
+                        collection(
+                            db,
+                            "produtos"
+                        ),
+                        {
+
+                            nome: nome,
+
+                            categoria: categoria,
+
+                            descricao: descricao,
+
+                            preco: preco,
+
+                            criadoEm:
+                                serverTimestamp()
+
+                        }
+                    );
+
+
+                    alert(
+                        "Produto cadastrado com sucesso!"
+                    );
+
+
+                    nomeProduto.value = "";
+
+                    categoriaProduto.value = "";
+
+                    descricaoProduto.value = "";
+
+                    precoProduto.value = "";
+
+                    fotoProduto.value = "";
+
+                    fotoPreview.src = "";
+
+                    fotoPreview.style.display =
+                        "none";
+
+
+                } catch (erro) {
+
+                    console.error(
+                        "Erro ao cadastrar produto:",
+                        erro
+                    );
+
+
+                    alert(
+                        "Não foi possível cadastrar o produto."
+                    );
+
+                } finally {
+
+                    btnConcluir.disabled =
+                        false;
+
+                    btnConcluir.textContent =
+                        "Concluir cadastro";
+
+                }
+
+            }
+        );
 
     </script>
 
