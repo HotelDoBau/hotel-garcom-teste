@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Migrar Produtos - Hotel do Baú</title>
+
+    <style>
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            padding: 30px;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: auto;
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+        }
+
+        h1 {
+            margin-top: 0;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            background: #17212b;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        #resultado {
+            margin-top: 20px;
+            line-height: 1.6;
+            white-space: pre-line;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>Migração de Produtos</h1>
+
+        <p>
+            Esta página irá copiar os produtos do
+            <strong>dados/produtos.js</strong>
+            para o Firestore.
+        </p>
+
+        <p>
+            Produtos que já existirem pelo mesmo nome
+            não serão duplicados.
+        </p>
+
+        <button id="btnMigrar">
+            MIGRAR PRODUTOS
+        </button>
+
+        <div id="resultado"></div>
+
+    </div>
+
+
+    <script type="module">
+
+        import {
+            db,
+            collection,
+            getDocs,
+            addDoc,
+            serverTimestamp
+        } from "./js/firebase.js";
+
+
+        import "./dados/produtos.js";
+
+
+        const btnMigrar =
+            document.getElementById("btnMigrar");
+
+        const resultado =
+            document.getElementById("resultado");
+
+
+        btnMigrar.addEventListener(
+            "click",
+            migrarProdutos
+        );
+
+
+        async function migrarProdutos() {
+
+            btnMigrar.disabled = true;
+
+            resultado.textContent =
+                "Verificando produtos existentes no Firestore...";
+
+
+            try {
+
+                const produtosFirestore =
+                    await getDocs(
+                        collection(db, "produtos")
+                    );
+
+
+                const nomesExistentes =
+                    new Set();
+
+
+                produtosFirestore.forEach((documento) => {
+
+                    const dados =
+                        documento.data();
+
+                    if (dados.nome) {
+
+                        nomesExistentes.add(
+                            normalizarNome(dados.nome)
+                        );
+
+                    }
+
+                });
+
+
+                let adicionados = 0;
+                let ignorados = 0;
+
+
+                for (const produto of produtos) {
+
+                    const nomeNormalizado =
+                        normalizarNome(produto.nome);
+
+
+                    if (
+                        nomesExistentes.has(
+                            nomeNormalizado
+                        )
+                    ) {
+
+                        ignorados++;
+
+                        continue;
+
+                    }
+
+
+                    let categoria =
+                        produto.categoria;
+
+
+                    if (
+                        categoria === "Pratos feitos"
+                    ) {
+
+                        categoria =
+                            "Pratos Feitos";
+
+                    }
+
+
+                    await addDoc(
+                        collection(db, "produtos"),
+                        {
+
+                            nome: produto.nome,
+
+                            categoria: categoria,
+
+                            descricao: "",
+
+                            preco: Number(produto.preco),
+
+                            foto: produto.imagem || "",
+
+                            criadoEm:
+                                serverTimestamp()
+
+                        }
+                    );
+
+
+                    nomesExistentes.add(
+                        nomeNormalizado
+                    );
+
+
+                    adicionados++;
+
+                }
+
+
+                resultado.innerHTML =
+                    `
+                    <strong>✓ Migração concluída!</strong>
+
+                    <br><br>
+
+                    Produtos adicionados:
+                    <strong>${adicionados}</strong>
+
+                    <br>
+
+                    Produtos que já existiam:
+                    <strong>${ignorados}</strong>
+
+                    <br>
+
+                    Total analisado:
+                    <strong>${produtos.length}</strong>
+
+                    <br><br>
+
+                    Agora podemos conferir os produtos no
+                    cardápio.
+                    `;
+
+
+            } catch (erro) {
+
+                console.error(erro);
+
+                resultado.innerHTML =
+                    `
+                    <strong>Erro durante a migração.</strong>
+
+                    <br><br>
+
+                    ${erro.message}
+                    `;
+
+                btnMigrar.disabled = false;
+
+            }
+
+        }
+
+
+        function normalizarNome(nome) {
+
+            return String(nome)
+                .trim()
+                .toLowerCase();
+
+        }
+
+    </script>
+
+</body>
+
+</html>
