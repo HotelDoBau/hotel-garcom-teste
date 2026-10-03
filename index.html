@@ -10,19 +10,42 @@
         content="width=device-width, initial-scale=1.0"
     >
 
-    <title>Acesso - Hotel do Baú</title>
+    <title>Comandas - Hotel do Baú</title>
+
+    <link
+        rel="stylesheet"
+        href="css/style.css"
+    >
 
     <style>
 
-        * {
-            box-sizing: border-box;
-        }
+        /* =========================================
+           PROTEÇÃO DE ACESSO
+        ========================================= */
 
         body {
 
-            margin: 0;
+            visibility: hidden;
 
-            min-height: 100vh;
+        }
+
+
+        body.acesso-verificado {
+
+            visibility: visible;
+
+        }
+
+
+        #telaCarregamento {
+
+            position: fixed;
+
+            inset: 0;
+
+            z-index: 99999;
+
+            background: #f4f6f8;
 
             display: flex;
 
@@ -30,9 +53,11 @@
 
             justify-content: center;
 
-            padding: 20px;
+            flex-direction: column;
 
-            background: #f4f6f8;
+            gap: 12px;
+
+            color: #17212b;
 
             font-family:
                 Arial,
@@ -41,44 +66,15 @@
 
         }
 
-        .login-container {
 
-            width: 100%;
+        #telaCarregamento strong {
 
-            max-width: 380px;
-
-            background: #ffffff;
-
-            padding: 35px 30px;
-
-            border-radius: 14px;
-
-            box-shadow:
-                0 8px 25px rgba(0, 0, 0, 0.10);
+            font-size: 22px;
 
         }
 
-        .logo {
 
-            text-align: center;
-
-            margin-bottom: 30px;
-
-        }
-
-        .logo h1 {
-
-            margin: 0;
-
-            color: #17212b;
-
-            font-size: 28px;
-
-        }
-
-        .logo p {
-
-            margin: 8px 0 0;
+        #telaCarregamento span {
 
             color: #777;
 
@@ -86,13 +82,223 @@
 
         }
 
-        .campo {
 
-            margin-bottom: 18px;
+        .carregando-ponto {
+
+            width: 8px;
+
+            height: 8px;
+
+            border-radius: 50%;
+
+            background: #17212b;
+
+            animation:
+                pulsar 1s infinite ease-in-out;
 
         }
 
-        .campo label {
+
+        @keyframes pulsar {
+
+            0%,
+            100% {
+
+                opacity: 0.25;
+
+                transform: scale(0.8);
+
+            }
+
+            50% {
+
+                opacity: 1;
+
+                transform: scale(1);
+
+            }
+
+        }
+
+
+
+        /* =========================================
+           GARÇOM NO CABEÇALHO
+        ========================================= */
+
+        .garcom-topo {
+
+            position: absolute;
+
+            right: 15px;
+
+            top: 50%;
+
+            transform: translateY(-50%);
+
+        }
+
+
+        .botao-garcom {
+
+            border: none;
+
+            background: rgba(255,255,255,0.10);
+
+            color: white;
+
+            padding: 8px 11px;
+
+            border-radius: 8px;
+
+            font-size: 13px;
+
+            font-weight: 600;
+
+            cursor: pointer;
+
+            white-space: nowrap;
+
+        }
+
+
+        .botao-garcom:hover {
+
+            background: rgba(255,255,255,0.18);
+
+        }
+
+
+
+        /* =========================================
+           JANELA TROCAR GARÇOM
+        ========================================= */
+
+        .fundo-troca-garcom {
+
+            position: fixed;
+
+            inset: 0;
+
+            background: rgba(0,0,0,0.45);
+
+            display: none;
+
+            align-items: center;
+
+            justify-content: center;
+
+            padding: 20px;
+
+            z-index: 3000;
+
+        }
+
+
+        .fundo-troca-garcom.mostrar {
+
+            display: flex;
+
+        }
+
+
+        .janela-troca-garcom {
+
+            width: 100%;
+
+            max-width: 380px;
+
+            background: white;
+
+            border-radius: 16px;
+
+            padding: 24px;
+
+            box-shadow:
+                0 12px 35px rgba(0,0,0,0.22);
+
+            animation:
+                aparecerGarcom 0.18s ease;
+
+        }
+
+
+        @keyframes aparecerGarcom {
+
+            from {
+
+                opacity: 0;
+
+                transform:
+                    translateY(10px)
+                    scale(0.98);
+
+            }
+
+            to {
+
+                opacity: 1;
+
+                transform:
+                    translateY(0)
+                    scale(1);
+
+            }
+
+        }
+
+
+        .cabecalho-troca-garcom {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            margin-bottom: 20px;
+
+        }
+
+
+        .cabecalho-troca-garcom h2 {
+
+            margin: 0;
+
+            color: #17212b;
+
+            font-size: 20px;
+
+        }
+
+
+        .botao-fechar-troca {
+
+            border: none;
+
+            background: transparent;
+
+            color: #666;
+
+            font-size: 28px;
+
+            line-height: 1;
+
+            cursor: pointer;
+
+            padding: 0 4px;
+
+        }
+
+
+        .campo-troca {
+
+            margin-bottom: 16px;
+
+        }
+
+
+        .campo-troca label {
 
             display: block;
 
@@ -106,7 +312,10 @@
 
         }
 
-        .campo input {
+
+        .campo-troca select,
+
+        .campo-troca input {
 
             width: 100%;
 
@@ -116,33 +325,41 @@
 
             border-radius: 8px;
 
-            font-size: 17px;
+            background: white;
+
+            color: #222;
+
+            font-size: 16px;
 
             outline: none;
 
         }
 
-        .campo input:focus {
+
+        .campo-troca select:focus,
+
+        .campo-troca input:focus {
 
             border-color: #17212b;
 
         }
 
-        .botao-login {
+
+        .botao-confirmar-troca {
 
             width: 100%;
-
-            padding: 14px;
 
             border: none;
 
             border-radius: 8px;
 
+            padding: 14px;
+
             background: #17212b;
 
             color: white;
 
-            font-size: 16px;
+            font-size: 15px;
 
             font-weight: 600;
 
@@ -150,23 +367,58 @@
 
         }
 
-        .botao-login:hover {
 
-            opacity: 0.9;
+        .botao-confirmar-troca:hover {
+
+            opacity: 0.92;
 
         }
 
-        .mensagem {
 
-            margin-top: 15px;
+        .mensagem-troca {
 
             min-height: 20px;
 
+            margin-top: 12px;
+
             text-align: center;
 
-            color: #c0392b;
-
             font-size: 14px;
+
+        }
+
+
+        .aviso-troca {
+
+            margin: 0 0 18px;
+
+            color: #777;
+
+            font-size: 13px;
+
+            line-height: 1.4;
+
+        }
+
+
+        @media (max-width: 600px) {
+
+            .garcom-topo {
+
+                right: 10px;
+
+            }
+
+
+            .botao-garcom {
+
+                max-width: 125px;
+
+                overflow: hidden;
+
+                text-overflow: ellipsis;
+
+            }
 
         }
 
@@ -174,367 +426,2249 @@
 
 </head>
 
+
 <body>
 
 
-    <div class="login-container">
+<!-- =========================================
+     TELA ENQUANTO VERIFICA O ACESSO
+========================================= -->
 
-        <div class="logo">
+<div id="telaCarregamento">
 
-            <h1>Hotel do Baú</h1>
+    <strong>
+        Hotel do Baú
+    </strong>
 
-            <p>Acesso dos garçons</p>
+    <span>
+        Verificando acesso...
+    </span>
 
-        </div>
+    <div class="carregando-ponto"></div>
 
-
-        <form id="formLogin">
-
-
-            <div class="campo">
-
-                <label for="usuario">
-                    Usuário
-                </label>
-
-                <input
-                    type="text"
-                    id="usuario"
-                    placeholder="Digite seu usuário"
-                    autocomplete="username"
-                    required
-                >
-
-            </div>
+</div>
 
 
-            <div class="campo">
 
-                <label for="senha">
-                    Senha
-                </label>
+<header class="topo">
 
-                <input
-                    type="password"
-                    id="senha"
-                    placeholder="6 números"
-                    inputmode="numeric"
-                    pattern="[0-9]{6}"
-                    maxlength="6"
-                    autocomplete="current-password"
-                    required
-                >
-
-            </div>
+    <button
+        class="btn-menu"
+        onclick="abrirMenu()"
+        aria-label="Abrir menu"
+    >
+        ☰
+    </button>
 
 
-            <button
-                type="submit"
-                class="botao-login"
-            >
-                ENTRAR
-            </button>
+    <div class="titulo-topo">
 
+        <h1>Hotel do Baú</h1>
 
-            <div
-                id="mensagem"
-                class="mensagem"
-            ></div>
-
-
-        </form>
+        <p>Comandas</p>
 
     </div>
 
 
-    <script type="module">
+    <!-- =========================================
+         GARÇOM LOGADO
+    ========================================= -->
 
-        import {
-            initializeApp
-        } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
+    <div class="garcom-topo">
 
+        <button
+            id="botaoGarcom"
+            class="botao-garcom"
+            type="button"
+            onclick="abrirTrocaGarcom()"
+        >
+            Garçom ▾
+        </button>
 
-        import {
-            getAuth,
-            signInWithEmailAndPassword
-        } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
+    </div>
 
-
-        import {
-            getFirestore,
-            collection,
-            query,
-            where,
-            getDocs
-        } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+</header>
 
 
-        const firebaseConfig = {
 
-            apiKey:
-                "AIzaSyAEj82ZchuqIEzbG1PhbLclqiSbIEPifWU",
+<!-- =========================================
+     JANELA TROCAR GARÇOM
+========================================= -->
 
-            authDomain:
-                "hotel-garcom-teste.firebaseapp.com",
-
-            projectId:
-                "hotel-garcom-teste",
-
-            storageBucket:
-                "hotel-garcom-teste.firebasestorage.app",
-
-            messagingSenderId:
-                "608879824533",
-
-            appId:
-                "1:608879824533:web:2c6e47be27336607b8559c"
-
-        };
+<div
+    id="fundoTrocaGarcom"
+    class="fundo-troca-garcom"
+    onclick="fecharTrocaGarcomFundo(event)"
+>
 
 
-        const app =
-            initializeApp(firebaseConfig);
+    <div
+        class="janela-troca-garcom"
+        onclick="event.stopPropagation()"
+    >
 
 
-        const auth =
-            getAuth(app);
+        <div class="cabecalho-troca-garcom">
+
+            <h2>
+                Trocar garçom
+            </h2>
 
 
-        const db =
-            getFirestore(app);
+            <button
+                class="botao-fechar-troca"
+                type="button"
+                onclick="fecharTrocaGarcom()"
+                aria-label="Fechar"
+            >
+                ×
+            </button>
+
+        </div>
 
 
-        const formLogin =
-            document.getElementById("formLogin");
+        <p class="aviso-troca">
+
+            Selecione o garçom e digite a senha
+            para assumir o sistema.
+
+        </p>
 
 
-        const mensagem =
-            document.getElementById("mensagem");
+        <div class="campo-troca">
+
+            <label for="garcomSelecionado">
+                Garçom
+            </label>
 
 
-        const campoUsuario =
-            document.getElementById("usuario");
+            <select
+                id="garcomSelecionado"
+            >
+
+                <option value="">
+                    Carregando garçons...
+                </option>
+
+            </select>
+
+        </div>
 
 
-        const campoSenha =
-            document.getElementById("senha");
+        <div class="campo-troca">
+
+            <label for="senhaTrocaGarcom">
+                Senha
+            </label>
 
 
-        campoSenha.addEventListener(
-            "input",
-            function () {
+            <input
+                type="password"
+                id="senhaTrocaGarcom"
+                placeholder="6 números"
+                inputmode="numeric"
+                pattern="[0-9]{6}"
+                maxlength="6"
+                autocomplete="off"
+            >
 
-                this.value =
-                    this.value.replace(/\D/g, "");
+        </div>
 
-            }
+
+        <button
+            id="botaoConfirmarTroca"
+            class="botao-confirmar-troca"
+            type="button"
+            onclick="confirmarTrocaGarcom()"
+        >
+            ENTRAR
+        </button>
+
+
+        <div
+            id="mensagemTrocaGarcom"
+            class="mensagem-troca"
+        ></div>
+
+
+    </div>
+
+</div>
+
+
+
+<!-- =========================================
+     MENU LATERAL
+========================================= -->
+
+<div
+    id="fundoMenu"
+    class="fundo-menu"
+    onclick="fecharMenu()"
+></div>
+
+
+<aside
+    id="menuLateral"
+    class="menu-lateral"
+>
+
+    <div class="menu-cabecalho">
+
+        <div>
+
+            <strong>
+                HOTEL DO BAÚ
+            </strong>
+
+            <span>
+                Sistema de comandas
+            </span>
+
+        </div>
+
+
+        <button
+            class="btn-fechar-menu"
+            onclick="fecharMenu()"
+            aria-label="Fechar menu"
+        >
+            ×
+        </button>
+
+    </div>
+
+
+    <nav class="menu-opcoes">
+
+
+        <a
+            href="index.html"
+            class="menu-item ativo"
+        >
+
+            <span class="menu-icone">⌂</span>
+
+            <span>Início</span>
+
+        </a>
+
+
+        <a
+            href="saidas.html"
+            class="menu-item"
+        >
+
+            <span class="menu-icone">▣</span>
+
+            <span>Consultar vendas</span>
+
+        </a>
+
+
+        <button
+            class="menu-item"
+            type="button"
+            onclick="window.location.href='relatorios.html'"
+        >
+
+            <span class="menu-icone">▤</span>
+
+            <span>Relatórios</span>
+
+        </button>
+
+
+        <button
+            class="menu-item"
+            type="button"
+            onclick="window.location.href='cardapio.html'"
+        >
+
+            <span class="menu-icone">□</span>
+
+            <span>Produtos</span>
+
+        </button>
+
+
+        <button
+            class="menu-item menu-bloqueado"
+            type="button"
+        >
+
+            <span class="menu-icone">▦</span>
+
+            <span>Mesas e quartos</span>
+
+        </button>
+
+
+        <button
+            class="menu-item menu-bloqueado"
+            type="button"
+        >
+
+            <span class="menu-icone">⚙</span>
+
+            <span>Configurações</span>
+
+        </button>
+
+
+    </nav>
+
+
+    <div class="menu-rodape">
+
+        Hotel do Baú
+
+        <br>
+
+        Sistema de comandas
+
+    </div>
+
+</aside>
+
+
+
+<main>
+
+
+    <section class="titulo-mesas">
+
+        <h2>Mesas</h2>
+
+        <p>
+            Selecione uma mesa
+        </p>
+
+    </section>
+
+
+    <section class="legenda">
+
+        <span>🟢 Livre</span>
+
+        <span>🔵 Ocupada</span>
+
+        <span>🟠 Pagamento</span>
+
+    </section>
+
+
+    <section
+        class="mesas"
+        id="mesas"
+    >
+
+
+        <button class="mesa livre" onclick="abrirMesa(1)">
+            <strong>01</strong>
+            <span>Livre</span>
+        </button>
+
+        <button class="mesa livre" onclick="abrirMesa(2)">
+            <strong>02</strong>
+            <span>Livre</span>
+        </button>
+
+        <button class="mesa livre" onclick="abrirMesa(3)">
+            <strong>03</strong>
+            <span>Livre</span>
+        </button>
+
+        <button class="mesa livre" onclick="abrirMesa(4)">
+            <strong>04</strong>
+            <span>Livre</span>
+        </button>
+
+        <button class="mesa livre" onclick="abrirMesa(5)">
+            <strong>05</strong>
+            <span>Livre</span>
+        </button>
+
+        <button class="mesa livre" onclick="abrirMesa(6)">
+            <strong>06</strong>
+            <span>Livre</span>
+        </button>
+
+        <button class="mesa livre" onclick="abrirMesa(7)">
+            <strong>07</strong>
+            <span>Livre</span>
+        </button>
+
+        <button class="mesa livre" onclick="abrirMesa(8)">
+            <strong>08</strong>
+            <span>Livre</span>
+        </button>
+
+        <button class="mesa livre" onclick="abrirMesa(9)">
+            <strong>09</strong>
+            <span>Livre</span>
+        </button>
+
+        <button class="mesa livre" onclick="abrirMesa(10)">
+            <strong>10</strong>
+            <span>Livre</span>
+        </button>
+
+        <button class="mesa livre" onclick="abrirMesa(11)">
+            <strong>11</strong>
+            <span>Livre</span>
+        </button>
+
+        <button class="mesa livre" onclick="abrirMesa(12)">
+            <strong>12</strong>
+            <span>Livre</span>
+        </button>
+
+        <button class="mesa livre" onclick="abrirMesa(13)">
+            <strong>13</strong>
+            <span>Livre</span>
+        </button>
+
+        <button class="mesa livre" onclick="abrirMesa(14)">
+            <strong>14</strong>
+            <span>Livre</span>
+        </button>
+
+        <button class="mesa livre" onclick="abrirMesa(15)">
+            <strong>15</strong>
+            <span>Livre</span>
+        </button>
+
+        <button class="mesa livre" onclick="abrirMesa(16)">
+            <strong>16</strong>
+            <span>Livre</span>
+        </button>
+
+        <button class="mesa livre" onclick="abrirMesa(17)">
+            <strong>17</strong>
+            <span>Livre</span>
+        </button>
+
+        <button class="mesa livre" onclick="abrirMesa(18)">
+            <strong>18</strong>
+            <span>Livre</span>
+        </button>
+
+        <button class="mesa livre" onclick="abrirMesa(19)">
+            <strong>19</strong>
+            <span>Livre</span>
+        </button>
+
+        <button class="mesa livre" onclick="abrirMesa(20)">
+            <strong>20</strong>
+            <span>Livre</span>
+        </button>
+
+
+    </section>
+
+
+
+    <section class="titulo-mesas">
+
+        <h2>Quartos</h2>
+
+        <p>
+            Selecione um quarto
+        </p>
+
+    </section>
+
+
+
+    <section
+        class="mesas"
+        id="quartos"
+    >
+
+
+        <button class="mesa livre" data-tipo="quarto" data-numero="1" onclick="abrirQuarto(1)">
+            <strong>01</strong>
+            <span>Livre</span>
+        </button>
+
+        <button class="mesa livre" data-tipo="quarto" data-numero="2" onclick="abrirQuarto(2)">
+            <strong>02</strong>
+            <span>Livre</span>
+        </button>
+
+        <button class="mesa livre" data-tipo="quarto" data-numero="3" onclick="abrirQuarto(3)">
+            <strong>03</strong>
+            <span>Livre</span>
+        </button>
+
+        <button class="mesa livre" data-tipo="quarto" data-numero="4" onclick="abrirQuarto(4)">
+            <strong>04</strong>
+            <span>Livre</span>
+        </button>
+
+        <button class="mesa livre" data-tipo="quarto" data-numero="5" onclick="abrirQuarto(5)">
+            <strong>05</strong>
+            <span>Livre</span>
+        </button>
+
+        <button class="mesa livre" data-tipo="quarto" data-numero="6" onclick="abrirQuarto(6)">
+            <strong>06</strong>
+            <span>Livre</span>
+        </button>
+
+        <button class="mesa livre" data-tipo="quarto" data-numero="7" onclick="abrirQuarto(7)">
+            <strong>07</strong>
+            <span>Livre</span>
+        </button>
+
+        <button class="mesa livre" data-tipo="quarto" data-numero="8" onclick="abrirQuarto(8)">
+            <strong>08</strong>
+            <span>Livre</span>
+        </button>
+
+        <button class="mesa livre" data-tipo="quarto" data-numero="9" onclick="abrirQuarto(9)">
+            <strong>09</strong>
+            <span>Livre</span>
+        </button>
+
+        <button class="mesa livre" data-tipo="quarto" data-numero="10" onclick="abrirQuarto(10)">
+            <strong>10</strong>
+            <span>Livre</span>
+        </button>
+
+        <button class="mesa livre" data-tipo="quarto" data-numero="11" onclick="abrirQuarto(11)">
+            <strong>11</strong>
+            <span>Livre</span>
+        </button>
+
+        <button class="mesa livre" data-tipo="quarto" data-numero="12" onclick="abrirQuarto(12)">
+            <strong>12</strong>
+            <span>Livre</span>
+        </button>
+
+        <button class="mesa livre" data-tipo="quarto" data-numero="13" onclick="abrirQuarto(13)">
+            <strong>13</strong>
+            <span>Livre</span>
+        </button>
+
+        <button class="mesa livre" data-tipo="quarto" data-numero="14" onclick="abrirQuarto(14)">
+            <strong>14</strong>
+            <span>Livre</span>
+        </button>
+
+        <button class="mesa livre" data-tipo="quarto" data-numero="15" onclick="abrirQuarto(15)">
+            <strong>15</strong>
+            <span>Livre</span>
+        </button>
+
+        <button class="mesa livre" data-tipo="quarto" data-numero="16" onclick="abrirQuarto(16)">
+            <strong>16</strong>
+            <span>Livre</span>
+        </button>
+
+        <button class="mesa livre" data-tipo="quarto" data-numero="33" onclick="abrirQuarto(33)">
+            <strong>33</strong>
+            <span>Livre</span>
+        </button>
+
+        <button class="mesa livre" data-tipo="quarto" data-numero="34" onclick="abrirQuarto(34)">
+            <strong>34</strong>
+            <span>Livre</span>
+        </button>
+
+        <button class="mesa livre" data-tipo="quarto" data-numero="35" onclick="abrirQuarto(35)">
+            <strong>35</strong>
+            <span>Livre</span>
+        </button>
+
+        <button class="mesa livre" data-tipo="quarto" data-numero="36" onclick="abrirQuarto(36)">
+            <strong>36</strong>
+            <span>Livre</span>
+        </button>
+
+        <button class="mesa livre" data-tipo="quarto" data-numero="37" onclick="abrirQuarto(37)">
+            <strong>37</strong>
+            <span>Livre</span>
+        </button>
+
+        <button class="mesa livre" data-tipo="quarto" data-numero="38" onclick="abrirQuarto(38)">
+            <strong>38</strong>
+            <span>Livre</span>
+        </button>
+
+        <button class="mesa livre" data-tipo="quarto" data-numero="39" onclick="abrirQuarto(39)">
+            <strong>39</strong>
+            <span>Livre</span>
+        </button>
+
+        <button class="mesa livre" data-tipo="quarto" data-numero="40" onclick="abrirQuarto(40)">
+            <strong>40</strong>
+            <span>Livre</span>
+        </button>
+
+
+    </section>
+
+
+</main>
+
+
+
+<!-- =========================================
+     FIREBASE
+========================================= -->
+
+<script type="module" src="js/firebase.js"></script>
+
+
+<script type="module">
+
+import {
+    getAuth,
+    onAuthStateChanged,
+    signInWithEmailAndPassword
+} from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
+
+
+import {
+    getApp
+} from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
+
+
+import {
+    collection,
+    getDocs
+} from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+
+
+
+/* =========================================
+   FIREBASE
+========================================= */
+
+const app =
+    getApp();
+
+
+const auth =
+    getAuth(app);
+
+
+
+/* =========================================
+   ELEMENTOS
+========================================= */
+
+const telaCarregamento =
+    document.getElementById(
+        "telaCarregamento"
+    );
+
+
+const body =
+    document.body;
+
+
+
+/* =========================================
+   MOSTRAR SISTEMA
+========================================= */
+
+function liberarSistema() {
+
+    telaCarregamento.style.display =
+        "none";
+
+
+    body.classList.add(
+        "acesso-verificado"
+    );
+
+}
+
+
+
+/* =========================================
+   REDIRECIONAR PARA LOGIN
+========================================= */
+
+function irParaLogin() {
+
+    localStorage.removeItem(
+        "garcomLogado"
+    );
+
+
+    window.location.replace(
+        "login.html"
+    );
+
+}
+
+
+
+/* =========================================
+   SALVAR GARÇOM
+========================================= */
+
+function salvarGarcomLogado(
+    dados,
+    usuarioFirebase
+) {
+
+    localStorage.setItem(
+        "garcomLogado",
+        JSON.stringify({
+
+            uid:
+                usuarioFirebase.uid,
+
+            nome:
+                dados.nome,
+
+            usuario:
+                dados.usuario
+
+        })
+    );
+
+}
+
+
+
+/* =========================================
+   VERIFICAR CADASTRO DO GARÇOM
+========================================= */
+
+async function verificarGarcom(
+    usuarioFirebase
+) {
+
+    const conectado =
+        await aguardarFirebaseTroca();
+
+
+    if (!conectado) {
+
+        throw new Error(
+            "FIREBASE_NAO_CONECTADO"
+        );
+
+    }
+
+
+    const {
+        db
+    } = window.firebaseHotel;
+
+
+    const referencia =
+        collection(
+            db,
+            "garcons"
         );
 
 
-        formLogin.addEventListener(
-            "submit",
-            async function (evento) {
-
-                evento.preventDefault();
-
-
-                const usuario =
-                    campoUsuario
-                        .value
-                        .trim()
-                        .toLowerCase();
+    const resultado =
+        await getDocs(
+            referencia
+        );
 
 
-                const senha =
-                    campoSenha.value;
+    let garcomEncontrado =
+        null;
 
 
-                if (!usuario) {
+    resultado.forEach(
+        documento => {
 
-                    mensagem.textContent =
-                        "Digite o usuário.";
-
-                    return;
-
-                }
+            const dados =
+                documento.data();
 
 
-                if (!/^\d{6}$/.test(senha)) {
+            if (
+                dados.uid ===
+                usuarioFirebase.uid
+            ) {
 
-                    mensagem.textContent =
-                        "A senha deve ter 6 números.";
+                garcomEncontrado =
+                    dados;
 
-                    return;
+            }
 
-                }
-
-
-                mensagem.style.color =
-                    "#777";
-
-                mensagem.textContent =
-                    "Entrando...";
+        }
+    );
 
 
-                try {
+    if (!garcomEncontrado) {
+
+        return {
+            valido: false,
+            motivo: "nao_cadastrado"
+        };
+
+    }
 
 
-                    /*
-                     * O usuário digitado pelo garçom
-                     * é transformado no e-mail interno
-                     * utilizado pelo Firebase.
-                     */
+    if (
+        garcomEncontrado.ativo !== true
+    ) {
 
-                    const email =
-                        usuario +
-                        "@hoteldobau.com";
+        return {
+            valido: false,
+            motivo: "desativado"
+        };
 
-
-                    /*
-                     * Faz o login no Firebase.
-                     */
-
-                    const resultado =
-                        await signInWithEmailAndPassword(
-                            auth,
-                            email,
-                            senha
-                        );
+    }
 
 
-                    const usuarioFirebase =
-                        resultado.user;
+    salvarGarcomLogado(
+        garcomEncontrado,
+        usuarioFirebase
+    );
 
 
-                    /*
-                     * Procura o cadastro do garçom
-                     * pelo UID do Firebase.
-                     */
+    return {
+        valido: true,
+        dados: garcomEncontrado
+    };
 
-                    const referencia =
-                        collection(
-                            db,
-                            "garcons"
-                        );
+}
 
 
-                    const consulta =
-                        query(
-                            referencia,
-                            where(
-                                "uid",
-                                "==",
-                                usuarioFirebase.uid
-                            )
-                        );
+
+/* =========================================
+   AGUARDAR FIREBASE
+========================================= */
+
+async function aguardarFirebaseTroca() {
+
+    let tentativas = 0;
 
 
-                    const resultadoGarcom =
-                        await getDocs(consulta);
+    while (
+        !window.firebaseHotel &&
+        tentativas < 50
+    ) {
+
+        await new Promise(
+            resolve =>
+                setTimeout(
+                    resolve,
+                    100
+                )
+        );
 
 
-                    if (
-                        resultadoGarcom.empty
-                    ) {
+        tentativas++;
 
-                        mensagem.style.color =
-                            "#c0392b";
-
-                        mensagem.textContent =
-                            "Garçom não cadastrado.";
-
-                        return;
-
-                    }
+    }
 
 
-                    const documento =
-                        resultadoGarcom.docs[0];
+    return !!window.firebaseHotel;
 
+}
+
+
+
+/* =========================================
+   PROTEÇÃO DE ACESSO
+========================================= */
+
+let acessoVerificado =
+    false;
+
+
+onAuthStateChanged(
+    auth,
+    async usuarioFirebase => {
+
+        /*
+         * Evita processar a mesma
+         * confirmação mais de uma vez.
+         */
+
+        if (
+            acessoVerificado
+        ) {
+
+            return;
+
+        }
+
+
+        try {
+
+            /*
+             * NÃO EXISTE LOGIN
+             */
+
+            if (!usuarioFirebase) {
+
+                irParaLogin();
+
+                return;
+
+            }
+
+
+            /*
+             * EXISTE LOGIN.
+             *
+             * Agora verificamos se
+             * o usuário é um garçom
+             * cadastrado e ativo.
+             */
+
+            const resultado =
+                await verificarGarcom(
+                    usuarioFirebase
+                );
+
+
+            if (
+                !resultado.valido
+            ) {
+
+                console.warn(
+                    "Acesso recusado:",
+                    resultado.motivo
+                );
+
+
+                irParaLogin();
+
+                return;
+
+            }
+
+
+            /*
+             * Tudo certo.
+             *
+             * Agora o sistema pode
+             * aparecer.
+             */
+
+            acessoVerificado =
+                true;
+
+
+            atualizarNomeGarcom();
+
+            liberarSistema();
+
+
+        } catch (erro) {
+
+            console.error(
+                "Erro verificando acesso:",
+                erro
+            );
+
+
+            irParaLogin();
+
+        }
+
+    }
+);
+
+
+
+/* =========================================
+   IDENTIFICAÇÃO DO GARÇOM ATUAL
+========================================= */
+
+function obterGarcomAtual() {
+
+    try {
+
+        const salvo =
+            localStorage.getItem(
+                "garcomLogado"
+            );
+
+
+        if (!salvo) {
+
+            return null;
+
+        }
+
+
+        return JSON.parse(
+            salvo
+        );
+
+    } catch (erro) {
+
+        console.error(
+            "Erro ao ler garçom logado:",
+            erro
+        );
+
+
+        return null;
+
+    }
+
+}
+
+
+
+/* =========================================
+   ATUALIZAR NOME NO CABEÇALHO
+========================================= */
+
+function atualizarNomeGarcom() {
+
+    const botao =
+        document.getElementById(
+            "botaoGarcom"
+        );
+
+
+    if (!botao) {
+
+        return;
+
+    }
+
+
+    const garcom =
+        obterGarcomAtual();
+
+
+    if (
+        garcom &&
+        garcom.nome
+    ) {
+
+        botao.textContent =
+            garcom.nome + " ▾";
+
+    } else {
+
+        botao.textContent =
+            "Garçom ▾";
+
+    }
+
+}
+
+
+
+/* =========================================
+   ABRIR TROCA DE GARÇOM
+========================================= */
+
+window.abrirTrocaGarcom =
+    async function () {
+
+        const fundo =
+            document.getElementById(
+                "fundoTrocaGarcom"
+            );
+
+
+        const select =
+            document.getElementById(
+                "garcomSelecionado"
+            );
+
+
+        const senha =
+            document.getElementById(
+                "senhaTrocaGarcom"
+            );
+
+
+        const mensagem =
+            document.getElementById(
+                "mensagemTrocaGarcom"
+            );
+
+
+        fundo.classList.add(
+            "mostrar"
+        );
+
+
+        senha.value =
+            "";
+
+
+        mensagem.textContent =
+            "";
+
+
+        mensagem.style.color =
+            "#777";
+
+
+        select.innerHTML = `
+
+            <option value="">
+                Carregando garçons...
+            </option>
+
+        `;
+
+
+        try {
+
+            const conectado =
+                await aguardarFirebaseTroca();
+
+
+            if (!conectado) {
+
+                throw new Error(
+                    "Firebase não conectado."
+                );
+
+            }
+
+
+            const {
+                db
+            } = window.firebaseHotel;
+
+
+            const referencia =
+                collection(
+                    db,
+                    "garcons"
+                );
+
+
+            const resultado =
+                await getDocs(
+                    referencia
+                );
+
+
+            const garcomAtual =
+                obterGarcomAtual();
+
+
+            select.innerHTML = `
+
+                <option value="">
+                    Selecione o garçom
+                </option>
+
+            `;
+
+
+            let quantidade =
+                0;
+
+
+            resultado.forEach(
+                documento => {
 
                     const dados =
                         documento.data();
 
 
-                    /*
-                     * Verifica se o garçom
-                     * está ativo.
-                     */
-
                     if (
                         dados.ativo !== true
                     ) {
-
-                        mensagem.style.color =
-                            "#c0392b";
-
-                        mensagem.textContent =
-                            "Usuário desativado.";
 
                         return;
 
                     }
 
 
-                    /*
-                     * Guarda a identificação
-                     * do garçom no navegador.
-                     *
-                     * Vamos usar isso depois
-                     * na auditoria.
-                     */
+                    if (
+                        !dados.usuario
+                    ) {
 
-                    localStorage.setItem(
-                        "garcomLogado",
-                        JSON.stringify({
+                        return;
 
-                            uid:
-                                usuarioFirebase.uid,
+                    }
 
-                            nome:
-                                dados.nome,
 
-                            usuario:
-                                dados.usuario
+                    quantidade++;
 
-                        })
+
+                    const option =
+                        document.createElement(
+                            "option"
+                        );
+
+
+                    option.value =
+                        dados.usuario;
+
+
+                    option.textContent =
+                        dados.nome ||
+                        dados.usuario;
+
+
+                    if (
+                        garcomAtual &&
+                        dados.uid ===
+                            garcomAtual.uid
+                    ) {
+
+                        option.selected =
+                            true;
+
+                    }
+
+
+                    select.appendChild(
+                        option
                     );
 
-
-                    mensagem.style.color =
-                        "#16803c";
-
-                    mensagem.textContent =
-                        "Acesso realizado.";
+                }
+            );
 
 
-                    setTimeout(
-                        function () {
+            if (
+                quantidade === 0
+            ) {
 
-                            window.location.href =
-                                "index.html";
+                select.innerHTML = `
 
-                        },
-                        500
-                    );
+                    <option value="">
+                        Nenhum garçom cadastrado
+                    </option>
+
+                `;
+
+            }
 
 
-            } catch (erro) {
+            senha.focus();
 
-    console.error(erro);
 
-    mensagem.style.color =
-        "#c0392b";
+        } catch (erro) {
 
-    mensagem.textContent =
-        "Erro: " + erro.code;
+            console.error(
+                "Erro ao carregar garçons:",
+                erro
+            );
+
+
+            mensagem.style.color =
+                "#c0392b";
+
+
+            mensagem.textContent =
+                "Não foi possível carregar os garçons.";
+
+        }
+
+    };
+
+
+
+/* =========================================
+   FECHAR TROCA
+========================================= */
+
+window.fecharTrocaGarcom =
+    function () {
+
+        document
+            .getElementById(
+                "fundoTrocaGarcom"
+            )
+            .classList.remove(
+                "mostrar"
+            );
+
+    };
+
+
+
+window.fecharTrocaGarcomFundo =
+    function (evento) {
+
+        if (
+            evento.target.id ===
+            "fundoTrocaGarcom"
+        ) {
+
+            fecharTrocaGarcom();
+
+        }
+
+    };
+
+
+
+/* =========================================
+   CONFIRMAR TROCA DE GARÇOM
+========================================= */
+
+window.confirmarTrocaGarcom =
+    async function () {
+
+        const select =
+            document.getElementById(
+                "garcomSelecionado"
+            );
+
+
+        const senha =
+            document.getElementById(
+                "senhaTrocaGarcom"
+            );
+
+
+        const botao =
+            document.getElementById(
+                "botaoConfirmarTroca"
+            );
+
+
+        const mensagem =
+            document.getElementById(
+                "mensagemTrocaGarcom"
+            );
+
+
+        const usuario =
+            select.value
+                .trim()
+                .toLowerCase();
+
+
+        const senhaDigitada =
+            senha.value;
+
+
+        mensagem.style.color =
+            "#777";
+
+
+        if (!usuario) {
+
+            mensagem.style.color =
+                "#c0392b";
+
+
+            mensagem.textContent =
+                "Selecione um garçom.";
+
+
+            return;
+
+        }
+
+
+        if (
+            !/^\d{6}$/.test(
+                senhaDigitada
+            )
+        ) {
+
+            mensagem.style.color =
+                "#c0392b";
+
+
+            mensagem.textContent =
+                "A senha deve ter 6 números.";
+
+
+            return;
+
+        }
+
+
+        botao.disabled =
+            true;
+
+
+        botao.textContent =
+            "ENTRANDO...";
+
+
+        mensagem.textContent =
+            "Verificando acesso...";
+
+
+        try {
+
+            const conectado =
+                await aguardarFirebaseTroca();
+
+
+            if (!conectado) {
+
+                throw new Error(
+                    "Firebase não conectado."
+                );
+
+            }
+
+
+            const {
+                db
+            } = window.firebaseHotel;
+
+
+            const email =
+                usuario +
+                "@hoteldobau.com";
+
+
+            /*
+             * Autentica o novo garçom.
+             */
+
+            const resultado =
+                await signInWithEmailAndPassword(
+                    auth,
+                    email,
+                    senhaDigitada
+                );
+
+
+            const usuarioFirebase =
+                resultado.user;
+
+
+            /*
+             * Procura o cadastro
+             * correspondente ao UID.
+             */
+
+            const referencia =
+                collection(
+                    db,
+                    "garcons"
+                );
+
+
+            const resultadoGarcom =
+                await getDocs(
+                    referencia
+                );
+
+
+            let dadosGarcom =
+                null;
+
+
+            resultadoGarcom.forEach(
+                documento => {
+
+                    const dados =
+                        documento.data();
+
+
+                    if (
+                        dados.uid ===
+                        usuarioFirebase.uid
+                    ) {
+
+                        dadosGarcom =
+                            dados;
+
+                    }
+
+                }
+            );
+
+
+            if (!dadosGarcom) {
+
+                throw new Error(
+                    "GARCOM_NAO_CADASTRADO"
+                );
+
+            }
+
+
+            if (
+                dadosGarcom.ativo !== true
+            ) {
+
+                throw new Error(
+                    "USUARIO_DESATIVADO"
+                );
+
+            }
+
+
+            /*
+             * Salva o novo garçom.
+             */
+
+            salvarGarcomLogado(
+                dadosGarcom,
+                usuarioFirebase
+            );
+
+
+            /*
+             * Atualiza o cabeçalho
+             * imediatamente.
+             */
+
+            atualizarNomeGarcom();
+
+
+            mensagem.style.color =
+                "#16803c";
+
+
+            mensagem.textContent =
+                "Garçom alterado.";
+
+
+            setTimeout(
+                function () {
+
+                    fecharTrocaGarcom();
+
+                },
+                400
+            );
+
+
+        } catch (erro) {
+
+            console.error(
+                "Erro ao trocar garçom:",
+                erro
+            );
+
+
+            mensagem.style.color =
+                "#c0392b";
+
+
+            if (
+                erro.message ===
+                "GARCOM_NAO_CADASTRADO"
+            ) {
+
+                mensagem.textContent =
+                    "Garçom não cadastrado.";
+
+            }
+
+            else if (
+                erro.message ===
+                "USUARIO_DESATIVADO"
+            ) {
+
+                mensagem.textContent =
+                    "Usuário desativado.";
+
+            }
+
+            else if (
+                erro.code ===
+                "auth/invalid-credential" ||
+                erro.code ===
+                "auth/wrong-password"
+            ) {
+
+                mensagem.textContent =
+                    "Senha incorreta.";
+
+            }
+
+            else if (
+                erro.code ===
+                "auth/user-not-found"
+            ) {
+
+                mensagem.textContent =
+                    "Usuário não encontrado.";
+
+            }
+
+            else {
+
+                mensagem.textContent =
+                    "Não foi possível trocar o garçom.";
+
+            }
+
+        }
+
+
+        botao.disabled =
+            false;
+
+
+        botao.textContent =
+            "ENTRAR";
+
+    };
+
+
+
+/* =========================================
+   ENTER NA SENHA
+========================================= */
+
+document
+    .getElementById(
+        "senhaTrocaGarcom"
+    )
+    .addEventListener(
+        "keydown",
+        function (evento) {
+
+            if (
+                evento.key ===
+                "Enter"
+            ) {
+
+                evento.preventDefault();
+
+                confirmarTrocaGarcom();
+
+            }
+
+        }
+    );
+
+
+
+/* =========================================
+   SOMENTE NÚMEROS
+========================================= */
+
+document
+    .getElementById(
+        "senhaTrocaGarcom"
+    )
+    .addEventListener(
+        "input",
+        function () {
+
+            this.value =
+                this.value.replace(
+                    /\D/g,
+                    ""
+                );
+
+        }
+    );
+
+
+
+/* =========================================
+   FUNÇÕES DAS MESAS
+========================================= */
+
+window.abrirMesa =
+    function (numero) {
+
+        localStorage.setItem(
+            "mesaSelecionada",
+            numero
+        );
+
+
+        localStorage.setItem(
+            "tipoSelecionado",
+            "mesa"
+        );
+
+
+        window.location.href =
+            "mesa.html";
+
+    };
+
+
+
+window.abrirQuarto =
+    function (numero) {
+
+        localStorage.setItem(
+            "mesaSelecionada",
+            numero
+        );
+
+
+        localStorage.setItem(
+            "tipoSelecionado",
+            "quarto"
+        );
+
+
+        window.location.href =
+            "mesa.html";
+
+    };
+
+
+
+/* =========================================
+   AGUARDAR FIREBASE DAS MESAS
+========================================= */
+
+async function aguardarFirebase() {
+
+    let tentativas = 0;
+
+
+    while (
+        !window.firebaseHotel &&
+        tentativas < 50
+    ) {
+
+        await new Promise(
+            resolve =>
+                setTimeout(
+                    resolve,
+                    100
+                )
+        );
+
+
+        tentativas++;
+
+    }
+
+
+    return !!window.firebaseHotel;
 
 }
 
-            }
+
+
+/* =========================================
+   QUARTOS DISPONÍVEIS
+========================================= */
+
+const quartosDisponiveis = [
+
+    1, 2, 3, 4,
+
+    5, 6, 7, 8,
+
+    9, 10, 11, 12,
+
+    13, 14, 15, 16,
+
+    33, 34, 35, 36,
+
+    37, 38, 39, 40
+
+];
+
+
+
+/* =========================================
+   DEFINIR VISUAL
+========================================= */
+
+function definirStatusLocal(
+    tipo,
+    numero,
+    status
+) {
+
+    let botao;
+
+
+    if (
+        tipo === "mesa"
+    ) {
+
+        botao =
+            document.querySelector(
+                `#mesas .mesa:nth-child(${numero})`
+            );
+
+    }
+
+
+    else if (
+        tipo === "quarto"
+    ) {
+
+        botao =
+            document.querySelector(
+                `#quartos .mesa[data-numero="${numero}"]`
+            );
+
+    }
+
+
+    if (!botao) {
+
+        return;
+
+    }
+
+
+    const textoStatus =
+        botao.querySelector(
+            "span"
         );
 
-    </script>
+
+    botao.classList.remove(
+        "livre",
+        "ocupada",
+        "pagamento"
+    );
+
+
+    if (
+        status === "pagamento"
+    ) {
+
+        botao.classList.add(
+            "pagamento"
+        );
+
+
+        textoStatus.textContent =
+            "Pagamento";
+
+
+        return;
+
+    }
+
+
+    if (
+        status === "ocupada"
+    ) {
+
+        botao.classList.add(
+            "ocupada"
+        );
+
+
+        textoStatus.textContent =
+            tipo === "quarto"
+                ? "Ocupado"
+                : "Ocupada";
+
+
+        return;
+
+    }
+
+
+    botao.classList.add(
+        "livre"
+    );
+
+
+    textoStatus.textContent =
+        "Livre";
+
+}
+
+
+
+/* =========================================
+   DEIXAR TODOS LIVRES
+========================================= */
+
+function resetarStatus() {
+
+
+    for (
+        let numero = 1;
+        numero <= 20;
+        numero++
+    ) {
+
+        definirStatusLocal(
+            "mesa",
+            numero,
+            "livre"
+        );
+
+    }
+
+
+    quartosDisponiveis.forEach(
+        numero => {
+
+            definirStatusLocal(
+                "quarto",
+                numero,
+                "livre"
+            );
+
+        }
+    );
+
+}
+
+
+
+/* =========================================
+   INICIAR MESAS E QUARTOS
+========================================= */
+
+async function iniciarMesas() {
+
+    const conectado =
+        await aguardarFirebase();
+
+
+    if (!conectado) {
+
+        console.error(
+            "Firebase não conectado."
+        );
+
+        return;
+
+    }
+
+
+    const {
+
+        db,
+        collection,
+        onSnapshot
+
+    } = window.firebaseHotel;
+
+
+    resetarStatus();
+
+
+    const referenciaMesas =
+        collection(
+            db,
+            "mesas"
+        );
+
+
+    /* =========================================
+       OUVIR STATUS DAS MESAS E QUARTOS
+    ========================================= */
+
+    onSnapshot(
+
+        referenciaMesas,
+
+        snapshot => {
+
+            resetarStatus();
+
+
+            snapshot.forEach(
+                documento => {
+
+                    const local =
+                        documento.data();
+
+
+                    const idDocumento =
+                        documento.id;
+
+
+                    const numero =
+                        Number(
+                            local.numero
+                        );
+
+
+                    let tipo =
+                        local.tipo;
+
+
+                    if (!tipo) {
+
+                        if (
+                            idDocumento.startsWith(
+                                "quarto_"
+                            )
+                        ) {
+
+                            tipo =
+                                "quarto";
+
+                        } else {
+
+                            tipo =
+                                "mesa";
+
+                        }
+
+                    }
+
+
+                    if (
+                        tipo === "mesa"
+                    ) {
+
+                        if (
+                            numero < 1 ||
+                            numero > 20
+                        ) {
+
+                            return;
+
+                        }
+
+
+                        if (
+                            local.status ===
+                            "pagamento"
+                        ) {
+
+                            definirStatusLocal(
+                                "mesa",
+                                numero,
+                                "pagamento"
+                            );
+
+                        }
+
+
+                        return;
+
+                    }
+
+
+                    if (
+                        tipo === "quarto"
+                    ) {
+
+                        if (
+                            !quartosDisponiveis.includes(
+                                numero
+                            )
+                        ) {
+
+                            return;
+
+                        }
+
+
+                        if (
+                            local.status ===
+                            "pagamento"
+                        ) {
+
+                            definirStatusLocal(
+                                "quarto",
+                                numero,
+                                "pagamento"
+                            );
+
+                        }
+
+                    }
+
+                }
+            );
+
+        },
+
+
+        erro => {
+
+            console.error(
+                "Erro ao carregar mesas e quartos:",
+                erro
+            );
+
+        }
+
+    );
+
+
+
+    /* =========================================
+       VERIFICAR CONSUMO REAL
+    ========================================= */
+
+    function observarConsumo(
+        tipo,
+        numero
+    ) {
+
+        const idMesa =
+
+            tipo === "quarto"
+
+                ? `quarto_${String(numero).padStart(2, "0")}`
+
+                        : `mesa_${String(numero).padStart(2, "0")}`;
+
+
+        const referenciaPedidos =
+            collection(
+
+                db,
+
+                "mesas",
+
+                idMesa,
+
+                "pedidos"
+
+            );
+
+
+        onSnapshot(
+
+            referenciaPedidos,
+
+            snapshot => {
+
+                if (
+                    snapshot.empty
+                ) {
+
+                    definirStatusLocal(
+                        tipo,
+                        numero,
+                        "livre"
+                    );
+
+                } else {
+
+                    definirStatusLocal(
+                        tipo,
+                        numero,
+                        "ocupada"
+                    );
+
+                }
+
+            },
+
+
+            erro => {
+
+                console.error(
+                    `Erro ao verificar consumo de ${tipo} ${numero}:`,
+                    erro
+                );
+
+            }
+
+        );
+
+    }
+
+
+
+    /* =========================================
+       OBSERVAR MESAS 01 A 20
+    ========================================= */
+
+    for (
+        let numero = 1;
+        numero <= 20;
+        numero++
+    ) {
+
+        observarConsumo(
+            "mesa",
+            numero
+        );
+
+    }
+
+
+
+    /* =========================================
+       OBSERVAR QUARTOS
+    ========================================= */
+
+    quartosDisponiveis.forEach(
+        numero => {
+
+            observarConsumo(
+                "quarto",
+                numero
+            );
+
+        }
+    );
+
+}
+
+
+
+/* =========================================
+   INICIAR MESAS
+========================================= */
+
+iniciarMesas();
+
+
+
+/* =========================================
+   MENU LATERAL
+========================================= */
+
+window.abrirMenu =
+    function () {
+
+        document
+            .getElementById(
+                "menuLateral"
+            )
+            .classList.add(
+                "mostrar"
+            );
+
+
+        document
+            .getElementById(
+                "fundoMenu"
+            )
+            .classList.add(
+                "mostrar"
+            );
+
+    };
+
+
+
+window.fecharMenu =
+    function () {
+
+        document
+            .getElementById(
+                "menuLateral"
+            )
+            .classList.remove(
+                "mostrar"
+            );
+
+
+        document
+            .getElementById(
+                "fundoMenu"
+            )
+            .classList.remove(
+                "mostrar"
+            );
+
+    };
+
+
+</script>
+
+
+
+<script
+    type="module"
+    src="js/impressao.js"
+></script>
+
 
 </body>
 
