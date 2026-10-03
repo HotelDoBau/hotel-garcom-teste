@@ -378,21 +378,10 @@
 
                 try {
 
-
-                    /*
-                     * O usuário digitado pelo garçom
-                     * é transformado no e-mail interno
-                     * utilizado pelo Firebase.
-                     */
-
                     const email =
                         usuario +
                         "@hoteldobau.com";
 
-
-                    /*
-                     * Faz o login no Firebase.
-                     */
 
                     const resultado =
                         await signInWithEmailAndPassword(
@@ -405,11 +394,6 @@
                     const usuarioFirebase =
                         resultado.user;
 
-
-                    /*
-                     * Procura o cadastro do garçom
-                     * pelo UID do Firebase.
-                     */
 
                     const referencia =
                         collection(
@@ -456,11 +440,6 @@
                         documento.data();
 
 
-                    /*
-                     * Verifica se o garçom
-                     * está ativo.
-                     */
-
                     if (
                         dados.ativo !== true
                     ) {
@@ -475,14 +454,6 @@
 
                     }
 
-
-                    /*
-                     * Guarda a identificação
-                     * do garçom no navegador.
-                     *
-                     * Vamos usar isso depois
-                     * na auditoria.
-                     */
 
                     localStorage.setItem(
                         "garcomLogado",
@@ -499,38 +470,51 @@
 
                         })
                     );
-window.location.replace("index.html");
-                    
-
-                    mensagem.style.color =
-                        "#16803c";
-
-                    mensagem.textContent =
-                        "Acesso realizado.";
 
 
-                    setTimeout(
-                        function () {
-
-                            window.location.href =
-                                "index.html";
-
-                        },
-                        500
+                    console.log(
+                        "LOGIN OK"
                     );
 
 
-            } catch (erro) {
+                    console.log(
+                        "UID:",
+                        usuarioFirebase.uid
+                    );
 
-    console.error(erro);
 
-    mensagem.style.color =
-        "#c0392b";
+                    console.log(
+                        "Garçom:",
+                        dados.nome
+                    );
 
-    mensagem.textContent =
-        "Erro: " + erro.code;
 
-}
+                    /*
+                     * Redireciona diretamente
+                     * para o sistema.
+                     */
+
+                    window.location.replace(
+                        "./index.html"
+                    );
+
+
+                } catch (erro) {
+
+                    console.error(
+                        "ERRO NO LOGIN:",
+                        erro
+                    );
+
+
+                    mensagem.style.color =
+                        "#c0392b";
+
+
+                    mensagem.textContent =
+                        "Erro: " + erro.code;
+
+                }
 
             }
         );
