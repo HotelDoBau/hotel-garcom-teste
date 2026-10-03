@@ -1198,4 +1198,4 @@ const produtos = [
     }
 ];
 
-window.produtos = produtos;
+export { produtos };
