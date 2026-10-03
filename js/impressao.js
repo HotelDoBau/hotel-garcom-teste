@@ -305,15 +305,23 @@ async function imprimirGarcom(
 
         <div class="separador"></div>
 
-        <div class="central">
+<div class="central">
 
-            <div class="mesa-print">
-                ${tipo} ${String(numero).padStart(2, "0")}
-            </div>
+    <div class="mesa-print">
+        ${tipo} ${String(numero).padStart(2, "0")}
+    </div>
 
-            <div>
-                Pedido #${pedido.numeroPedido || ""}
-            </div>
+    <div>
+        Pedido #${pedido.numeroPedido || ""}
+    </div>
+
+    <div style="margin-top: 6px; font-weight: bold;">
+        GARÇOM: ${pedido.garcomNome || "Não informado"}
+    </div>
+
+</div>
+
+
 
         </div>
 
