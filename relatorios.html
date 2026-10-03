@@ -481,9 +481,15 @@
 
 
 <body class="saidas-page">
-<a href="index.html" class="botao-voltar">
+
+
+<a
+    href="index.html"
+    class="botao-voltar"
+>
     ← Voltar
 </a>
+
 
 <header class="topo">
 
@@ -674,804 +680,930 @@
 ></script>
 
 
-<script
-    src="dados/produtos.js"
-></script>
-
-
 <script>
 
-/* =========================================
-   AGUARDAR FIREBASE
-========================================= */
+    /* =========================================
+       AGUARDAR FIREBASE
+    ========================================= */
 
-async function aguardarFirebase() {
+    async function aguardarFirebase() {
 
-    let tentativas = 0;
+        let tentativas = 0;
 
-    while (
-        !window.firebaseHotel &&
-        tentativas < 50
-    ) {
-
-        await new Promise(
-            resolve =>
-                setTimeout(
-                    resolve,
-                    100
-                )
-        );
-
-        tentativas++;
-
-    }
-
-    return !!window.firebaseHotel;
-
-}
-
-
-/* =========================================
-   ELEMENTOS
-========================================= */
-
-const seletorMes =
-    document.getElementById(
-        "mesSelecionado"
-    );
-
-
-const buscarProduto =
-    document.getElementById(
-        "buscarProduto"
-    );
-
-
-const corpoTabela =
-    document.getElementById(
-        "corpoTabela"
-    );
-
-
-const quantidadeProdutos =
-    document.getElementById(
-        "quantidadeProdutos"
-    );
-
-
-const quantidadeUnidades =
-    document.getElementById(
-        "quantidadeUnidades"
-    );
-
-
-const totalVendido =
-    document.getElementById(
-        "totalVendido"
-    );
-
-
-let saidasFirebase = [];
-
-
-/* =========================================
-   FORMATAR MOEDA
-========================================= */
-
-function formatarMoeda(valor) {
-
-    return (
-
-        "R$ " +
-
-        Number(valor || 0)
-            .toFixed(2)
-            .replace(".", ",")
-
-    );
-
-}
-
-
-/* =========================================
-   CRIAR MESES
-========================================= */
-
-function criarMeses() {
-
-    const agora =
-        new Date();
-
-
-    seletorMes.innerHTML =
-        "";
-
-
-    /*
-        Mês atual + próximos 12 meses.
-    */
-
-    for (
-        let i = 0;
-        i < 13;
-        i++
-    ) {
-
-        const data =
-            new Date(
-                agora.getFullYear(),
-                agora.getMonth() + i,
-                1
-            );
-
-
-        const ano =
-            data.getFullYear();
-
-
-        const mes =
-            String(
-                data.getMonth() + 1
-            ).padStart(
-                2,
-                "0"
-            );
-
-
-        const valor =
-            `${ano}-${mes}`;
-
-
-        const texto =
-            data.toLocaleDateString(
-                "pt-BR",
-                {
-                    month:
-                        "long",
-
-                    year:
-                        "numeric"
-                }
-            );
-
-
-        const option =
-            document.createElement(
-                "option"
-            );
-
-
-        option.value =
-            valor;
-
-
-        option.textContent =
-            texto.charAt(0).toUpperCase() +
-            texto.slice(1);
-
-
-        seletorMes.appendChild(
-            option
-        );
-
-    }
-
-}
-
-
-/* =========================================
-   CARREGAR SAÍDAS
-========================================= */
-
-async function carregarSaidas() {
-
-    const conectado =
-        await aguardarFirebase();
-
-
-    if (!conectado) {
-
-        corpoTabela.innerHTML = `
-
-            <tr>
-
-                <td
-                    colspan="7"
-                    class="mensagem-saidas"
-                >
-                    Não foi possível
-                    conectar ao Firebase.
-                </td>
-
-            </tr>
-
-        `;
-
-        return;
-
-    }
-
-
-    try {
-
-        const {
-            db,
-            collection,
-            getDocs
-        } = window.firebaseHotel;
-
-
-        const referencia =
-            collection(
-                db,
-                "saidas"
-            );
-
-
-        const snapshot =
-            await getDocs(
-                referencia
-            );
-
-
-        saidasFirebase = [];
-
-
-        snapshot.forEach(
-            documento => {
-
-                saidasFirebase.push({
-
-                    id:
-                        documento.id,
-
-                    ...documento.data()
-
-                });
-
-            }
-        );
-
-
-        mostrarSaidas();
-
-    }
-    catch (erro) {
-
-        console.error(
-            "Erro ao carregar saídas:",
-            erro
-        );
-
-
-        corpoTabela.innerHTML = `
-
-            <tr>
-
-                <td
-                    colspan="7"
-                    class="mensagem-saidas"
-                >
-                    Erro ao carregar
-                    as vendas.
-                </td>
-
-            </tr>
-
-        `;
-
-    }
-
-}
-
-
-/* =========================================
-   MOSTRAR SAÍDAS
-========================================= */
-
-function mostrarSaidas() {
-
-    const mes =
-        seletorMes.value;
-
-
-    const busca =
-        buscarProduto.value
-            .trim()
-            .toLowerCase();
-
-
-    /*
-        Soma os produtos SOMENTE
-        do mês selecionado.
-    */
-
-    const vendasPorProduto = {};
-
-
-    saidasFirebase.forEach(
-        saida => {
-
-            if (
-                saida.referenciaMes !==
-                mes
-            ) {
-
-                return;
-
-            }
-
-
-            const itens =
-                Array.isArray(
-                    saida.itens
-                )
-                    ? saida.itens
-                    : [];
-
-
-            itens.forEach(
-                item => {
-
-                    const id =
-                        String(
-                            item.id
-                        );
-
-
-                    if (
-                        !vendasPorProduto[id]
-                    ) {
-
-                        vendasPorProduto[id] = {
-
-                            quantidade:
-                                0,
-
-                            total:
-                                0,
-
-                            valorUnitario:
-                                Number(
-                                    item.valorUnitario || 0
-                                )
-
-                        };
-
-                    }
-
-
-                    vendasPorProduto[id]
-                        .quantidade +=
-                        Number(
-                            item.quantidade || 0
-                        );
-
-
-                    vendasPorProduto[id]
-                        .total +=
-                        Number(
-                            item.total || 0
-                        );
-
-                }
-            );
-
-        }
-    );
-
-
-    corpoTabela.innerHTML =
-        "";
-
-
-    let produtosVendidos =
-        0;
-
-
-    let unidadesVendidas =
-        0;
-
-
-    let totalGeral =
-        0;
-
-
-    /*
-        Mostra todos os produtos
-        cadastrados no cardápio.
-    */
-
-    produtos.forEach(
-        produto => {
-
-            const id =
-                String(
-                    produto.id
-                );
-
-
-            /*
-                Pesquisa pelo nome.
-            */
-
-            if (
-                busca &&
-                !String(
-                    produto.nome || ""
-                )
-                    .toLowerCase()
-                    .includes(busca)
-            ) {
-
-                return;
-
-            }
-
-
-            const venda =
-                vendasPorProduto[id];
-
-
-            const quantidade =
-                venda
-                    ? venda.quantidade
-                    : 0;
-
-
-            const total =
-                venda
-                    ? venda.total
-                    : 0;
-
-
-            const valorUnitario =
-                venda
-                    ? venda.valorUnitario
-                    : Number(
-                        produto.preco || 0
-                    );
-
-
-            if (
-                quantidade > 0
-            ) {
-
-                produtosVendidos++;
-
-            }
-
-
-            unidadesVendidas +=
-                quantidade;
-
-
-            totalGeral +=
-                total;
-
-
-            const tr =
-                document.createElement(
-                    "tr"
-                );
-
-
-            if (
-                quantidade === 0
-            ) {
-
-                tr.className =
-                    "produto-sem-venda";
-
-            }
-
-
-            tr.innerHTML = `
-
-                <td>
-                    ${produto.id}
-                </td>
-
-                <td>
-                    ${produto.nome}
-                </td>
-
-                <td>
-                    ${produto.categoria || ""}
-                </td>
-
-                <td class="valor">
-                    ${formatarMoeda(
-                        valorUnitario
-                    )}
-                </td>
-
-                <td class="numero">
-                    ${quantidade}
-                </td>
-
-                <td>
-
-                    <div class="controles-produto">
-
-                        <button
-                            class="btn-ajuste"
-                            onclick="alterarQuantidadeProduto(${produto.id}, -1)"
-                            title="Diminuir 1"
-                        >
-                            −
-                        </button>
-
-                        <button
-                            class="btn-ajuste"
-                            onclick="alterarQuantidadeProduto(${produto.id}, 1)"
-                            title="Aumentar 1"
-                        >
-                            +
-                        </button>
-
-                        <button
-                            class="btn-excluir"
-                            onclick="excluirProdutoMes(${produto.id})"
-                            title="Excluir produto deste mês"
-                        >
-                            Excluir
-                        </button>
-
-                    </div>
-
-                </td>
-
-                <td class="valor">
-                    ${formatarMoeda(
-                        total
-                    )}
-                </td>
-
-            `;
-
-
-            corpoTabela.appendChild(
-                tr
-            );
-
-        }
-    );
-
-
-    /*
-        Nenhum produto encontrado.
-    */
-
-    if (
-        corpoTabela.children.length === 0
-    ) {
-
-        corpoTabela.innerHTML = `
-
-            <tr>
-
-                <td
-                    colspan="7"
-                    class="mensagem-saidas"
-                >
-                    Nenhum produto encontrado.
-                </td>
-
-            </tr>
-
-        `;
-
-    }
-
-
-    /*
-        Total do mês.
-    */
-
-    const trTotal =
-        document.createElement(
-            "tr"
-        );
-
-
-    trTotal.className =
-        "linha-total";
-
-
-    trTotal.innerHTML = `
-
-        <td colspan="4">
-            TOTAL DO MÊS
-        </td>
-
-        <td class="numero">
-            ${unidadesVendidas}
-        </td>
-
-        <td></td>
-
-        <td class="valor">
-            ${formatarMoeda(
-                totalGeral
-            )}
-        </td>
-
-    `;
-
-
-    corpoTabela.appendChild(
-        trTotal
-    );
-
-
-    quantidadeProdutos.textContent =
-        produtosVendidos;
-
-
-    quantidadeUnidades.textContent =
-        unidadesVendidas;
-
-
-    totalVendido.textContent =
-        formatarMoeda(
-            totalGeral
-        );
-
-}
-
-
-/* =========================================
-   ALTERAR QUANTIDADE
-   SOMENTE NO MÊS SELECIONADO
-========================================= */
-
-async function alterarQuantidadeProduto(
-    idProduto,
-    variacao
-) {
-
-    const mes =
-        seletorMes.value;
-
-
-    /*
-        Busca somente registros
-        do mês atualmente selecionado.
-    */
-
-    const registros =
-        saidasFirebase.filter(
-            saida =>
-                saida.referenciaMes === mes &&
-                Array.isArray(saida.itens) &&
-                saida.itens.some(
-                    item =>
-                        String(item.id) ===
-                        String(idProduto)
-                )
-        );
-
-
-    if (
-        registros.length === 0
-    ) {
-
-        alert(
-            "Esse produto não possui venda registrada neste mês."
-        );
-
-        return;
-
-    }
-
-
-    /*
-        + 1
-        Adiciona somente no último
-        fechamento desse mês.
-    */
-
-    if (
-        variacao > 0
-    ) {
-
-        const registro =
-            registros[
-                registros.length - 1
-            ];
-
-
-        const itens =
-            [...registro.itens];
-
-
-        const indice =
-            itens.findIndex(
-                item =>
-                    String(item.id) ===
-                    String(idProduto)
-            );
-
-
-        if (
-            indice === -1
+        while (
+            !window.firebaseHotel &&
+            tentativas < 50
         ) {
+
+            await new Promise(
+                resolve =>
+                    setTimeout(
+                        resolve,
+                        100
+                    )
+            );
+
+            tentativas++;
+
+        }
+
+        return !!window.firebaseHotel;
+
+    }
+
+
+    /* =========================================
+       ELEMENTOS
+    ========================================= */
+
+    const seletorMes =
+        document.getElementById(
+            "mesSelecionado"
+        );
+
+
+    const buscarProduto =
+        document.getElementById(
+            "buscarProduto"
+        );
+
+
+    const corpoTabela =
+        document.getElementById(
+            "corpoTabela"
+        );
+
+
+    const quantidadeProdutos =
+        document.getElementById(
+            "quantidadeProdutos"
+        );
+
+
+    const quantidadeUnidades =
+        document.getElementById(
+            "quantidadeUnidades"
+        );
+
+
+    const totalVendido =
+        document.getElementById(
+            "totalVendido"
+        );
+
+
+    let saidasFirebase = [];
+
+
+    let produtos = [];
+
+
+    /* =========================================
+       FORMATAR MOEDA
+    ========================================= */
+
+    function formatarMoeda(valor) {
+
+        return (
+
+            "R$ " +
+
+            Number(valor || 0)
+                .toFixed(2)
+                .replace(".", ",")
+
+        );
+
+    }
+
+
+    /* =========================================
+       CRIAR MESES
+    ========================================= */
+
+    function criarMeses() {
+
+        const agora =
+            new Date();
+
+
+        seletorMes.innerHTML =
+            "";
+
+
+        /*
+            Mês atual + próximos 12 meses.
+        */
+
+        for (
+            let i = 0;
+            i < 13;
+            i++
+        ) {
+
+            const data =
+                new Date(
+                    agora.getFullYear(),
+                    agora.getMonth() + i,
+                    1
+                );
+
+
+            const ano =
+                data.getFullYear();
+
+
+            const mes =
+                String(
+                    data.getMonth() + 1
+                ).padStart(
+                    2,
+                    "0"
+                );
+
+
+            const valor =
+                `${ano}-${mes}`;
+
+
+            const texto =
+                data.toLocaleDateString(
+                    "pt-BR",
+                    {
+                        month:
+                            "long",
+
+                        year:
+                            "numeric"
+                    }
+                );
+
+
+            const option =
+                document.createElement(
+                    "option"
+                );
+
+
+            option.value =
+                valor;
+
+
+            option.textContent =
+                texto.charAt(0).toUpperCase() +
+                texto.slice(1);
+
+
+            seletorMes.appendChild(
+                option
+            );
+
+        }
+
+    }
+
+
+    /* =========================================
+       CARREGAR PRODUTOS DO FIRESTORE
+    ========================================= */
+
+    async function carregarProdutos() {
+
+        const conectado =
+            await aguardarFirebase();
+
+
+        if (!conectado) {
 
             return;
 
         }
 
 
-        const item =
-            {
-                ...itens[indice]
-            };
+        try {
+
+            const {
+                db,
+                collection,
+                getDocs
+            } = window.firebaseHotel;
 
 
-        const quantidadeAtual =
-            Number(
-                item.quantidade || 0
+            const referencia =
+                collection(
+                    db,
+                    "produtos"
+                );
+
+
+            const snapshot =
+                await getDocs(
+                    referencia
+                );
+
+
+            produtos = [];
+
+
+            snapshot.forEach(
+                documento => {
+
+                    const dados =
+                        documento.data();
+
+
+                    produtos.push({
+
+                        id:
+                            documento.id,
+
+                        nome:
+                            dados.nome || "",
+
+                        categoria:
+                            dados.categoria || "",
+
+                        preco:
+                            Number(
+                                dados.preco || 0
+                            )
+
+                    });
+
+                }
             );
 
 
-        const novaQuantidade =
-            quantidadeAtual + 1;
-
-
-        item.quantidade =
-            novaQuantidade;
-
-
-        item.total =
-            Number(
-                (
-                    Number(
-                        item.valorUnitario || 0
-                    ) *
-                    novaQuantidade
-                ).toFixed(2)
+            produtos.sort(
+                (a, b) =>
+                    a.nome.localeCompare(
+                        b.nome,
+                        "pt-BR"
+                    )
             );
 
+        }
+        catch (erro) {
 
-        itens[indice] =
-            item;
+            console.error(
+                "Erro ao carregar produtos:",
+                erro
+            );
 
-
-        await atualizarRegistroSaida(
-            registro.id,
-            itens
-        );
-
-
-        registro.itens =
-            itens;
+        }
 
     }
 
 
-    /*
-        - 1
-        Retira somente do mês selecionado,
-        começando pelo último fechamento.
-    */
+    /* =========================================
+       ENCONTRAR PRODUTO
+    ========================================= */
 
-    if (
-        variacao < 0
+    function encontrarProduto(item) {
+
+        const idItem =
+            String(
+                item.id ?? ""
+            );
+
+
+        /*
+            Primeiro tenta pelo ID atual
+            do documento do Firestore.
+        */
+
+        let produto =
+            produtos.find(
+                produto =>
+                    String(
+                        produto.id
+                    ) ===
+                    idItem
+            );
+
+
+        if (produto) {
+
+            return produto;
+
+        }
+
+
+        /*
+            Compatibilidade com vendas antigas:
+            procura pelo nome.
+        */
+
+        const nomeItem =
+            String(
+                item.nome || ""
+            )
+                .trim()
+                .toLowerCase();
+
+
+        if (!nomeItem) {
+
+            return null;
+
+        }
+
+
+        produto =
+            produtos.find(
+                produto =>
+                    String(
+                        produto.nome || ""
+                    )
+                        .trim()
+                        .toLowerCase() ===
+                    nomeItem
+            );
+
+
+        return produto || null;
+
+    }
+
+
+    /* =========================================
+       CARREGAR SAÍDAS
+    ========================================= */
+
+    async function carregarSaidas() {
+
+        const conectado =
+            await aguardarFirebase();
+
+
+        if (!conectado) {
+
+            corpoTabela.innerHTML = `
+
+                <tr>
+
+                    <td
+                        colspan="7"
+                        class="mensagem-saidas"
+                    >
+                        Não foi possível
+                        conectar ao Firebase.
+                    </td>
+
+                </tr>
+
+            `;
+
+            return;
+
+        }
+
+
+        try {
+
+            const {
+                db,
+                collection,
+                getDocs
+            } = window.firebaseHotel;
+
+
+            const referencia =
+                collection(
+                    db,
+                    "saidas"
+                );
+
+
+            const snapshot =
+                await getDocs(
+                    referencia
+                );
+
+
+            saidasFirebase = [];
+
+
+            snapshot.forEach(
+                documento => {
+
+                    saidasFirebase.push({
+
+                        id:
+                            documento.id,
+
+                        ...documento.data()
+
+                    });
+
+                }
+            );
+
+
+            mostrarSaidas();
+
+        }
+        catch (erro) {
+
+            console.error(
+                "Erro ao carregar saídas:",
+                erro
+            );
+
+
+            corpoTabela.innerHTML = `
+
+                <tr>
+
+                    <td
+                        colspan="7"
+                        class="mensagem-saidas"
+                    >
+                        Erro ao carregar
+                        as vendas.
+                    </td>
+
+                </tr>
+
+            `;
+
+        }
+
+    }
+
+
+    /* =========================================
+       MOSTRAR SAÍDAS
+    ========================================= */
+
+    function mostrarSaidas() {
+
+        const mes =
+            seletorMes.value;
+
+
+        const busca =
+            buscarProduto.value
+                .trim()
+                .toLowerCase();
+
+
+        /*
+            Soma os produtos somente
+            do mês selecionado.
+        */
+
+        const vendasPorProduto = {};
+
+
+        saidasFirebase.forEach(
+            saida => {
+
+                if (
+                    saida.referenciaMes !==
+                    mes
+                ) {
+
+                    return;
+
+                }
+
+
+                const itens =
+                    Array.isArray(
+                        saida.itens
+                    )
+                        ? saida.itens
+                        : [];
+
+
+                itens.forEach(
+                    item => {
+
+                        const produto =
+                            encontrarProduto(
+                                item
+                            );
+
+
+                        if (!produto) {
+
+                            return;
+
+                        }
+
+
+                        const id =
+                            String(
+                                produto.id
+                            );
+
+
+                        if (
+                            !vendasPorProduto[id]
+                        ) {
+
+                            vendasPorProduto[id] = {
+
+                                quantidade:
+                                    0,
+
+                                total:
+                                    0,
+
+                                valorUnitario:
+                                    Number(
+                                        item.valorUnitario ??
+                                        produto.preco ??
+                                        0
+                                    )
+
+                            };
+
+                        }
+
+
+                        vendasPorProduto[id]
+                            .quantidade +=
+                            Number(
+                                item.quantidade || 0
+                            );
+
+
+                        vendasPorProduto[id]
+                            .total +=
+                            Number(
+                                item.total || 0
+                            );
+
+                    }
+                );
+
+            }
+        );
+
+
+        corpoTabela.innerHTML =
+            "";
+
+
+        let produtosVendidos =
+            0;
+
+
+        let unidadesVendidas =
+            0;
+
+
+        let totalGeral =
+            0;
+
+
+        /*
+            Mostra todos os produtos
+            cadastrados no Firestore.
+        */
+
+        produtos.forEach(
+            produto => {
+
+                /*
+                    Pesquisa pelo nome.
+                */
+
+                if (
+                    busca &&
+                    !String(
+                        produto.nome || ""
+                    )
+                        .toLowerCase()
+                        .includes(
+                            busca
+                        )
+                ) {
+
+                    return;
+
+                }
+
+
+                const id =
+                    String(
+                        produto.id
+                    );
+
+
+                const venda =
+                    vendasPorProduto[id];
+
+
+                const quantidade =
+                    venda
+                        ? venda.quantidade
+                        : 0;
+
+
+                const total =
+                    venda
+                        ? venda.total
+                        : 0;
+
+
+                const valorUnitario =
+                    venda
+                        ? venda.valorUnitario
+                        : Number(
+                            produto.preco || 0
+                        );
+
+
+                if (
+                    quantidade > 0
+                ) {
+
+                    produtosVendidos++;
+
+                }
+
+
+                unidadesVendidas +=
+                    quantidade;
+
+
+                totalGeral +=
+                    total;
+
+
+                const tr =
+                    document.createElement(
+                        "tr"
+                    );
+
+
+                if (
+                    quantidade === 0
+                ) {
+
+                    tr.className =
+                        "produto-sem-venda";
+
+                }
+
+
+                tr.innerHTML = `
+
+                    <td>
+                        ${produto.id}
+                    </td>
+
+                    <td>
+                        ${produto.nome}
+                    </td>
+
+                    <td>
+                        ${produto.categoria || ""}
+                    </td>
+
+                    <td class="valor">
+                        ${formatarMoeda(
+                            valorUnitario
+                        )}
+                    </td>
+
+                    <td class="numero">
+                        ${quantidade}
+                    </td>
+
+                    <td>
+
+                        <div class="controles-produto">
+
+                            <button
+                                class="btn-ajuste"
+                                onclick="alterarQuantidadeProduto('${produto.id}', -1)"
+                                title="Diminuir 1"
+                            >
+                                −
+                            </button>
+
+                            <button
+                                class="btn-ajuste"
+                                onclick="alterarQuantidadeProduto('${produto.id}', 1)"
+                                title="Aumentar 1"
+                            >
+                                +
+                            </button>
+
+                            <button
+                                class="btn-excluir"
+                                onclick="excluirProdutoMes('${produto.id}')"
+                                title="Excluir produto deste mês"
+                            >
+                                Excluir
+                            </button>
+
+                        </div>
+
+                    </td>
+
+                    <td class="valor">
+                        ${formatarMoeda(
+                            total
+                        )}
+                    </td>
+
+                `;
+
+
+                corpoTabela.appendChild(
+                    tr
+                );
+
+            }
+        );
+
+
+        /*
+            Nenhum produto encontrado.
+        */
+
+        if (
+            corpoTabela.children.length === 0
+        ) {
+
+            corpoTabela.innerHTML = `
+
+                <tr>
+
+                    <td
+                        colspan="7"
+                        class="mensagem-saidas"
+                    >
+                        Nenhum produto encontrado.
+                    </td>
+
+                </tr>
+
+            `;
+
+        }
+
+
+        /*
+            Total do mês.
+        */
+
+        const trTotal =
+            document.createElement(
+                "tr"
+            );
+
+
+        trTotal.className =
+            "linha-total";
+
+
+        trTotal.innerHTML = `
+
+            <td colspan="4">
+                TOTAL DO MÊS
+            </td>
+
+            <td class="numero">
+                ${unidadesVendidas}
+            </td>
+
+            <td></td>
+
+            <td class="valor">
+                ${formatarMoeda(
+                    totalGeral
+                )}
+            </td>
+
+        `;
+
+
+        corpoTabela.appendChild(
+            trTotal
+        );
+
+
+        quantidadeProdutos.textContent =
+            produtosVendidos;
+
+
+        quantidadeUnidades.textContent =
+            unidadesVendidas;
+
+
+        totalVendido.textContent =
+            formatarMoeda(
+                totalGeral
+            );
+
+    }
+
+
+    /* =========================================
+       ALTERAR QUANTIDADE
+       SOMENTE NO MÊS SELECIONADO
+    ========================================= */
+
+    async function alterarQuantidadeProduto(
+        idProduto,
+        variacao
     ) {
 
-        let restante =
-            1;
+        const mes =
+            seletorMes.value;
 
 
-        for (
-            let i = registros.length - 1;
-            i >= 0 && restante > 0;
-            i--
+        /*
+            Busca registros do mês
+            atualmente selecionado.
+
+            Aceita tanto o ID atual
+            quanto o nome do produto.
+        */
+
+        const produto =
+            produtos.find(
+                item =>
+                    String(
+                        item.id
+                    ) ===
+                    String(
+                        idProduto
+                    )
+            );
+
+
+        if (!produto) {
+
+            return;
+
+        }
+
+
+        const registros =
+            saidasFirebase.filter(
+                saida =>
+                    saida.referenciaMes ===
+                    mes &&
+                    Array.isArray(
+                        saida.itens
+                    ) &&
+                    saida.itens.some(
+                        item => {
+
+                            const encontrado =
+                                encontrarProduto(
+                                    item
+                                );
+
+                            return (
+                                encontrado &&
+                                String(
+                                    encontrado.id
+                                ) ===
+                                String(
+                                    idProduto
+                                )
+                            );
+
+                        }
+                    )
+            );
+
+
+        if (
+            registros.length === 0
+        ) {
+
+            alert(
+                "Esse produto não possui venda registrada neste mês."
+            );
+
+            return;
+
+        }
+
+
+        /*
+            + 1
+            Adiciona somente no último
+            fechamento desse mês.
+        */
+
+        if (
+            variacao > 0
         ) {
 
             const registro =
-                registros[i];
+                registros[
+                    registros.length - 1
+                ];
 
 
             const itens =
@@ -1480,9 +1612,24 @@ async function alterarQuantidadeProduto(
 
             const indice =
                 itens.findIndex(
-                    item =>
-                        String(item.id) ===
-                        String(idProduto)
+                    item => {
+
+                        const encontrado =
+                            encontrarProduto(
+                                item
+                            );
+
+                        return (
+                            encontrado &&
+                            String(
+                                encontrado.id
+                            ) ===
+                            String(
+                                idProduto
+                            )
+                        );
+
+                    }
                 );
 
 
@@ -1490,7 +1637,7 @@ async function alterarQuantidadeProduto(
                 indice === -1
             ) {
 
-                continue;
+                return;
 
             }
 
@@ -1507,50 +1654,27 @@ async function alterarQuantidadeProduto(
                 );
 
 
-            if (
-                quantidadeAtual <= 0
-            ) {
-
-                continue;
-
-            }
-
-
             const novaQuantidade =
-                quantidadeAtual - 1;
+                quantidadeAtual + 1;
 
 
-            if (
-                novaQuantidade === 0
-            ) {
+            item.quantidade =
+                novaQuantidade;
 
-                itens.splice(
-                    indice,
-                    1
+
+            item.total =
+                Number(
+                    (
+                        Number(
+                            item.valorUnitario || 0
+                        ) *
+                        novaQuantidade
+                    ).toFixed(2)
                 );
 
-            }
-            else {
 
-                item.quantidade =
-                    novaQuantidade;
-
-
-                item.total =
-                    Number(
-                        (
-                            Number(
-                                item.valorUnitario || 0
-                            ) *
-                            novaQuantidade
-                        ).toFixed(2)
-                    );
-
-
-                itens[indice] =
-                    item;
-
-            }
+            itens[indice] =
+                item;
 
 
             await atualizarRegistroSaida(
@@ -1562,90 +1686,158 @@ async function alterarQuantidadeProduto(
             registro.itens =
                 itens;
 
+        }
 
-            restante--;
+
+        /*
+            - 1
+            Retira somente do mês selecionado,
+            começando pelo último fechamento.
+        */
+
+        if (
+            variacao < 0
+        ) {
+
+            let restante =
+                1;
+
+
+            for (
+                let i = registros.length - 1;
+                i >= 0 &&
+                restante > 0;
+                i--
+            ) {
+
+                const registro =
+                    registros[i];
+
+
+                const itens =
+                    [...registro.itens];
+
+
+                const indice =
+                    itens.findIndex(
+                        item => {
+
+                            const encontrado =
+                                encontrarProduto(
+                                    item
+                                );
+
+                            return (
+                                encontrado &&
+                                String(
+                                    encontrado.id
+                                ) ===
+                                String(
+                                    idProduto
+                                )
+                            );
+
+                        }
+                    );
+
+
+                if (
+                    indice === -1
+                ) {
+
+                    continue;
+
+                }
+
+
+                const item =
+                    {
+                        ...itens[indice]
+                    };
+
+
+                const quantidadeAtual =
+                    Number(
+                        item.quantidade || 0
+                    );
+
+
+                if (
+                    quantidadeAtual <= 0
+                ) {
+
+                    continue;
+
+                }
+
+
+                const novaQuantidade =
+                    quantidadeAtual - 1;
+
+
+                if (
+                    novaQuantidade === 0
+                ) {
+
+                    itens.splice(
+                        indice,
+                        1
+                    );
+
+                }
+                else {
+
+                    item.quantidade =
+                        novaQuantidade;
+
+
+                    item.total =
+                        Number(
+                            (
+                                Number(
+                                    item.valorUnitario || 0
+                                ) *
+                                novaQuantidade
+                            ).toFixed(2)
+                        );
+
+
+                    itens[indice] =
+                        item;
+
+                }
+
+
+                await atualizarRegistroSaida(
+                    registro.id,
+                    itens
+                );
+
+
+                registro.itens =
+                    itens;
+
+
+                restante--;
+
+            }
 
         }
 
-    }
 
-
-    mostrarSaidas();
-
-}
-
-
-/* =========================================
-   ATUALIZAR SAÍDA NO FIREBASE
-========================================= */
-
-async function atualizarRegistroSaida(
-    idRegistro,
-    itens
-) {
-
-    const {
-        db,
-        doc,
-        updateDoc
-    } = window.firebaseHotel;
-
-
-    await updateDoc(
-        doc(
-            db,
-            "saidas",
-            idRegistro
-        ),
-        {
-            itens: itens
-        }
-    );
-
-}
-
-
-/* =========================================
-   EXCLUIR PRODUTO DO MÊS
-========================================= */
-
-async function excluirProdutoMes(
-    idProduto
-) {
-
-    const mes =
-        seletorMes.value;
-
-
-    const produto =
-        produtos.find(
-            item =>
-                String(item.id) ===
-                String(idProduto)
-        );
-
-
-    if (!produto) {
-
-        return;
+        mostrarSaidas();
 
     }
 
 
-    const confirmar =
-        confirm(
-            `Excluir todas as vendas de "${produto.nome}" deste mês?\n\nEssa ação não poderá ser desfeita.`
-        );
+    /* =========================================
+       ATUALIZAR SAÍDA NO FIREBASE
+    ========================================= */
 
-
-    if (!confirmar) {
-
-        return;
-
-    }
-
-
-    try {
+    async function atualizarRegistroSaida(
+        idRegistro,
+        itens
+    ) {
 
         const {
             db,
@@ -1654,104 +1846,212 @@ async function excluirProdutoMes(
         } = window.firebaseHotel;
 
 
-        /*
-            Procura somente os registros
-            do mês selecionado.
-        */
+        await updateDoc(
+            doc(
+                db,
+                "saidas",
+                idRegistro
+            ),
+            {
+                itens:
+                    itens
+            }
+        );
 
-        const registros =
-            saidasFirebase.filter(
-                saida =>
-                    saida.referenciaMes === mes &&
-                    Array.isArray(saida.itens) &&
-                    saida.itens.some(
-                        item =>
-                            String(item.id) ===
-                            String(idProduto)
+    }
+
+
+    /* =========================================
+       EXCLUIR PRODUTO DO MÊS
+    ========================================= */
+
+    async function excluirProdutoMes(
+        idProduto
+    ) {
+
+        const mes =
+            seletorMes.value;
+
+
+        const produto =
+            produtos.find(
+                item =>
+                    String(
+                        item.id
+                    ) ===
+                    String(
+                        idProduto
                     )
             );
 
 
-        /*
-            Remove o produto somente
-            desses registros.
-        */
+        if (!produto) {
 
-        for (
-            const registro
-            of registros
-        ) {
-
-            const novosItens =
-                registro.itens.filter(
-                    item =>
-                        String(item.id) !==
-                        String(idProduto)
-                );
-
-
-            await updateDoc(
-                doc(
-                    db,
-                    "saidas",
-                    registro.id
-                ),
-                {
-                    itens:
-                        novosItens
-                }
-            );
-
-
-            registro.itens =
-                novosItens;
+            return;
 
         }
 
 
-        mostrarSaidas();
+        const confirmar =
+            confirm(
+                `Excluir todas as vendas de "${produto.nome}" deste mês?\n\nEssa ação não poderá ser desfeita.`
+            );
+
+
+        if (!confirmar) {
+
+            return;
+
+        }
+
+
+        try {
+
+            const {
+                db,
+                doc,
+                updateDoc
+            } = window.firebaseHotel;
+
+
+            /*
+                Procura somente os registros
+                do mês selecionado.
+            */
+
+            const registros =
+                saidasFirebase.filter(
+                    saida =>
+                        saida.referenciaMes ===
+                        mes &&
+                        Array.isArray(
+                            saida.itens
+                        ) &&
+                        saida.itens.some(
+                            item => {
+
+                                const encontrado =
+                                    encontrarProduto(
+                                        item
+                                    );
+
+                                return (
+                                    encontrado &&
+                                    String(
+                                        encontrado.id
+                                    ) ===
+                                    String(
+                                        idProduto
+                                    )
+                                );
+
+                            }
+                        )
+                );
+
+
+            /*
+                Remove o produto somente
+                desses registros.
+            */
+
+            for (
+                const registro
+                of registros
+            ) {
+
+                const novosItens =
+                    registro.itens.filter(
+                        item => {
+
+                            const encontrado =
+                                encontrarProduto(
+                                    item
+                                );
+
+                            return !(
+                                encontrado &&
+                                String(
+                                    encontrado.id
+                                ) ===
+                                String(
+                                    idProduto
+                                )
+                            );
+
+                        }
+                    );
+
+
+                await updateDoc(
+                    doc(
+                        db,
+                        "saidas",
+                        registro.id
+                    ),
+                    {
+                        itens:
+                            novosItens
+                    }
+                );
+
+
+                registro.itens =
+                    novosItens;
+
+            }
+
+
+            mostrarSaidas();
+
+        }
+        catch (erro) {
+
+            console.error(
+                "Erro ao excluir produto:",
+                erro
+            );
+
+
+            alert(
+                "Não foi possível excluir o produto."
+            );
+
+        }
 
     }
-    catch (erro) {
-
-        console.error(
-            "Erro ao excluir produto:",
-            erro
-        );
 
 
-        alert(
-            "Não foi possível excluir o produto."
-        );
+    /* =========================================
+       EVENTOS
+    ========================================= */
 
-    }
-
-}
-
-
-/* =========================================
-   EVENTOS
-========================================= */
-
-seletorMes.addEventListener(
-    "change",
-    mostrarSaidas
-);
+    seletorMes.addEventListener(
+        "change",
+        mostrarSaidas
+    );
 
 
-buscarProduto.addEventListener(
-    "input",
-    mostrarSaidas
-);
+    buscarProduto.addEventListener(
+        "input",
+        mostrarSaidas
+    );
 
 
-/* =========================================
-   INICIAR
-========================================= */
+    /* =========================================
+       INICIAR
+    ========================================= */
 
-criarMeses();
+    criarMeses();
 
-carregarSaidas();
+
+    (async function iniciarRelatorio() {
+
+        await carregarProdutos();
+
+        await carregarSaidas();
+
+    })();
 
 </script>
 
