@@ -988,17 +988,22 @@
 
 <script type="module">
 
-import {
-    getAuth,
-    onAuthStateChanged,
-    signInWithEmailAndPassword
-} from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
 
+/* =========================================
+   IMPORTS DO FIREBASE
+========================================= */
 
 import {
     getApps,
     getApp
 } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
+
+
+import {
+    getAuth,
+    onAuthStateChanged,
+    signInWithEmailAndPassword
+} from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
 
 
 import {
@@ -1012,7 +1017,7 @@ import {
 
 
 /* =========================================
-   ELEMENTOS
+   TELA DE CARREGAMENTO
 ========================================= */
 
 const telaCarregamento =
@@ -1021,26 +1026,40 @@ const telaCarregamento =
     );
 
 
+
 /* =========================================
-   AGUARDAR APP FIREBASE
+   AGUARDAR FIREBASE
 ========================================= */
 
-async function aguardarAppFirebase() {
+async function aguardarFirebase() {
 
     let tentativas = 0;
 
 
     while (
-        getApps().length === 0 &&
+
+        (
+            getApps().length === 0 ||
+
+            !window.firebaseHotel ||
+
+            !window.firebaseHotel.db
+        )
+
+        &&
+
         tentativas < 100
+
     ) {
 
         await new Promise(
             resolve =>
+
                 setTimeout(
                     resolve,
                     100
                 )
+
         );
 
 
@@ -1049,15 +1068,33 @@ async function aguardarAppFirebase() {
     }
 
 
+
     if (
         getApps().length === 0
     ) {
 
         throw new Error(
-            "Firebase não foi inicializado."
+            "Firebase App não foi inicializado."
         );
 
     }
+
+
+
+    if (
+
+        !window.firebaseHotel ||
+
+        !window.firebaseHotel.db
+
+    ) {
+
+        throw new Error(
+            "Firebase Hotel não ficou disponível."
+        );
+
+    }
+
 
 
     return getApp();
@@ -1071,7 +1108,7 @@ async function aguardarAppFirebase() {
 ========================================= */
 
 const app =
-    await aguardarAppFirebase();
+    await aguardarFirebase();
 
 
 const auth =
@@ -1091,7 +1128,7 @@ function irParaLogin() {
 
 
     window.location.replace(
-        "login.html"
+        "./login.html"
     );
 
 }
@@ -1108,7 +1145,9 @@ function salvarGarcomLogado(
 ) {
 
     localStorage.setItem(
+
         "garcomLogado",
+
         JSON.stringify({
 
             uid:
@@ -1121,6 +1160,7 @@ function salvarGarcomLogado(
                 dados.usuario
 
         })
+
     );
 
 }
@@ -1135,29 +1175,10 @@ async function verificarGarcom(
     usuarioFirebase
 ) {
 
-    if (
-        !window.firebaseHotel
-    ) {
-
-        throw new Error(
-            "Firebase Firestore não disponível."
-        );
-
-    }
-
-
     const db =
         window.firebaseHotel.db;
 
 
-    /*
-     * IMPORTANTE:
-     *
-     * Não buscamos todos os garçons.
-     *
-     * Buscamos somente o cadastro
-     * do usuário autenticado.
-     */
 
     const referencia =
         collection(
@@ -1166,15 +1187,20 @@ async function verificarGarcom(
         );
 
 
+
     const consulta =
         query(
+
             referencia,
+
             where(
                 "uid",
                 "==",
                 usuarioFirebase.uid
             )
+
         );
+
 
 
     const resultado =
@@ -1183,24 +1209,32 @@ async function verificarGarcom(
         );
 
 
+
     if (
         resultado.empty
     ) {
 
         return {
+
             valido: false,
-            motivo: "nao_cadastrado"
+
+            motivo:
+                "nao_cadastrado"
+
         };
 
     }
+
 
 
     const documento =
         resultado.docs[0];
 
 
+
     const dados =
         documento.data();
+
 
 
     if (
@@ -1208,11 +1242,16 @@ async function verificarGarcom(
     ) {
 
         return {
+
             valido: false,
-            motivo: "desativado"
+
+            motivo:
+                "desativado"
+
         };
 
     }
+
 
 
     salvarGarcomLogado(
@@ -1221,9 +1260,13 @@ async function verificarGarcom(
     );
 
 
+
     return {
+
         valido: true,
+
         dados
+
     };
 
 }
@@ -1244,6 +1287,7 @@ function obterGarcomAtual() {
             );
 
 
+
         if (!salvo) {
 
             return null;
@@ -1251,11 +1295,14 @@ function obterGarcomAtual() {
         }
 
 
+
         return JSON.parse(
             salvo
         );
 
-    } catch (erro) {
+    }
+
+    catch (erro) {
 
         console.error(
             "Erro ao ler garçom:",
@@ -1283,19 +1330,26 @@ function atualizarNomeGarcom() {
         );
 
 
+
     const garcom =
         obterGarcomAtual();
 
 
+
     if (
+
         garcom &&
+
         garcom.nome
+
     ) {
 
         botao.textContent =
             garcom.nome + " ▾";
 
-    } else {
+    }
+
+    else {
 
         botao.textContent =
             "Garçom ▾";
@@ -1329,16 +1383,29 @@ function liberarSistema() {
 ========================================= */
 
 onAuthStateChanged(
+
     auth,
+
     async usuarioFirebase => {
+
+        console.log(
+            "Verificando autenticação..."
+        );
+
 
         try {
 
-            /*
-             * Não está logado.
-             */
+
+            /* ==============================
+               NENHUM USUÁRIO
+            ============================== */
 
             if (!usuarioFirebase) {
+
+                console.log(
+                    "Nenhum usuário autenticado."
+                );
+
 
                 irParaLogin();
 
@@ -1347,12 +1414,17 @@ onAuthStateChanged(
             }
 
 
-            /*
-             * Está logado.
-             *
-             * Agora confirma se é um
-             * garçom cadastrado e ativo.
-             */
+
+            console.log(
+                "Usuário autenticado:",
+                usuarioFirebase.uid
+            );
+
+
+
+            /* ==============================
+               VERIFICAR GARÇOM
+            ============================== */
 
             const resultado =
                 await verificarGarcom(
@@ -1360,11 +1432,12 @@ onAuthStateChanged(
                 );
 
 
+
             if (
                 !resultado.valido
             ) {
 
-                console.warn(
+                console.log(
                     "Acesso recusado:",
                     resultado.motivo
                 );
@@ -1377,37 +1450,77 @@ onAuthStateChanged(
             }
 
 
-            /*
-             * Login confirmado.
-             */
+
+            console.log(
+                "Acesso autorizado:",
+                resultado.dados.nome
+            );
+
+
+
+            /* ==============================
+               MOSTRAR NOME
+            ============================== */
 
             atualizarNomeGarcom();
 
 
+
+            /* ==============================
+               LIBERAR SISTEMA
+            ============================== */
+
             liberarSistema();
 
 
-            /*
-             * Só agora carregamos
-             * mesas e quartos.
-             */
+
+            /* ==============================
+               INICIAR MESAS
+            ============================== */
 
             iniciarMesas();
 
 
-        } catch (erro) {
+        }
+
+        catch (erro) {
 
             console.error(
-                "Erro na proteção de acesso:",
+                "ERRO NA PROTEÇÃO:",
                 erro
             );
 
 
-            irParaLogin();
+            telaCarregamento.innerHTML = `
+
+                <strong>
+                    Hotel do Baú
+                </strong>
+
+                <span>
+                    Verificando acesso...
+                </span>
+
+            `;
+
+
+
+            setTimeout(
+
+                function () {
+
+                    irParaLogin();
+
+                },
+
+                800
+
+            );
 
         }
 
     }
+
 );
 
 
@@ -1417,7 +1530,9 @@ onAuthStateChanged(
 ========================================= */
 
 window.abrirTrocaGarcom =
+
     async function () {
+
 
         const fundo =
             document.getElementById(
@@ -1443,6 +1558,7 @@ window.abrirTrocaGarcom =
             );
 
 
+
         fundo.classList.add(
             "mostrar"
         );
@@ -1456,6 +1572,7 @@ window.abrirTrocaGarcom =
             "";
 
 
+
         select.innerHTML = `
 
             <option value="">
@@ -1465,13 +1582,6 @@ window.abrirTrocaGarcom =
         `;
 
 
-        /*
-         * A lista completa de garçons depende
-         * das regras do Firestore.
-         *
-         * Mantemos o funcionamento da troca
-         * se a regra atual permitir essa leitura.
-         */
 
         try {
 
@@ -1479,24 +1589,31 @@ window.abrirTrocaGarcom =
                 window.firebaseHotel.db;
 
 
+
             const resultado =
                 await getDocs(
+
                     collection(
                         db,
                         "garcons"
                     )
+
                 );
+
 
 
             const garcomAtual =
                 obterGarcomAtual();
 
 
+
             resultado.forEach(
+
                 documento => {
 
                     const dados =
                         documento.data();
+
 
 
                     if (
@@ -1508,6 +1625,7 @@ window.abrirTrocaGarcom =
                     }
 
 
+
                     if (
                         !dados.usuario
                     ) {
@@ -1517,14 +1635,17 @@ window.abrirTrocaGarcom =
                     }
 
 
+
                     const option =
                         document.createElement(
                             "option"
                         );
 
 
+
                     option.value =
                         dados.usuario;
+
 
 
                     option.textContent =
@@ -1532,10 +1653,14 @@ window.abrirTrocaGarcom =
                         dados.usuario;
 
 
+
                     if (
+
                         garcomAtual &&
+
                         dados.uid ===
                             garcomAtual.uid
+
                     ) {
 
                         option.selected =
@@ -1544,18 +1669,22 @@ window.abrirTrocaGarcom =
                     }
 
 
+
                     select.appendChild(
                         option
                     );
 
                 }
+
             );
+
 
 
             senha.focus();
 
+        }
 
-        } catch (erro) {
+        catch (erro) {
 
             console.error(
                 "Erro ao carregar garçons:",
@@ -1581,6 +1710,7 @@ window.abrirTrocaGarcom =
 ========================================= */
 
 window.fecharTrocaGarcom =
+
     function () {
 
         document
@@ -1596,11 +1726,14 @@ window.fecharTrocaGarcom =
 
 
 window.fecharTrocaGarcomFundo =
+
     function (evento) {
 
         if (
+
             evento.target.id ===
             "fundoTrocaGarcom"
+
         ) {
 
             fecharTrocaGarcom();
@@ -1616,7 +1749,9 @@ window.fecharTrocaGarcomFundo =
 ========================================= */
 
 window.confirmarTrocaGarcom =
+
     async function () {
+
 
         const select =
             document.getElementById(
@@ -1642,14 +1777,17 @@ window.confirmarTrocaGarcom =
             );
 
 
+
         const usuario =
             select.value
                 .trim()
                 .toLowerCase();
 
 
+
         const senhaDigitada =
             senha.value;
+
 
 
         if (!usuario) {
@@ -1667,10 +1805,13 @@ window.confirmarTrocaGarcom =
         }
 
 
+
         if (
+
             !/^\d{6}$/.test(
                 senhaDigitada
             )
+
         ) {
 
             mensagem.style.color =
@@ -1686,6 +1827,7 @@ window.confirmarTrocaGarcom =
         }
 
 
+
         botao.disabled =
             true;
 
@@ -1698,10 +1840,12 @@ window.confirmarTrocaGarcom =
             "Verificando acesso...";
 
 
+
         try {
 
             const db =
                 window.firebaseHotel.db;
+
 
 
             const email =
@@ -1709,41 +1853,48 @@ window.confirmarTrocaGarcom =
                 "@hoteldobau.com";
 
 
+
             const resultado =
                 await signInWithEmailAndPassword(
+
                     auth,
+
                     email,
+
                     senhaDigitada
+
                 );
+
 
 
             const usuarioFirebase =
                 resultado.user;
 
 
-            /*
-             * Aqui também buscamos somente
-             * o UID autenticado.
-             */
 
             const consulta =
                 query(
+
                     collection(
                         db,
                         "garcons"
                     ),
+
                     where(
                         "uid",
                         "==",
                         usuarioFirebase.uid
                     )
+
                 );
+
 
 
             const resultadoGarcom =
                 await getDocs(
                     consulta
                 );
+
 
 
             if (
@@ -1757,10 +1908,12 @@ window.confirmarTrocaGarcom =
             }
 
 
+
             const dadosGarcom =
                 resultadoGarcom
                     .docs[0]
                     .data();
+
 
 
             if (
@@ -1774,13 +1927,16 @@ window.confirmarTrocaGarcom =
             }
 
 
+
             salvarGarcomLogado(
                 dadosGarcom,
                 usuarioFirebase
             );
 
 
+
             atualizarNomeGarcom();
+
 
 
             mensagem.style.color =
@@ -1791,17 +1947,22 @@ window.confirmarTrocaGarcom =
                 "Garçom alterado.";
 
 
+
             setTimeout(
+
                 () => {
 
                     fecharTrocaGarcom();
 
                 },
+
                 400
+
             );
 
+        }
 
-        } catch (erro) {
+        catch (erro) {
 
             console.error(
                 "Erro ao trocar garçom:",
@@ -1813,9 +1974,12 @@ window.confirmarTrocaGarcom =
                 "#c0392b";
 
 
+
             if (
+
                 erro.message ===
                 "GARCOM_NAO_CADASTRADO"
+
             ) {
 
                 mensagem.textContent =
@@ -1824,8 +1988,10 @@ window.confirmarTrocaGarcom =
             }
 
             else if (
+
                 erro.message ===
                 "USUARIO_DESATIVADO"
+
             ) {
 
                 mensagem.textContent =
@@ -1834,10 +2000,13 @@ window.confirmarTrocaGarcom =
             }
 
             else if (
+
                 erro.code ===
                 "auth/invalid-credential" ||
+
                 erro.code ===
                 "auth/wrong-password"
+
             ) {
 
                 mensagem.textContent =
@@ -1846,8 +2015,10 @@ window.confirmarTrocaGarcom =
             }
 
             else if (
+
                 erro.code ===
                 "auth/user-not-found"
+
             ) {
 
                 mensagem.textContent =
@@ -1863,6 +2034,7 @@ window.confirmarTrocaGarcom =
             }
 
         }
+
 
 
         botao.disabled =
@@ -1885,7 +2057,9 @@ document
         "senhaTrocaGarcom"
     )
     .addEventListener(
+
         "keydown",
+
         evento => {
 
             if (
@@ -1900,6 +2074,7 @@ document
             }
 
         }
+
     );
 
 
@@ -1913,7 +2088,9 @@ document
         "senhaTrocaGarcom"
     )
     .addEventListener(
+
         "input",
+
         function () {
 
             this.value =
@@ -1923,6 +2100,7 @@ document
                 );
 
         }
+
     );
 
 
@@ -1932,7 +2110,9 @@ document
 ========================================= */
 
 window.abrirMesa =
+
     function (numero) {
+
 
         localStorage.setItem(
             "mesaSelecionada",
@@ -1958,7 +2138,9 @@ window.abrirMesa =
 ========================================= */
 
 window.abrirQuarto =
+
     function (numero) {
+
 
         localStorage.setItem(
             "mesaSelecionada",
@@ -2006,12 +2188,17 @@ const quartosDisponiveis = [
 ========================================= */
 
 function definirStatusLocal(
+
     tipo,
+
     numero,
+
     status
+
 ) {
 
     let botao;
+
 
 
     if (
@@ -2020,20 +2207,24 @@ function definirStatusLocal(
 
         botao =
             document.querySelector(
+
                 `#mesas .mesa:nth-child(${numero})`
+
             );
 
     }
-
 
     else {
 
         botao =
             document.querySelector(
+
                 `#quartos .mesa[data-numero="${numero}"]`
+
             );
 
     }
+
 
 
     if (!botao) {
@@ -2043,17 +2234,24 @@ function definirStatusLocal(
     }
 
 
+
     const textoStatus =
         botao.querySelector(
             "span"
         );
 
 
+
     botao.classList.remove(
+
         "livre",
+
         "ocupada",
+
         "pagamento"
+
     );
+
 
 
     if (
@@ -2074,6 +2272,7 @@ function definirStatusLocal(
     }
 
 
+
     if (
         status === "ocupada"
     ) {
@@ -2084,14 +2283,18 @@ function definirStatusLocal(
 
 
         textoStatus.textContent =
+
             tipo === "quarto"
+
                 ? "Ocupado"
+
                 : "Ocupada";
 
 
         return;
 
     }
+
 
 
     botao.classList.add(
@@ -2112,31 +2315,47 @@ function definirStatusLocal(
 
 function resetarStatus() {
 
+
     for (
+
         let numero = 1;
+
         numero <= 20;
+
         numero++
+
     ) {
 
         definirStatusLocal(
+
             "mesa",
+
             numero,
+
             "livre"
+
         );
 
     }
 
 
+
     quartosDisponiveis.forEach(
+
         numero => {
 
             definirStatusLocal(
+
                 "quarto",
+
                 numero,
+
                 "livre"
+
             );
 
         }
+
     );
 
 }
@@ -2149,18 +2368,25 @@ function resetarStatus() {
 
 async function iniciarMesas() {
 
+
     const db =
         window.firebaseHotel.db;
+
 
 
     resetarStatus();
 
 
+
     const referenciaMesas =
         collection(
+
             db,
+
             "mesas"
+
         );
+
 
 
     onSnapshot(
@@ -2169,18 +2395,24 @@ async function iniciarMesas() {
 
         snapshot => {
 
+
             resetarStatus();
 
 
+
             snapshot.forEach(
+
                 documento => {
+
 
                     const local =
                         documento.data();
 
 
+
                     const idDocumento =
                         documento.id;
+
 
 
                     const numero =
@@ -2189,8 +2421,10 @@ async function iniciarMesas() {
                         );
 
 
+
                     let tipo =
                         local.tipo;
+
 
 
                     if (!tipo) {
@@ -2199,19 +2433,27 @@ async function iniciarMesas() {
                             idDocumento.startsWith(
                                 "quarto_"
                             )
+
                                 ? "quarto"
+
                                 : "mesa";
 
                     }
 
 
+
                     if (
+
                         tipo === "mesa"
+
                     ) {
 
                         if (
+
                             numero < 1 ||
+
                             numero > 20
+
                         ) {
 
                             return;
@@ -2219,15 +2461,22 @@ async function iniciarMesas() {
                         }
 
 
+
                         if (
+
                             local.status ===
                             "pagamento"
+
                         ) {
 
                             definirStatusLocal(
+
                                 "mesa",
+
                                 numero,
+
                                 "pagamento"
+
                             );
 
                         }
@@ -2235,14 +2484,19 @@ async function iniciarMesas() {
                     }
 
 
+
                     if (
+
                         tipo === "quarto"
+
                     ) {
 
                         if (
+
                             !quartosDisponiveis.includes(
                                 numero
                             )
+
                         ) {
 
                             return;
@@ -2250,15 +2504,22 @@ async function iniciarMesas() {
                         }
 
 
+
                         if (
+
                             local.status ===
                             "pagamento"
+
                         ) {
 
                             definirStatusLocal(
+
                                 "quarto",
+
                                 numero,
+
                                 "pagamento"
+
                             );
 
                         }
@@ -2266,15 +2527,20 @@ async function iniciarMesas() {
                     }
 
                 }
+
             );
 
         },
 
+
         erro => {
 
             console.error(
+
                 "Erro ao carregar mesas:",
+
                 erro
+
             );
 
         }
@@ -2288,9 +2554,13 @@ async function iniciarMesas() {
     ========================================= */
 
     function observarConsumo(
+
         tipo,
+
         numero
+
     ) {
+
 
         const idMesa =
 
@@ -2299,6 +2569,7 @@ async function iniciarMesas() {
                 ? `quarto_${String(numero).padStart(2, "0")}`
 
                 : `mesa_${String(numero).padStart(2, "0")}`;
+
 
 
         const referenciaPedidos =
@@ -2315,39 +2586,57 @@ async function iniciarMesas() {
             );
 
 
+
         onSnapshot(
 
             referenciaPedidos,
 
             snapshot => {
 
+
                 if (
+
                     snapshot.empty
+
                 ) {
 
                     definirStatusLocal(
+
                         tipo,
+
                         numero,
+
                         "livre"
+
                     );
 
-                } else {
+                }
+
+                else {
 
                     definirStatusLocal(
+
                         tipo,
+
                         numero,
+
                         "ocupada"
+
                     );
 
                 }
 
             },
 
+
             erro => {
 
                 console.error(
+
                     `Erro ao verificar consumo de ${tipo} ${numero}:`,
+
                     erro
+
                 );
 
             }
@@ -2363,14 +2652,21 @@ async function iniciarMesas() {
     ========================================= */
 
     for (
+
         let numero = 1;
+
         numero <= 20;
+
         numero++
+
     ) {
 
         observarConsumo(
+
             "mesa",
+
             numero
+
         );
 
     }
@@ -2382,14 +2678,19 @@ async function iniciarMesas() {
     ========================================= */
 
     quartosDisponiveis.forEach(
+
         numero => {
 
             observarConsumo(
+
                 "quarto",
+
                 numero
+
             );
 
         }
+
     );
 
 }
@@ -2401,7 +2702,9 @@ async function iniciarMesas() {
 ========================================= */
 
 window.abrirMenu =
+
     function () {
+
 
         document
             .getElementById(
@@ -2410,6 +2713,7 @@ window.abrirMenu =
             .classList.add(
                 "mostrar"
             );
+
 
 
         document
@@ -2421,10 +2725,13 @@ window.abrirMenu =
             );
 
     };
+
 
 
 window.fecharMenu =
+
     function () {
+
 
         document
             .getElementById(
@@ -2433,6 +2740,7 @@ window.fecharMenu =
             .classList.remove(
                 "mostrar"
             );
+
 
 
         document
@@ -2444,6 +2752,7 @@ window.fecharMenu =
             );
 
     };
+
 
 </script>
 
@@ -2458,3 +2767,4 @@ window.fecharMenu =
 </body>
 
 </html>
+
