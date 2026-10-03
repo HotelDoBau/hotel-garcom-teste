@@ -312,16 +312,12 @@
 
             const {
                 db,
-                storage,
                 collection,
                 addDoc,
                 serverTimestamp,
                 doc,
                 getDoc,
-                updateDoc,
-                ref,
-                uploadBytes,
-                getDownloadURL
+                updateDoc
             } = firebase;
 
 
@@ -570,7 +566,7 @@
 
 
             /* =========================
-               ENVIO DA FOTO
+               ENVIO DA FOTO PARA CLOUDINARY
             ========================= */
 
             async function enviarFoto(arquivo) {
@@ -582,30 +578,72 @@
                 }
 
 
-                const nomeArquivo =
-                    `${Date.now()}_${arquivo.name}`;
+                const cloudName =
+                    "m3wdg6ab";
 
 
-                const referenciaFoto =
-                    ref(
-                        storage,
-                        `produtos/${nomeArquivo}`
-                    );
+                const uploadPreset =
+                    "hotel_produtos";
 
 
-                await uploadBytes(
-                    referenciaFoto,
+                const urlUpload =
+                    `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`;
+
+
+                const formulario =
+                    new FormData();
+
+
+                formulario.append(
+                    "file",
                     arquivo
                 );
 
 
-                const urlFoto =
-                    await getDownloadURL(
-                        referenciaFoto
+                formulario.append(
+                    "upload_preset",
+                    uploadPreset
+                );
+
+
+                const resposta =
+                    await fetch(
+                        urlUpload,
+                        {
+                            method: "POST",
+                            body: formulario
+                        }
                     );
 
 
-                return urlFoto;
+                if (!resposta.ok) {
+
+                    const erroTexto =
+                        await resposta.text();
+
+
+                    throw new Error(
+                        "Erro ao enviar a foto para o Cloudinary.\n\n" +
+                        erroTexto
+                    );
+
+                }
+
+
+                const resultado =
+                    await resposta.json();
+
+
+                if (!resultado.secure_url) {
+
+                    throw new Error(
+                        "O Cloudinary não retornou a URL da imagem."
+                    );
+
+                }
+
+
+                return resultado.secure_url;
 
             }
 
@@ -698,11 +736,6 @@
                                 );
 
 
-                        /*
-                         * Se foi escolhida uma foto,
-                         * envia para o Firebase Storage.
-                         */
-
                         let fotoUrl =
                             null;
 
@@ -738,10 +771,7 @@
 
                             /*
                              * Só altera a foto se o usuário
-                             * tiver escolhido uma nova.
-                             *
-                             * Se não escolher outra,
-                             * a foto existente permanece.
+                             * escolher uma nova.
                              */
 
                             if (fotoUrl) {
