@@ -1295,11 +1295,32 @@ async function imprimirGarcom(
             : "";
 
 
+    // =====================================================
+    // NOME DO GARÇOM
+    // =====================================================
+
+    const nomeGarcom =
+        pedido.garcomNome ||
+        pedido.nomeGarcom ||
+        pedido.garcom ||
+        "Não informado";
+
+
     const conteudo = `
 
         <h1>HOTEL DO BAÚ</h1>
 
         <h2>PRODUÇÃO</h2>
+
+        <div class="separador"></div>
+
+        <div class="central">
+
+            <strong>GARÇOM:</strong><br>
+
+            ${escaparHTML(nomeGarcom)}
+
+        </div>
 
         <div class="separador"></div>
 
@@ -1356,8 +1377,6 @@ async function imprimirGarcom(
     }
 
 }
-
-
 // =====================================================
 // IMPRESSÃO DO CONSUMO ACUMULADO
 // =====================================================
