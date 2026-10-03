@@ -1,25 +1,53 @@
+import {
+    db,
+    collection,
+    addDoc,
+    doc,
+    setDoc,
+    serverTimestamp,
+    getDocs
+} from "./firebase.js";
+
+
 let carrinho = [];
 
 let produtosDisponiveis = [];
 
+
 const listaProdutos =
-    document.getElementById("listaProdutos");
+    document.getElementById(
+        "listaProdutos"
+    );
+
 
 const buscar =
-    document.getElementById("buscar");
+    document.getElementById(
+        "buscar"
+    );
+
 
 const qtdItens =
-    document.getElementById("qtdItens");
+    document.getElementById(
+        "qtdItens"
+    );
+
 
 const totalPedido =
-    document.getElementById("totalPedido");
+    document.getElementById(
+        "totalPedido"
+    );
 
 
 const numeroMesa =
-    localStorage.getItem("mesaSelecionada");
+    localStorage.getItem(
+        "mesaSelecionada"
+    );
+
 
 const tipoSelecionado =
-    localStorage.getItem("tipoSelecionado") || "mesa";
+    localStorage.getItem(
+        "tipoSelecionado"
+    ) || "mesa";
 
 
 const ehQuarto =
@@ -27,11 +55,15 @@ const ehQuarto =
 
 
 const nomeLocal =
-    ehQuarto ? "Quarto" : "Mesa";
+    ehQuarto
+        ? "Quarto"
+        : "Mesa";
 
 
 const prefixoLocal =
-    ehQuarto ? "quarto_" : "mesa_";
+    ehQuarto
+        ? "quarto_"
+        : "mesa_";
 
 
 // ===========================
@@ -56,19 +88,21 @@ document.getElementById(
 
     nomeLocal +
     " " +
-    String(numeroMesa).padStart(2, "0");
+    String(
+        numeroMesa
+    ).padStart(
+        2,
+        "0"
+    );
 
 
 // ===========================
 // IMAGENS
 // ===========================
 
-function obterImagem(produto) {
-
-    /*
-     * Produto cadastrado pelo sistema:
-     * usa primeiro a foto salva no Cloudinary.
-     */
+function obterImagem(
+    produto
+) {
 
     if (produto.foto) {
 
@@ -76,12 +110,6 @@ function obterImagem(produto) {
 
     }
 
-
-    /*
-     * Mantém compatibilidade caso
-     * algum produto ainda possua
-     * a propriedade imagem.
-     */
 
     if (produto.imagem) {
 
@@ -103,19 +131,34 @@ function obterImagem(produto) {
 
         if (
 
-            nome.includes("cappuccino") ||
-            nome.includes("frapp") ||
-            nome.includes("affogato") ||
-            nome.includes("mochac")
+            nome.includes(
+                "cappuccino"
+            ) ||
+
+            nome.includes(
+                "frapp"
+            ) ||
+
+            nome.includes(
+                "affogato"
+            ) ||
+
+            nome.includes(
+                "mochac"
+            )
 
         ) {
 
-            return "img/cappuccino-espresso.webp";
+            return (
+                "img/cappuccino-espresso.webp"
+            );
 
         }
 
 
-        return "img/cafe-espresso.webp";
+        return (
+            "img/cafe-espresso.webp"
+        );
 
     }
 
@@ -125,7 +168,9 @@ function obterImagem(produto) {
         "Salgados"
     ) {
 
-        return "img/salgados.webp";
+        return (
+            "img/salgados.webp"
+        );
 
     }
 
@@ -135,7 +180,9 @@ function obterImagem(produto) {
         "Lanches"
     ) {
 
-        return "img/lanche.webp";
+        return (
+            "img/lanche.webp"
+        );
 
     }
 
@@ -145,7 +192,9 @@ function obterImagem(produto) {
         "Pratos Feitos"
     ) {
 
-        return "img/pf.webp";
+        return (
+            "img/pf.webp"
+        );
 
     }
 
@@ -155,7 +204,9 @@ function obterImagem(produto) {
         "Bebidas"
     ) {
 
-        return "img/bebidas.webp";
+        return (
+            "img/bebidas.webp"
+        );
 
     }
 
@@ -165,7 +216,9 @@ function obterImagem(produto) {
         "Cervejas e Vinhos"
     ) {
 
-        return "img/bebidas.webp";
+        return (
+            "img/bebidas.webp"
+        );
 
     }
 
@@ -175,7 +228,9 @@ function obterImagem(produto) {
         "Adicionais"
     ) {
 
-        return "img/adicionais.webp";
+        return (
+            "img/adicionais.webp"
+        );
 
     }
 
@@ -185,7 +240,9 @@ function obterImagem(produto) {
         "Doces"
     ) {
 
-        return "img/doces.webp";
+        return (
+            "img/doces.webp"
+        );
 
     }
 
@@ -195,7 +252,9 @@ function obterImagem(produto) {
         "Petiscos"
     ) {
 
-        return "img/petiscos.webp";
+        return (
+            "img/petiscos.webp"
+        );
 
     }
 
@@ -205,17 +264,9 @@ function obterImagem(produto) {
         "Drinks"
     ) {
 
-        return "img/drinks.webp";
-
-    }
-
-
-    if (
-        produto.categoria ===
-        "Outros"
-    ) {
-
-        return "";
+        return (
+            "img/drinks.webp"
+        );
 
     }
 
@@ -226,94 +277,12 @@ function obterImagem(produto) {
 
 
 // ===========================
-// AGUARDAR FIREBASE
-// ===========================
-
-async function aguardarFirebase() {
-
-    let tentativas = 0;
-
-
-    while (
-
-        !window.firebaseHotel &&
-        tentativas < 50
-
-    ) {
-
-        await new Promise(
-            resolve =>
-                setTimeout(
-                    resolve,
-                    100
-                )
-        );
-
-        tentativas++;
-
-    }
-
-
-    return !!window.firebaseHotel;
-
-}
-
-
-// ===========================
 // CARREGAR PRODUTOS
 // ===========================
 
 async function carregarProdutosFirebase() {
 
-    /*
-     * Agora os produtos vêm
-     * exclusivamente do Firestore.
-     */
-
-    produtosDisponiveis = [];
-
-
-    const conectado =
-        await aguardarFirebase();
-
-
-    if (!conectado) {
-
-        console.error(
-            "Firebase não conectado. Não foi possível carregar os produtos."
-        );
-
-        listaProdutos.innerHTML = `
-
-            <div
-                style="
-                    padding: 20px;
-                    text-align: center;
-                "
-            >
-
-                Não foi possível carregar
-                os produtos.
-
-            </div>
-
-        `;
-
-        return;
-
-    }
-
-
     try {
-
-        const {
-
-            db,
-            collection,
-            getDocs
-
-        } = window.firebaseHotel;
-
 
         const referencia =
             collection(
@@ -328,6 +297,9 @@ async function carregarProdutosFirebase() {
             );
 
 
+        produtosDisponiveis = [];
+
+
         resultado.forEach(
             documento => {
 
@@ -336,10 +308,6 @@ async function carregarProdutosFirebase() {
 
 
                 produtosDisponiveis.push({
-
-                    /*
-                     * ID do documento do Firestore.
-                     */
 
                     id:
                         documento.id,
@@ -368,18 +336,21 @@ async function carregarProdutosFirebase() {
         );
 
 
-        /*
-         * Ordena primeiro pela categoria
-         * e depois pelo nome.
-         */
+        // ===========================
+        // ORDENA
+        // ===========================
 
         produtosDisponiveis.sort(
-            (a, b) => {
+            (
+                a,
+                b
+            ) => {
 
                 const categoriaA =
                     String(
                         a.categoria || ""
                     ).toLowerCase();
+
 
                 const categoriaB =
                     String(
@@ -426,10 +397,13 @@ async function carregarProdutosFirebase() {
         );
 
 
+        renderizarProdutos();
+
+
     } catch (erro) {
 
         console.error(
-            "Erro ao carregar produtos do Firebase:",
+            "Erro ao carregar produtos:",
             erro
         );
 
@@ -455,7 +429,7 @@ async function carregarProdutosFirebase() {
 
 
 // ===========================
-// CARREGAR LISTA DE PRODUTOS
+// RENDERIZAR PRODUTOS
 // ===========================
 
 function renderizarProdutos(
@@ -510,3 +484,999 @@ function renderizarProdutos(
         categoria => {
 
             const itens =
+                produtosDisponiveis.filter(
+                    produto =>
+
+                        produto.categoria ===
+                        categoria &&
+
+                        String(
+                            produto.nome || ""
+                        )
+                            .toLowerCase()
+                            .includes(
+                                filtro.toLowerCase()
+                            )
+                );
+
+
+            if (
+                itens.length === 0
+            ) {
+
+                return;
+
+            }
+
+
+            const grupo =
+                document.createElement(
+                    "section"
+                );
+
+
+            grupo.className =
+                "grupo-categoria";
+
+
+            const titulo =
+                document.createElement(
+                    "button"
+                );
+
+
+            titulo.type =
+                "button";
+
+
+            titulo.className =
+                "categoria-produto";
+
+
+            titulo.innerHTML = `
+
+                <span>
+
+                    ${
+                        iconesCategoria[
+                            categoria
+                        ] || "🍴"
+                    }
+
+                    ${categoria}
+
+                </span>
+
+                <span
+                    class="seta-categoria"
+                >
+                    ▼
+                </span>
+
+            `;
+
+
+            const conteudo =
+                document.createElement(
+                    "div"
+                );
+
+
+            conteudo.className =
+                "conteudo-categoria";
+
+
+            itens.forEach(
+                produto => {
+
+                    const itemCarrinho =
+                        carrinho.find(
+                            item =>
+                                String(
+                                    item.id
+                                ) ===
+                                String(
+                                    produto.id
+                                )
+                        );
+
+
+                    const quantidade =
+                        itemCarrinho
+                            ? itemCarrinho.quantidade
+                            : 0;
+
+
+                    const imagem =
+                        obterImagem(
+                            produto
+                        );
+
+
+                    const card =
+                        document.createElement(
+                            "div"
+                        );
+
+
+                    card.className =
+                        "produto-card";
+
+
+                    let imagemHTML =
+                        "";
+
+
+                    if (imagem) {
+
+                        imagemHTML = `
+
+                            <img
+                                src="${imagem}"
+                                alt="${produto.nome}"
+                                class="foto-produto"
+                            >
+
+                        `;
+
+                    }
+
+
+                    card.innerHTML = `
+
+                        ${imagemHTML}
+
+                        <div class="produto-info">
+
+                            <h3>
+                                ${produto.nome}
+                            </h3>
+
+                            <p>
+                                R$
+                                ${Number(
+                                    produto.preco
+                                ).toFixed(2)}
+                            </p>
+
+                        </div>
+
+                        <div
+                            class="controle-produto"
+                        >
+
+                            <button
+                                type="button"
+                                onclick="
+                                    alterarQuantidade(
+                                        '${String(
+                                            produto.id
+                                        ).replace(
+                                            /'/g,
+                                            "\\'"
+                                        )}',
+                                        -1
+                                    )
+                                "
+                            >
+                                −
+                            </button>
+
+                            <strong>
+                                ${quantidade}
+                            </strong>
+
+                            <button
+                                type="button"
+                                onclick="
+                                    alterarQuantidade(
+                                        '${String(
+                                            produto.id
+                                        ).replace(
+                                            /'/g,
+                                            "\\'"
+                                        )}',
+                                        1
+                                    )
+                                "
+                            >
+                                +
+                            </button>
+
+                        </div>
+
+                    `;
+
+
+                    conteudo.appendChild(
+                        card
+                    );
+
+                }
+            );
+
+
+            titulo.addEventListener(
+                "click",
+                function () {
+
+                    const aberta =
+                        conteudo.classList.toggle(
+                            "aberta"
+                        );
+
+
+                    titulo.classList.toggle(
+                        "ativo",
+                        aberta
+                    );
+
+                }
+            );
+
+
+            grupo.appendChild(
+                titulo
+            );
+
+
+            grupo.appendChild(
+                conteudo
+            );
+
+
+            listaProdutos.appendChild(
+                grupo
+            );
+
+        }
+    );
+
+}
+
+
+// ===========================
+// ALTERAR QUANTIDADE
+// ===========================
+
+function alterarQuantidade(
+    id,
+    valor
+) {
+
+    const produto =
+        produtosDisponiveis.find(
+            produto =>
+                String(
+                    produto.id
+                ) ===
+                String(id)
+        );
+
+
+    if (!produto) {
+
+        return;
+
+    }
+
+
+    let item =
+        carrinho.find(
+            item =>
+                String(
+                    item.id
+                ) ===
+                String(id)
+        );
+
+
+    if (
+        !item &&
+        valor > 0
+    ) {
+
+        item = {
+
+            ...produto,
+
+            quantidade: 0
+
+        };
+
+
+        carrinho.push(
+            item
+        );
+
+    }
+
+
+    if (!item) {
+
+        return;
+
+    }
+
+
+    item.quantidade +=
+        valor;
+
+
+    if (
+        item.quantidade <= 0
+    ) {
+
+        carrinho =
+            carrinho.filter(
+                item =>
+                    String(
+                        item.id
+                    ) !==
+                    String(id)
+            );
+
+    }
+
+
+    atualizarResumo();
+
+
+    renderizarProdutos(
+        buscar.value
+    );
+
+}
+
+
+// ===========================
+// ATUALIZAR RESUMO
+// ===========================
+
+function atualizarResumo() {
+
+    let quantidade = 0;
+
+    let total = 0;
+
+
+    carrinho.forEach(
+        item => {
+
+            quantidade +=
+                Number(
+                    item.quantidade
+                );
+
+
+            total +=
+
+                Number(
+                    item.preco
+                ) *
+
+                Number(
+                    item.quantidade
+                );
+
+        }
+    );
+
+
+    qtdItens.textContent =
+        quantidade;
+
+
+    totalPedido.textContent =
+        "R$ " +
+        total.toFixed(2);
+
+}
+
+
+// ===========================
+// REVISÃO
+// ===========================
+
+function abrirRevisao() {
+
+    if (
+        carrinho.length === 0
+    ) {
+
+        alert(
+            "Adicione algum item ao pedido."
+        );
+
+        return;
+
+    }
+
+
+    const modal =
+        document.getElementById(
+            "modalRevisao"
+        );
+
+
+    const lista =
+        document.getElementById(
+            "listaRevisao"
+        );
+
+
+    lista.innerHTML = "";
+
+
+    carrinho.forEach(
+        item => {
+
+            const subtotal =
+
+                Number(
+                    item.preco
+                ) *
+
+                Number(
+                    item.quantidade
+                );
+
+
+            const div =
+                document.createElement(
+                    "div"
+                );
+
+
+            div.className =
+                "item-revisao";
+
+
+            div.innerHTML = `
+
+                <div
+                    class="info-revisao"
+                >
+
+                    <strong>
+                        ${item.nome}
+                    </strong>
+
+                    <small>
+                        R$
+                        ${Number(
+                            item.preco
+                        ).toFixed(2)}
+                    </small>
+
+                </div>
+
+
+                <div
+                    class="controle-revisao"
+                >
+
+                    <button
+                        type="button"
+                        onclick="
+                            alterarQuantidadeRevisao(
+                                '${String(
+                                    item.id
+                                ).replace(
+                                    /'/g,
+                                    "\\'"
+                                )}',
+                                -1
+                            )
+                        "
+                    >
+                        −
+                    </button>
+
+
+                    <strong>
+                        ${item.quantidade}
+                    </strong>
+
+
+                    <button
+                        type="button"
+                        onclick="
+                            alterarQuantidadeRevisao(
+                                '${String(
+                                    item.id
+                                ).replace(
+                                    /'/g,
+                                    "\\'"
+                                )}',
+                                1
+                            )
+                        "
+                    >
+                        +
+                    </button>
+
+                </div>
+
+
+                <strong>
+                    R$
+                    ${subtotal.toFixed(2)}
+                </strong>
+
+            `;
+
+
+            lista.appendChild(
+                div
+            );
+
+        }
+    );
+
+
+    atualizarTotalRevisao();
+
+
+    modal.classList.add(
+        "mostrar"
+    );
+
+}
+
+
+// ===========================
+// ALTERAR QUANTIDADE NA REVISÃO
+// ===========================
+
+function alterarQuantidadeRevisao(
+    id,
+    valor
+) {
+
+    alterarQuantidade(
+        id,
+        valor
+    );
+
+
+    if (
+        carrinho.length === 0
+    ) {
+
+        fecharRevisao();
+
+        return;
+
+    }
+
+
+    abrirRevisao();
+
+}
+
+
+// ===========================
+// TOTAL DA REVISÃO
+// ===========================
+
+function atualizarTotalRevisao() {
+
+    const total =
+        carrinho.reduce(
+
+            (
+                soma,
+                item
+            ) =>
+
+                soma +
+
+                Number(
+                    item.preco
+                ) *
+
+                Number(
+                    item.quantidade
+                ),
+
+            0
+
+        );
+
+
+    document.getElementById(
+        "totalRevisao"
+    ).textContent =
+
+        "R$ " +
+        total.toFixed(2);
+
+}
+
+
+// ===========================
+// FECHAR REVISÃO
+// ===========================
+
+function fecharRevisao() {
+
+    document.getElementById(
+        "modalRevisao"
+    ).classList.remove(
+        "mostrar"
+    );
+
+}
+
+
+// ===========================
+// ENVIAR PEDIDO
+// ===========================
+
+async function enviarPedido() {
+
+    if (
+        carrinho.length === 0
+    ) {
+
+        alert(
+            "Adicione algum item ao pedido."
+        );
+
+        return;
+
+    }
+
+
+    const observacaoCampo =
+        document.getElementById(
+            "observacao"
+        );
+
+
+    const observacao =
+        observacaoCampo.value.trim() ||
+        "Nenhuma";
+
+
+    const quartoCampo =
+        document.getElementById(
+            "numeroQuarto"
+        );
+
+
+    const quarto =
+        quartoCampo
+            ? quartoCampo.value.trim()
+            : "";
+
+
+    try {
+
+        const numeroPedido =
+            Date.now();
+
+
+        const itensPedido =
+            carrinho.map(
+                item => ({
+
+                    id:
+                        item.id,
+
+                    nome:
+                        item.nome,
+
+                    preco:
+                        Number(
+                            item.preco
+                        ),
+
+                    quantidade:
+                        Number(
+                            item.quantidade
+                        ),
+
+                    subtotal:
+
+                        Number(
+                            item.preco
+                        ) *
+
+                        Number(
+                            item.quantidade
+                        )
+
+                })
+            );
+
+
+        const totalPedidoValor =
+            itensPedido.reduce(
+
+                (
+                    soma,
+                    item
+                ) =>
+
+                    soma +
+                    item.subtotal,
+
+                0
+
+            );
+
+
+        const referenciaMesa =
+            doc(
+
+                db,
+
+                "mesas",
+
+                prefixoLocal +
+
+                String(
+                    numeroMesa
+                ).padStart(
+                    2,
+                    "0"
+                )
+
+            );
+
+
+        // ===========================
+        // ATUALIZA A MESA
+        // ===========================
+
+        await setDoc(
+
+            referenciaMesa,
+
+            {
+
+                numero:
+                    Number(
+                        numeroMesa
+                    ),
+
+                tipo:
+                    tipoSelecionado,
+
+                status:
+                    "ocupada",
+
+                atualizadoEm:
+                    serverTimestamp()
+
+            },
+
+            {
+
+                merge:
+                    true
+
+            }
+
+        );
+
+
+        // ===========================
+        // SALVA PEDIDO NA MESA
+        // ===========================
+
+        await addDoc(
+
+            collection(
+
+                referenciaMesa,
+
+                "pedidos"
+
+            ),
+
+            {
+
+                numeroPedido:
+                    numeroPedido,
+
+                tipo:
+                    tipoSelecionado,
+
+                mesa:
+                    ehQuarto
+                        ? null
+                        : Number(
+                            numeroMesa
+                        ),
+
+                quarto:
+                    ehQuarto
+                        ? Number(
+                            numeroMesa
+                        )
+                        : quarto,
+
+                itens:
+                    itensPedido,
+
+                observacao:
+                    observacao,
+
+                total:
+                    totalPedidoValor,
+
+                criadoEm:
+                    serverTimestamp(),
+
+                dataHora:
+                    new Date()
+                        .toLocaleString(
+                            "pt-BR"
+                        )
+
+            }
+
+        );
+
+
+        // ===========================
+        // ENVIA PARA PRODUÇÃO
+        // ===========================
+
+        await addDoc(
+
+            collection(
+                db,
+                "pedidos_producao"
+            ),
+
+            {
+
+                numeroPedido:
+                    numeroPedido,
+
+                mesa:
+                    ehQuarto
+                        ? null
+                        : Number(
+                            numeroMesa
+                        ),
+
+                quarto:
+                    ehQuarto
+                        ? Number(
+                            numeroMesa
+                        )
+                        : quarto,
+
+                tipo:
+                    tipoSelecionado,
+
+                numero:
+                    Number(
+                        numeroMesa
+                    ),
+
+                itens:
+                    itensPedido,
+
+                observacao:
+                    observacao,
+
+                total:
+                    totalPedidoValor,
+
+                status:
+                    "novo",
+
+                criadoEm:
+                    serverTimestamp(),
+
+                dataHora:
+                    new Date()
+                        .toLocaleString(
+                            "pt-BR"
+                        )
+
+            }
+
+        );
+
+
+        carrinho = [];
+
+
+        atualizarResumo();
+
+
+        window.location.href =
+            "mesa.html";
+
+
+    } catch (erro) {
+
+        console.error(
+            "Erro ao enviar pedido:",
+            erro
+        );
+
+
+        alert(
+
+            "ERRO FIREBASE:\n\n" +
+
+            erro.code +
+
+            "\n\n" +
+
+            erro.message
+
+        );
+
+    }
+
+}
+
+
+// ===========================
+// PESQUISA
+// ===========================
+
+buscar.addEventListener(
+    "input",
+    function () {
+
+        renderizarProdutos(
+            buscar.value
+        );
+
+    }
+);
+
+
+// ===========================
+// DISPONIBILIZA FUNÇÕES
+// ===========================
+// Como este arquivo agora é um
+// módulo, as funções precisam
+// estar no window para os
+// onclick do HTML funcionarem.
+
+window.abrirRevisao =
+    abrirRevisao;
+
+
+window.fecharRevisao =
+    fecharRevisao;
+
+
+window.enviarPedido =
+    enviarPedido;
+
+
+window.alterarQuantidade =
+    alterarQuantidade;
+
+
+window.alterarQuantidadeRevisao =
+    alterarQuantidadeRevisao;
+
+
+// ===========================
+// INICIAR
+// ===========================
+
+async function iniciar() {
+
+    atualizarResumo();
+
+
+    await carregarProdutosFirebase();
+
+}
+
+
+iniciar();
