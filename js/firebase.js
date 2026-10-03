@@ -1,86 +1,608 @@
-import { initializeApp }
-from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
+<!DOCTYPE html>
+<html lang="pt-BR">
 
-import {
-    getFirestore,
-    collection,
-    addDoc,
-    deleteDoc,
-    doc,
-    onSnapshot,
-    query,
-    orderBy,
-    serverTimestamp,
-    setDoc,
-    updateDoc,
-    getDocs,
-    getDoc,
-    runTransaction
-}
-from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+<head>
 
+    <meta charset="UTF-8">
 
-const firebaseConfig = {
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-    apiKey: "AIzaSyAEj82ZchuqIEzbG1PhbLclqiSbIEPifWU",
+    <title>Produtos - Hotel do Baú</title>
 
-    authDomain: "hotel-garcom-teste.firebaseapp.com",
+    <link
+        rel="stylesheet"
+        href="css/style.css"
+    >
 
-    projectId: "hotel-garcom-teste",
+    <style>
 
-    storageBucket: "hotel-garcom-teste.firebasestorage.app",
-
-    messagingSenderId: "608879824533",
-
-    appId: "1:608879824533:web:2c6e47be27336607b8559c"
-
-};
+        body {
+            margin: 0;
+            background: #f4f6f8;
+            font-family: Arial, sans-serif;
+        }
 
 
-const app =
-initializeApp(firebaseConfig);
+        .pagina {
+            width: 100%;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 20px;
+            box-sizing: border-box;
+        }
 
 
-const db =
-getFirestore(app);
+        .topo-pagina {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            background: #17212b;
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
 
 
-window.firebaseHotel = {
-
-    db,
-    collection,
-    addDoc,
-    deleteDoc,
-    doc,
-    onSnapshot,
-    query,
-    orderBy,
-    serverTimestamp,
-    setDoc,
-    updateDoc,
-    getDocs,
-    getDoc,
-    runTransaction
-
-};
+        .titulo-area h1 {
+            margin: 0 0 6px;
+            font-size: 26px;
+        }
 
 
-console.log("Firebase Hotel Garcom TESTE carregado com sucesso");
+        .titulo-area p {
+            margin: 0;
+            font-size: 14px;
+            opacity: 0.8;
+        }
 
-window.firebasePronto = true;
-export {
-    db,
-    collection,
-    addDoc,
-    deleteDoc,
-    doc,
-    onSnapshot,
-    query,
-    orderBy,
-    serverTimestamp,
-    setDoc,
-    updateDoc,
-    getDocs,
-    getDoc,
-    runTransaction
-};
+
+        .botoes-topo {
+            display: flex;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+
+
+        .botao {
+            display: inline-block;
+            border: none;
+            border-radius: 8px;
+            padding: 11px 16px;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+
+        .botao-voltar {
+            background: #ffffff;
+            color: #17212b;
+        }
+
+
+        .botao-novo {
+            background: #2f80ed;
+            color: #ffffff;
+        }
+
+
+        .botao:hover {
+            opacity: 0.9;
+        }
+
+
+        .area-produtos {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+
+        .lista-produtos {
+            display: grid;
+            grid-template-columns: repeat(
+                auto-fill,
+                minmax(260px, 1fr)
+            );
+            gap: 18px;
+        }
+
+
+        .produto {
+            border: 1px solid #e0e4e8;
+            border-radius: 12px;
+            overflow: hidden;
+            background: #ffffff;
+        }
+
+
+        .produto-imagem {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            display: block;
+            background: #eef1f3;
+        }
+
+
+        .produto-sem-imagem {
+            width: 100%;
+            height: 180px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #eef1f3;
+            color: #7a858f;
+            font-size: 14px;
+        }
+
+
+        .produto-conteudo {
+            padding: 16px;
+        }
+
+
+        .produto-nome {
+            margin: 0 0 6px;
+            font-size: 19px;
+            color: #17212b;
+        }
+
+
+        .produto-categoria {
+            display: inline-block;
+            margin-bottom: 10px;
+            padding: 5px 9px;
+            border-radius: 6px;
+            background: #eef2f5;
+            color: #53606b;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+
+        .produto-descricao {
+            margin: 0 0 14px;
+            color: #68737d;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+
+        .produto-preco {
+            font-size: 20px;
+            font-weight: 700;
+            color: #17212b;
+        }
+
+
+        .mensagem {
+            text-align: center;
+            padding: 50px 20px;
+            color: #68737d;
+        }
+
+
+        .mensagem h2 {
+            margin: 0 0 10px;
+            color: #17212b;
+            font-size: 21px;
+        }
+
+
+        .mensagem p {
+            margin: 0;
+            font-size: 15px;
+        }
+
+
+        .mensagem.erro {
+            color: #b42318;
+        }
+
+
+        @media (max-width: 600px) {
+
+            .pagina {
+                padding: 12px;
+            }
+
+
+            .topo-pagina {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+
+            .botoes-topo {
+                width: 100%;
+                flex-direction: column;
+            }
+
+
+            .botao {
+                width: 100%;
+                text-align: center;
+                box-sizing: border-box;
+            }
+
+
+            .lista-produtos {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <main class="pagina">
+
+
+        <section class="topo-pagina">
+
+
+            <div class="titulo-area">
+
+                <h1>
+                    Produtos
+                </h1>
+
+                <p>
+                    Gerencie os produtos do cardápio
+                </p>
+
+            </div>
+
+
+            <div class="botoes-topo">
+
+                <a
+                    href="index.html"
+                    class="botao botao-voltar"
+                >
+                    ← Voltar
+                </a>
+
+
+                <a
+                    href="produtos.html"
+                    class="botao botao-novo"
+                >
+                    + Novo produto
+                </a>
+
+            </div>
+
+
+        </section>
+
+
+        <section class="area-produtos">
+
+
+            <div
+                id="listaProdutos"
+                class="lista-produtos"
+            >
+            </div>
+
+
+            <div
+                id="mensagem"
+                class="mensagem"
+            >
+                <h2>
+                    Carregando produtos...
+                </h2>
+
+                <p>
+                    Aguarde um momento.
+                </p>
+            </div>
+
+
+        </section>
+
+
+    </main>
+
+
+    <script type="module">
+
+        import {
+            db,
+            collection,
+            getDocs,
+            query,
+            orderBy
+        } from "./js/firebase.js";
+
+
+        const listaProdutos =
+            document.getElementById(
+                "listaProdutos"
+            );
+
+
+        const mensagem =
+            document.getElementById(
+                "mensagem"
+            );
+
+
+        function formatarPreco(valor) {
+
+            const numero =
+                Number(valor) || 0;
+
+
+            return numero.toLocaleString(
+                "pt-BR",
+                {
+                    style: "currency",
+                    currency: "BRL"
+                }
+            );
+
+        }
+
+
+        function escaparHTML(valor) {
+
+            return String(valor ?? "")
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+
+        }
+
+
+        function mostrarProdutos(produtos) {
+
+            listaProdutos.innerHTML = "";
+
+
+            if (produtos.length === 0) {
+
+                mensagem.innerHTML = `
+                    <h2>
+                        Nenhum produto cadastrado
+                    </h2>
+
+                    <p>
+                        Clique em "+ Novo produto"
+                        para cadastrar o primeiro item.
+                    </p>
+                `;
+
+                mensagem.style.display = "block";
+
+                return;
+
+            }
+
+
+            mensagem.style.display = "none";
+
+
+            produtos.forEach(produto => {
+
+                const dados =
+                    produto.data();
+
+
+                const nome =
+                    escaparHTML(
+                        dados.nome
+                    );
+
+
+                const categoria =
+                    escaparHTML(
+                        dados.categoria
+                    );
+
+
+                const descricao =
+                    escaparHTML(
+                        dados.descricao
+                    );
+
+
+                const foto =
+                    dados.foto || "";
+
+
+                const preco =
+                    formatarPreco(
+                        dados.preco
+                    );
+
+
+                const card =
+                    document.createElement("article");
+
+
+                card.className =
+                    "produto";
+
+
+                if (foto) {
+
+                    card.innerHTML = `
+
+                        <img
+                            class="produto-imagem"
+                            src="${foto}"
+                            alt="${nome}"
+                        >
+
+                        <div class="produto-conteudo">
+
+                            <h2 class="produto-nome">
+                                ${nome}
+                            </h2>
+
+                            <span class="produto-categoria">
+                                ${categoria || "Sem categoria"}
+                            </span>
+
+                            ${
+                                descricao
+                                    ? `
+                                        <p class="produto-descricao">
+                                            ${descricao}
+                                        </p>
+                                    `
+                                    : ""
+                            }
+
+                            <div class="produto-preco">
+                                ${preco}
+                            </div>
+
+                        </div>
+
+                    `;
+
+                } else {
+
+                    card.innerHTML = `
+
+                        <div class="produto-sem-imagem">
+                            Sem foto
+                        </div>
+
+                        <div class="produto-conteudo">
+
+                            <h2 class="produto-nome">
+                                ${nome}
+                            </h2>
+
+                            <span class="produto-categoria">
+                                ${categoria || "Sem categoria"}
+                            </span>
+
+                            ${
+                                descricao
+                                    ? `
+                                        <p class="produto-descricao">
+                                            ${descricao}
+                                        </p>
+                                    `
+                                    : ""
+                            }
+
+                            <div class="produto-preco">
+                                ${preco}
+                            </div>
+
+                        </div>
+
+                    `;
+
+                }
+
+
+                listaProdutos.appendChild(card);
+
+            });
+
+        }
+
+
+        async function carregarProdutos() {
+
+            try {
+
+                mensagem.style.display =
+                    "block";
+
+
+                const referencia =
+                    collection(
+                        db,
+                        "produtos"
+                    );
+
+
+                const consulta =
+                    query(
+                        referencia,
+                        orderBy(
+                            "nome",
+                            "asc"
+                        )
+                    );
+
+
+                const resultado =
+                    await getDocs(
+                        consulta
+                    );
+
+
+                mostrarProdutos(
+                    resultado.docs
+                );
+
+
+            } catch (erro) {
+
+                console.error(
+                    "Erro ao carregar produtos:",
+                    erro
+                );
+
+
+                listaProdutos.innerHTML = "";
+
+
+                mensagem.className =
+                    "mensagem erro";
+
+
+                mensagem.innerHTML = `
+
+                    <h2>
+                        Não foi possível carregar os produtos
+                    </h2>
+
+                    <p>
+                        Verifique a conexão com o Firebase.
+                    </p>
+
+                `;
+
+
+                mensagem.style.display =
+                    "block";
+
+            }
+
+        }
+
+
+        carregarProdutos();
+
+    </script>
+
+
+</body>
+
+</html>
