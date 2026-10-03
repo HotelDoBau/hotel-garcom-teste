@@ -519,18 +519,17 @@
                     );
 
 
-                } catch (erro) {
+            } catch (erro) {
 
-                    console.error(erro);
+    console.error(erro);
 
+    mensagem.style.color =
+        "#c0392b";
 
-                    mensagem.style.color =
-                        "#c0392b";
+    mensagem.textContent =
+        "Erro: " + erro.code;
 
-                    mensagem.textContent =
-                        "Usuário ou senha incorretos.";
-
-                }
+}
 
             }
         );
