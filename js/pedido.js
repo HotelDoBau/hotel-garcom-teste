@@ -78,8 +78,9 @@ function obterImagem(produto) {
 
 
     /*
-     * Produtos antigos:
-     * continuam usando a propriedade imagem.
+     * Mantém compatibilidade caso
+     * algum produto ainda possua
+     * a propriedade imagem.
      */
 
     if (produto.imagem) {
@@ -90,7 +91,9 @@ function obterImagem(produto) {
 
 
     const nome =
-        produto.nome.toLowerCase();
+        String(
+            produto.nome || ""
+        ).toLowerCase();
 
 
     if (
@@ -263,14 +266,11 @@ async function aguardarFirebase() {
 async function carregarProdutosFirebase() {
 
     /*
-     * Começa com os produtos antigos
-     * do dados/produtos.js.
+     * Agora os produtos vêm
+     * exclusivamente do Firestore.
      */
 
-    produtosDisponiveis =
-        Array.isArray(produtos)
-            ? [...produtos]
-            : [];
+    produtosDisponiveis = [];
 
 
     const conectado =
@@ -279,9 +279,25 @@ async function carregarProdutosFirebase() {
 
     if (!conectado) {
 
-        console.warn(
-            "Firebase não conectado. Produtos cadastrados pelo sistema não foram carregados."
+        console.error(
+            "Firebase não conectado. Não foi possível carregar os produtos."
         );
+
+        listaProdutos.innerHTML = `
+
+            <div
+                style="
+                    padding: 20px;
+                    text-align: center;
+                "
+            >
+
+                Não foi possível carregar
+                os produtos.
+
+            </div>
+
+        `;
 
         return;
 
@@ -319,12 +335,11 @@ async function carregarProdutosFirebase() {
                     documento.data();
 
 
-                /*
-                 * O ID do Firestore é usado
-                 * como identificador do produto.
-                 */
-
                 produtosDisponiveis.push({
+
+                    /*
+                     * ID do documento do Firestore.
+                     */
 
                     id:
                         documento.id,
@@ -333,7 +348,8 @@ async function carregarProdutosFirebase() {
                         dados.nome || "",
 
                     categoria:
-                        dados.categoria || "Outros",
+                        dados.categoria ||
+                        "Outros",
 
                     descricao:
                         dados.descricao || "",
@@ -352,8 +368,60 @@ async function carregarProdutosFirebase() {
         );
 
 
+        /*
+         * Ordena primeiro pela categoria
+         * e depois pelo nome.
+         */
+
+        produtosDisponiveis.sort(
+            (a, b) => {
+
+                const categoriaA =
+                    String(
+                        a.categoria || ""
+                    ).toLowerCase();
+
+                const categoriaB =
+                    String(
+                        b.categoria || ""
+                    ).toLowerCase();
+
+
+                if (
+                    categoriaA <
+                    categoriaB
+                ) {
+
+                    return -1;
+
+                }
+
+
+                if (
+                    categoriaA >
+                    categoriaB
+                ) {
+
+                    return 1;
+
+                }
+
+
+                return String(
+                    a.nome || ""
+                ).localeCompare(
+                    String(
+                        b.nome || ""
+                    ),
+                    "pt-BR"
+                );
+
+            }
+        );
+
+
         console.log(
-            "Produtos carregados:",
+            "Produtos carregados do Firestore:",
             produtosDisponiveis
         );
 
@@ -365,10 +433,21 @@ async function carregarProdutosFirebase() {
             erro
         );
 
-        /*
-         * Se houver erro no Firebase,
-         * os produtos antigos continuam funcionando.
-         */
+
+        listaProdutos.innerHTML = `
+
+            <div
+                style="
+                    padding: 20px;
+                    text-align: center;
+                "
+            >
+
+                Erro ao carregar os produtos.
+
+            </div>
+
+        `;
 
     }
 
@@ -431,1140 +510,3 @@ function renderizarProdutos(
         categoria => {
 
             const itens =
-                produtosDisponiveis.filter(
-                    produto =>
-
-                        produto.categoria ===
-                        categoria &&
-
-                        produto.nome
-                            .toLowerCase()
-                            .includes(
-                                filtro.toLowerCase()
-                            )
-                );
-
-
-            if (
-                itens.length === 0
-            ) {
-
-                return;
-
-            }
-
-
-            // ===========================
-            // CARD DA CATEGORIA
-            // ===========================
-
-            const grupo =
-                document.createElement(
-                    "section"
-                );
-
-
-            grupo.className =
-                "grupo-categoria";
-
-
-            // ===========================
-            // TÍTULO DA CATEGORIA
-            // ===========================
-
-            const titulo =
-                document.createElement(
-                    "button"
-                );
-
-
-            titulo.type =
-                "button";
-
-
-            titulo.className =
-                "categoria-produto";
-
-
-            titulo.innerHTML = `
-
-                <span>
-
-                    ${
-                        iconesCategoria[
-                            categoria
-                        ] || "🍴"
-                    }
-
-                    ${categoria}
-
-                </span>
-
-                <span
-                    class="seta-categoria"
-                >
-                    ▼
-                </span>
-
-            `;
-
-
-            // ===========================
-            // CONTEÚDO
-            // ===========================
-
-            const conteudo =
-                document.createElement(
-                    "div"
-                );
-
-
-            conteudo.className =
-                "conteudo-categoria";
-
-
-            itens.forEach(
-                produto => {
-
-                    const itemCarrinho =
-                        carrinho.find(
-                            item =>
-                                String(
-                                    item.id
-                                ) ===
-                                String(
-                                    produto.id
-                                )
-                        );
-
-
-                    const quantidade =
-                        itemCarrinho
-                            ? itemCarrinho.quantidade
-                            : 0;
-
-
-                    const imagem =
-                        obterImagem(
-                            produto
-                        );
-
-
-                    const card =
-                        document.createElement(
-                            "div"
-                        );
-
-
-                    card.className =
-                        "produto-card";
-
-
-                    /*
-                     * Se o produto possuir imagem,
-                     * mostra a imagem.
-                     *
-                     * Caso não possua,
-                     * mantém o espaço vazio
-                     * para não quebrar o layout.
-                     */
-
-                    let imagemHTML = "";
-
-
-                    if (imagem) {
-
-                        imagemHTML = `
-
-                            <img
-                                src="${imagem}"
-                                alt="${produto.nome}"
-                                class="foto-produto"
-                            >
-
-                        `;
-
-                    }
-
-
-                    card.innerHTML = `
-
-                        ${imagemHTML}
-
-
-                        <div class="produto-info">
-
-                            <h3>
-                                ${produto.nome}
-                            </h3>
-
-                            <p>
-                                R$
-                                ${Number(
-                                    produto.preco
-                                ).toFixed(2)}
-                            </p>
-
-                        </div>
-
-
-                        <div
-                            class="controle-produto"
-                        >
-
-                            <button
-                                type="button"
-                                onclick="alterarQuantidade(
-                                    '${String(
-                                        produto.id
-                                    ).replace(
-                                        /'/g,
-                                        "\\'"
-                                    )}',
-                                    -1
-                                )"
-                            >
-                                −
-                            </button>
-
-
-                            <strong>
-                                ${quantidade}
-                            </strong>
-
-
-                            <button
-                                type="button"
-                                onclick="alterarQuantidade(
-                                    '${String(
-                                        produto.id
-                                    ).replace(
-                                        /'/g,
-                                        "\\'"
-                                    )}',
-                                    1
-                                )"
-                            >
-                                +
-                            </button>
-
-                        </div>
-
-                    `;
-
-
-                    conteudo.appendChild(
-                        card
-                    );
-
-                }
-            );
-
-
-            // ===========================
-            // ABRIR / FECHAR CATEGORIA
-            // ===========================
-
-            titulo.addEventListener(
-                "click",
-                function () {
-
-                    const aberta =
-                        conteudo.classList.toggle(
-                            "aberta"
-                        );
-
-
-                    titulo.classList.toggle(
-                        "ativo",
-                        aberta
-                    );
-
-                }
-            );
-
-
-            grupo.appendChild(
-                titulo
-            );
-
-
-            grupo.appendChild(
-                conteudo
-            );
-
-
-            listaProdutos.appendChild(
-                grupo
-            );
-
-        }
-    );
-
-}
-
-
-// ===========================
-// ALTERAR QUANTIDADE
-// ===========================
-
-function alterarQuantidade(
-    id,
-    valor
-) {
-
-    const produto =
-        produtosDisponiveis.find(
-            produto =>
-                String(
-                    produto.id
-                ) ===
-                String(id)
-        );
-
-
-    if (!produto) {
-
-        return;
-
-    }
-
-
-    let item =
-        carrinho.find(
-            item =>
-                String(
-                    item.id
-                ) ===
-                String(id)
-        );
-
-
-    if (
-        !item &&
-        valor > 0
-    ) {
-
-        item = {
-
-            ...produto,
-
-            quantidade: 0
-
-        };
-
-
-        carrinho.push(
-            item
-        );
-
-    }
-
-
-    if (!item) {
-
-        return;
-
-    }
-
-
-    item.quantidade +=
-        valor;
-
-
-    if (
-        item.quantidade <= 0
-    ) {
-
-        carrinho =
-            carrinho.filter(
-                item =>
-                    String(
-                        item.id
-                    ) !==
-                    String(id)
-            );
-
-    }
-
-
-    atualizarResumo();
-
-
-    renderizarProdutos(
-        buscar.value
-    );
-
-}
-
-
-// ===========================
-// ATUALIZAR RESUMO
-// ===========================
-
-function atualizarResumo() {
-
-    let quantidade = 0;
-
-    let total = 0;
-
-
-    carrinho.forEach(
-        item => {
-
-            quantidade +=
-                Number(
-                    item.quantidade
-                );
-
-
-            total +=
-
-                Number(
-                    item.preco
-                ) *
-
-                Number(
-                    item.quantidade
-                );
-
-        }
-    );
-
-
-    qtdItens.textContent =
-        quantidade;
-
-
-    totalPedido.textContent =
-        "R$ " +
-        total.toFixed(2);
-
-}
-
-
-// ===========================
-// REVISÃO DO PEDIDO
-// ===========================
-
-function abrirRevisao() {
-
-    if (
-        carrinho.length === 0
-    ) {
-
-        alert(
-            "Adicione algum item ao pedido."
-        );
-
-        return;
-
-    }
-
-
-    const modal =
-        document.getElementById(
-            "modalRevisao"
-        );
-
-
-    const lista =
-        document.getElementById(
-            "listaRevisao"
-        );
-
-
-    lista.innerHTML = "";
-
-
-    carrinho.forEach(
-        item => {
-
-            const subtotal =
-
-                Number(
-                    item.preco
-                ) *
-
-                Number(
-                    item.quantidade
-                );
-
-
-            const div =
-                document.createElement(
-                    "div"
-                );
-
-
-            div.className =
-                "item-revisao";
-
-
-            div.innerHTML = `
-
-                <div
-                    class="info-revisao"
-                >
-
-                    <strong>
-                        ${item.nome}
-                    </strong>
-
-                    <small>
-                        R$
-                        ${Number(
-                            item.preco
-                        ).toFixed(2)}
-                    </small>
-
-                </div>
-
-
-                <div
-                    class="controle-revisao"
-                >
-
-                    <button
-                        type="button"
-                        onclick="alterarQuantidadeRevisao(
-                            '${String(
-                                item.id
-                            ).replace(
-                                /'/g,
-                                "\\'"
-                            )}',
-                            -1
-                        )"
-                    >
-                        −
-                    </button>
-
-
-                    <strong>
-                        ${item.quantidade}
-                    </strong>
-
-
-                    <button
-                        type="button"
-                        onclick="alterarQuantidadeRevisao(
-                            '${String(
-                                item.id
-                            ).replace(
-                                /'/g,
-                                "\\'"
-                            )}',
-                            1
-                        )"
-                    >
-                        +
-                    </button>
-
-                </div>
-
-
-                <strong>
-                    R$
-                    ${subtotal.toFixed(2)}
-                </strong>
-
-            `;
-
-
-            lista.appendChild(
-                div
-            );
-
-        }
-    );
-
-
-    atualizarTotalRevisao();
-
-
-    modal.classList.add(
-        "mostrar"
-    );
-
-}
-
-
-// ===========================
-// ALTERAR QUANTIDADE NA REVISÃO
-// ===========================
-
-function alterarQuantidadeRevisao(
-    id,
-    valor
-) {
-
-    const produto =
-        produtosDisponiveis.find(
-            produto =>
-                String(
-                    produto.id
-                ) ===
-                String(id)
-        );
-
-
-    if (!produto) {
-
-        return;
-
-    }
-
-
-    let item =
-        carrinho.find(
-            item =>
-                String(
-                    item.id
-                ) ===
-                String(id)
-        );
-
-
-    if (
-        !item &&
-        valor > 0
-    ) {
-
-        item = {
-
-            ...produto,
-
-            quantidade: 0
-
-        };
-
-
-        carrinho.push(
-            item
-        );
-
-    }
-
-
-    if (!item) {
-
-        return;
-
-    }
-
-
-    item.quantidade +=
-        valor;
-
-
-    if (
-        item.quantidade <= 0
-    ) {
-
-        carrinho =
-            carrinho.filter(
-                item =>
-                    String(
-                        item.id
-                    ) !==
-                    String(id)
-            );
-
-    }
-
-
-    atualizarResumo();
-
-
-    if (
-        carrinho.length === 0
-    ) {
-
-        fecharRevisao();
-
-        return;
-
-    }
-
-
-    abrirRevisao();
-
-}
-
-
-// ===========================
-// TOTAL DA REVISÃO
-// ===========================
-
-function atualizarTotalRevisao() {
-
-    const total =
-        carrinho.reduce(
-
-            (
-                soma,
-                item
-            ) =>
-
-                soma +
-
-                Number(
-                    item.preco
-                ) *
-
-                Number(
-                    item.quantidade
-                ),
-
-            0
-
-        );
-
-
-    document.getElementById(
-        "totalRevisao"
-    ).textContent =
-
-        "R$ " +
-        total.toFixed(2);
-
-}
-
-
-// ===========================
-// FECHAR REVISÃO
-// ===========================
-
-function fecharRevisao() {
-
-    document.getElementById(
-        "modalRevisao"
-    ).classList.remove(
-        "mostrar"
-    );
-
-}
-
-
-// ===========================
-// ENVIAR PEDIDO
-// ===========================
-
-async function enviarPedido() {
-
-    if (
-        carrinho.length === 0
-    ) {
-
-        alert(
-            "Adicione algum item ao pedido."
-        );
-
-        return;
-
-    }
-
-
-    const observacaoCampo =
-        document.getElementById(
-            "observacao"
-        );
-
-
-    const observacao =
-        observacaoCampo.value.trim() ||
-        "Nenhuma";
-
-
-    const quartoCampo =
-        document.getElementById(
-            "numeroQuarto"
-        );
-
-
-    const quarto =
-        quartoCampo
-            ? quartoCampo.value.trim()
-            : "";
-
-
-    const conectado =
-        await aguardarFirebase();
-
-
-    if (!conectado) {
-
-        alert(
-            "Não foi possível conectar ao sistema. Tente novamente."
-        );
-
-        return;
-
-    }
-
-
-    try {
-
-        const {
-
-            db,
-            collection,
-            addDoc,
-            doc,
-            setDoc,
-            serverTimestamp
-
-        } = window.firebaseHotel;
-
-
-        // ===========================
-        // NÚMERO DO PEDIDO
-        // ===========================
-
-        const numeroPedido =
-            Date.now();
-
-
-        // ===========================
-        // ITENS
-        // ===========================
-
-        const itensPedido =
-            carrinho.map(
-                item => ({
-
-                    id:
-                        item.id,
-
-                    nome:
-                        item.nome,
-
-                    preco:
-                        Number(
-                            item.preco
-                        ),
-
-                    quantidade:
-                        Number(
-                            item.quantidade
-                        ),
-
-                    subtotal:
-
-                        Number(
-                            item.preco
-                        ) *
-
-                        Number(
-                            item.quantidade
-                        )
-
-                })
-            );
-
-
-        const totalPedidoValor =
-            itensPedido.reduce(
-
-                (
-                    soma,
-                    item
-                ) =>
-
-                    soma +
-                    item.subtotal,
-
-                0
-
-            );
-
-
-        // ===========================
-        // REFERÊNCIA DA MESA / QUARTO
-        // ===========================
-
-        const referenciaMesa =
-            doc(
-
-                db,
-
-                "mesas",
-
-                prefixoLocal +
-
-                String(
-                    numeroMesa
-                ).padStart(
-                    2,
-                    "0"
-                )
-
-            );
-
-
-        // ===========================
-        // ATUALIZA A MESA
-        // ===========================
-
-        await setDoc(
-
-            referenciaMesa,
-
-            {
-
-                numero:
-                    Number(
-                        numeroMesa
-                    ),
-
-                tipo:
-                    tipoSelecionado,
-
-                status:
-                    "ocupada",
-
-                atualizadoEm:
-                    serverTimestamp()
-
-            },
-
-            {
-
-                merge:
-                    true
-
-            }
-
-        );
-
-
-        // ===========================
-        // ACUMULA PEDIDO NA MESA
-        // ===========================
-
-        await addDoc(
-
-            collection(
-
-                referenciaMesa,
-
-                "pedidos"
-
-            ),
-
-            {
-
-                numeroPedido:
-                    numeroPedido,
-
-                tipo:
-                    tipoSelecionado,
-
-                mesa:
-                    ehQuarto
-                        ? null
-                        : Number(
-                            numeroMesa
-                        ),
-
-                quarto:
-                    ehQuarto
-                        ? Number(
-                            numeroMesa
-                        )
-                        : quarto,
-
-                itens:
-                    itensPedido,
-
-                observacao:
-                    observacao,
-
-                total:
-                    totalPedidoValor,
-
-                criadoEm:
-                    serverTimestamp(),
-
-                dataHora:
-                    new Date()
-                        .toLocaleString(
-                            "pt-BR"
-                        )
-
-            }
-
-        );
-
-
-        // ===========================
-        // ENVIA PARA PRODUÇÃO
-        // ===========================
-
-        await addDoc(
-
-            collection(
-                db,
-                "pedidos_producao"
-            ),
-
-            {
-
-                numeroPedido:
-                    numeroPedido,
-
-                mesa:
-                    ehQuarto
-                        ? null
-                        : Number(
-                            numeroMesa
-                        ),
-
-                quarto:
-                    ehQuarto
-                        ? Number(
-                            numeroMesa
-                        )
-                        : quarto,
-
-                tipo:
-                    tipoSelecionado,
-
-                numero:
-                    Number(
-                        numeroMesa
-                    ),
-
-                itens:
-                    itensPedido,
-
-                observacao:
-                    observacao,
-
-                total:
-                    totalPedidoValor,
-
-                status:
-                    "novo",
-
-                criadoEm:
-                    serverTimestamp(),
-
-                dataHora:
-                    new Date()
-                        .toLocaleString(
-                            "pt-BR"
-                        )
-
-            }
-
-        );
-
-
-        // ===========================
-        // LIMPA O CARRINHO
-        // ===========================
-
-        carrinho = [];
-
-
-        atualizarResumo();
-
-
-        // ===========================
-        // VOLTA PARA A MESA
-        // ===========================
-
-        window.location.href =
-            "mesa.html";
-
-
-    } catch (erro) {
-
-        console.error(
-            "Erro ao enviar pedido:",
-            erro
-        );
-
-
-        alert(
-
-            "ERRO FIREBASE:\n\n" +
-
-            erro.code +
-
-            "\n\n" +
-
-            erro.message
-
-        );
-
-    }
-
-}
-
-
-// ===========================
-// PESQUISA
-// ===========================
-
-buscar.addEventListener(
-    "input",
-    function () {
-
-        renderizarProdutos(
-            buscar.value
-        );
-
-    }
-);
-
-
-// ===========================
-// INICIAR
-// ===========================
-
-async function iniciar() {
-
-    /*
-     * Carrega primeiro os produtos
-     * que já existem no produtos.js.
-     */
-
-    produtosDisponiveis =
-        Array.isArray(produtos)
-            ? [...produtos]
-            : [];
-
-
-    /*
-     * Mostra imediatamente os produtos
-     * antigos.
-     */
-
-    renderizarProdutos();
-
-
-    atualizarResumo();
-
-
-    /*
-     * Depois busca os produtos cadastrados
-     * pelo administrador no Firestore.
-     */
-
-    await carregarProdutosFirebase();
-
-
-    /*
-     * Renderiza novamente incluindo
-     * os produtos do Firestore.
-     */
-
-    renderizarProdutos();
-
-}
-
-
-iniciar();
