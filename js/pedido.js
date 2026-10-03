@@ -139,10 +139,30 @@ function obterImagem(produto) {
 
     if (
         produto.categoria ===
-        "Pratos feitos"
+        "Pratos Feitos"
     ) {
 
         return "img/pf.webp";
+
+    }
+
+
+    if (
+        produto.categoria ===
+        "Bebidas"
+    ) {
+
+        return "img/bebidas.webp";
+
+    }
+
+
+    if (
+        produto.categoria ===
+        "Cervejas e Vinhos"
+    ) {
+
+        return "img/bebidas.webp";
 
     }
 
@@ -183,6 +203,16 @@ function obterImagem(produto) {
     ) {
 
         return "img/drinks.webp";
+
+    }
+
+
+    if (
+        produto.categoria ===
+        "Outros"
+    ) {
+
+        return "";
 
     }
 
@@ -378,7 +408,7 @@ function renderizarProdutos(
 
         "Lanches": "🥪",
 
-        "Pratos feitos": "🍽️",
+        "Pratos Feitos": "🍽️",
 
         "Bebidas": "🥤",
 
@@ -391,10 +421,6 @@ function renderizarProdutos(
         "Petiscos": "🍟",
 
         "Drinks": "🍹",
-
-        "Porções": "🍽️",
-
-        "Sobremesas": "🍰",
 
         "Outros": "•"
 
@@ -1502,7 +1528,7 @@ buscar.addEventListener(
 async function iniciar() {
 
     /*
-     * Carrega primeiro os 150 produtos
+     * Carrega primeiro os produtos
      * que já existem no produtos.js.
      */
 
