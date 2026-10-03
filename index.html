@@ -24,16 +24,11 @@
         ========================================= */
 
         body {
-
             visibility: hidden;
-
         }
 
-
         body.acesso-verificado {
-
             visibility: visible;
-
         }
 
 
@@ -171,7 +166,7 @@
 
 
         /* =========================================
-           JANELA TROCAR GARÇOM
+           TROCAR GARÇOM
         ========================================= */
 
         .fundo-troca-garcom {
@@ -216,34 +211,6 @@
 
             box-shadow:
                 0 12px 35px rgba(0,0,0,0.22);
-
-            animation:
-                aparecerGarcom 0.18s ease;
-
-        }
-
-
-        @keyframes aparecerGarcom {
-
-            from {
-
-                opacity: 0;
-
-                transform:
-                    translateY(10px)
-                    scale(0.98);
-
-            }
-
-            to {
-
-                opacity: 1;
-
-                transform:
-                    translateY(0)
-                    scale(1);
-
-            }
 
         }
 
@@ -333,6 +300,8 @@
 
             outline: none;
 
+            box-sizing: border-box;
+
         }
 
 
@@ -368,9 +337,11 @@
         }
 
 
-        .botao-confirmar-troca:hover {
+        .botao-confirmar-troca:disabled {
 
-            opacity: 0.92;
+            opacity: 0.6;
+
+            cursor: wait;
 
         }
 
@@ -431,7 +402,7 @@
 
 
 <!-- =========================================
-     TELA ENQUANTO VERIFICA O ACESSO
+     TELA DE VERIFICAÇÃO
 ========================================= -->
 
 <div id="telaCarregamento">
@@ -449,6 +420,10 @@
 </div>
 
 
+
+<!-- =========================================
+     CABEÇALHO
+========================================= -->
 
 <header class="topo">
 
@@ -470,10 +445,6 @@
     </div>
 
 
-    <!-- =========================================
-         GARÇOM LOGADO
-    ========================================= -->
-
     <div class="garcom-topo">
 
         <button
@@ -492,7 +463,7 @@
 
 
 <!-- =========================================
-     JANELA TROCAR GARÇOM
+     TROCAR GARÇOM
 ========================================= -->
 
 <div
@@ -501,19 +472,16 @@
     onclick="fecharTrocaGarcomFundo(event)"
 >
 
-
     <div
         class="janela-troca-garcom"
         onclick="event.stopPropagation()"
     >
-
 
         <div class="cabecalho-troca-garcom">
 
             <h2>
                 Trocar garçom
             </h2>
-
 
             <button
                 class="botao-fechar-troca"
@@ -541,13 +509,10 @@
                 Garçom
             </label>
 
-
-            <select
-                id="garcomSelecionado"
-            >
+            <select id="garcomSelecionado">
 
                 <option value="">
-                    Carregando garçons...
+                    Selecione o garçom
                 </option>
 
             </select>
@@ -560,7 +525,6 @@
             <label for="senhaTrocaGarcom">
                 Senha
             </label>
-
 
             <input
                 type="password"
@@ -590,7 +554,6 @@
             class="mensagem-troca"
         ></div>
 
-
     </div>
 
 </div>
@@ -598,7 +561,7 @@
 
 
 <!-- =========================================
-     MENU LATERAL
+     MENU
 ========================================= -->
 
 <div
@@ -733,6 +696,10 @@
 
 
 
+<!-- =========================================
+     CONTEÚDO
+========================================= -->
+
 <main>
 
 
@@ -762,7 +729,6 @@
         class="mesas"
         id="mesas"
     >
-
 
         <button class="mesa livre" onclick="abrirMesa(1)">
             <strong>01</strong>
@@ -864,7 +830,6 @@
             <span>Livre</span>
         </button>
 
-
     </section>
 
 
@@ -880,12 +845,10 @@
     </section>
 
 
-
     <section
         class="mesas"
         id="quartos"
     >
-
 
         <button class="mesa livre" data-tipo="quarto" data-numero="1" onclick="abrirQuarto(1)">
             <strong>01</strong>
@@ -1007,9 +970,7 @@
             <span>Livre</span>
         </button>
 
-
     </section>
-
 
 </main>
 
@@ -1019,7 +980,10 @@
      FIREBASE
 ========================================= -->
 
-<script type="module" src="js/firebase.js"></script>
+<script
+    type="module"
+    src="js/firebase.js"
+></script>
 
 
 <script type="module">
@@ -1032,27 +996,18 @@ import {
 
 
 import {
+    getApps,
     getApp
 } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
 
 
 import {
     collection,
-    getDocs
+    query,
+    where,
+    getDocs,
+    onSnapshot
 } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
-
-
-
-/* =========================================
-   FIREBASE
-========================================= */
-
-const app =
-    getApp();
-
-
-const auth =
-    getAuth(app);
 
 
 
@@ -1066,26 +1021,61 @@ const telaCarregamento =
     );
 
 
-const body =
-    document.body;
+/* =========================================
+   AGUARDAR APP FIREBASE
+========================================= */
+
+async function aguardarAppFirebase() {
+
+    let tentativas = 0;
+
+
+    while (
+        getApps().length === 0 &&
+        tentativas < 100
+    ) {
+
+        await new Promise(
+            resolve =>
+                setTimeout(
+                    resolve,
+                    100
+                )
+        );
+
+
+        tentativas++;
+
+    }
+
+
+    if (
+        getApps().length === 0
+    ) {
+
+        throw new Error(
+            "Firebase não foi inicializado."
+        );
+
+    }
+
+
+    return getApp();
+
+}
 
 
 
 /* =========================================
-   MOSTRAR SISTEMA
+   FIREBASE
 ========================================= */
 
-function liberarSistema() {
-
-    telaCarregamento.style.display =
-        "none";
+const app =
+    await aguardarAppFirebase();
 
 
-    body.classList.add(
-        "acesso-verificado"
-    );
-
-}
+const auth =
+    getAuth(app);
 
 
 
@@ -1138,30 +1128,36 @@ function salvarGarcomLogado(
 
 
 /* =========================================
-   VERIFICAR CADASTRO DO GARÇOM
+   VERIFICAR GARÇOM LOGADO
 ========================================= */
 
 async function verificarGarcom(
     usuarioFirebase
 ) {
 
-    const conectado =
-        await aguardarFirebaseTroca();
-
-
-    if (!conectado) {
+    if (
+        !window.firebaseHotel
+    ) {
 
         throw new Error(
-            "FIREBASE_NAO_CONECTADO"
+            "Firebase Firestore não disponível."
         );
 
     }
 
 
-    const {
-        db
-    } = window.firebaseHotel;
+    const db =
+        window.firebaseHotel.db;
 
+
+    /*
+     * IMPORTANTE:
+     *
+     * Não buscamos todos os garçons.
+     *
+     * Buscamos somente o cadastro
+     * do usuário autenticado.
+     */
 
     const referencia =
         collection(
@@ -1170,38 +1166,26 @@ async function verificarGarcom(
         );
 
 
-    const resultado =
-        await getDocs(
-            referencia
+    const consulta =
+        query(
+            referencia,
+            where(
+                "uid",
+                "==",
+                usuarioFirebase.uid
+            )
         );
 
 
-    let garcomEncontrado =
-        null;
+    const resultado =
+        await getDocs(
+            consulta
+        );
 
 
-    resultado.forEach(
-        documento => {
-
-            const dados =
-                documento.data();
-
-
-            if (
-                dados.uid ===
-                usuarioFirebase.uid
-            ) {
-
-                garcomEncontrado =
-                    dados;
-
-            }
-
-        }
-    );
-
-
-    if (!garcomEncontrado) {
+    if (
+        resultado.empty
+    ) {
 
         return {
             valido: false,
@@ -1211,8 +1195,16 @@ async function verificarGarcom(
     }
 
 
+    const documento =
+        resultado.docs[0];
+
+
+    const dados =
+        documento.data();
+
+
     if (
-        garcomEncontrado.ativo !== true
+        dados.ativo !== true
     ) {
 
         return {
@@ -1224,14 +1216,14 @@ async function verificarGarcom(
 
 
     salvarGarcomLogado(
-        garcomEncontrado,
+        dados,
         usuarioFirebase
     );
 
 
     return {
         valido: true,
-        dados: garcomEncontrado
+        dados
     };
 
 }
@@ -1239,146 +1231,7 @@ async function verificarGarcom(
 
 
 /* =========================================
-   AGUARDAR FIREBASE
-========================================= */
-
-async function aguardarFirebaseTroca() {
-
-    let tentativas = 0;
-
-
-    while (
-        !window.firebaseHotel &&
-        tentativas < 50
-    ) {
-
-        await new Promise(
-            resolve =>
-                setTimeout(
-                    resolve,
-                    100
-                )
-        );
-
-
-        tentativas++;
-
-    }
-
-
-    return !!window.firebaseHotel;
-
-}
-
-
-
-/* =========================================
-   PROTEÇÃO DE ACESSO
-========================================= */
-
-let acessoVerificado =
-    false;
-
-
-onAuthStateChanged(
-    auth,
-    async usuarioFirebase => {
-
-        /*
-         * Evita processar a mesma
-         * confirmação mais de uma vez.
-         */
-
-        if (
-            acessoVerificado
-        ) {
-
-            return;
-
-        }
-
-
-        try {
-
-            /*
-             * NÃO EXISTE LOGIN
-             */
-
-            if (!usuarioFirebase) {
-
-                irParaLogin();
-
-                return;
-
-            }
-
-
-            /*
-             * EXISTE LOGIN.
-             *
-             * Agora verificamos se
-             * o usuário é um garçom
-             * cadastrado e ativo.
-             */
-
-            const resultado =
-                await verificarGarcom(
-                    usuarioFirebase
-                );
-
-
-            if (
-                !resultado.valido
-            ) {
-
-                console.warn(
-                    "Acesso recusado:",
-                    resultado.motivo
-                );
-
-
-                irParaLogin();
-
-                return;
-
-            }
-
-
-            /*
-             * Tudo certo.
-             *
-             * Agora o sistema pode
-             * aparecer.
-             */
-
-            acessoVerificado =
-                true;
-
-
-            atualizarNomeGarcom();
-
-            liberarSistema();
-
-
-        } catch (erro) {
-
-            console.error(
-                "Erro verificando acesso:",
-                erro
-            );
-
-
-            irParaLogin();
-
-        }
-
-    }
-);
-
-
-
-/* =========================================
-   IDENTIFICAÇÃO DO GARÇOM ATUAL
+   IDENTIFICAÇÃO DO GARÇOM
 ========================================= */
 
 function obterGarcomAtual() {
@@ -1405,7 +1258,7 @@ function obterGarcomAtual() {
     } catch (erro) {
 
         console.error(
-            "Erro ao ler garçom logado:",
+            "Erro ao ler garçom:",
             erro
         );
 
@@ -1419,7 +1272,7 @@ function obterGarcomAtual() {
 
 
 /* =========================================
-   ATUALIZAR NOME NO CABEÇALHO
+   MOSTRAR NOME
 ========================================= */
 
 function atualizarNomeGarcom() {
@@ -1428,13 +1281,6 @@ function atualizarNomeGarcom() {
         document.getElementById(
             "botaoGarcom"
         );
-
-
-    if (!botao) {
-
-        return;
-
-    }
 
 
     const garcom =
@@ -1461,7 +1307,113 @@ function atualizarNomeGarcom() {
 
 
 /* =========================================
-   ABRIR TROCA DE GARÇOM
+   LIBERAR SISTEMA
+========================================= */
+
+function liberarSistema() {
+
+    telaCarregamento.style.display =
+        "none";
+
+
+    document.body.classList.add(
+        "acesso-verificado"
+    );
+
+}
+
+
+
+/* =========================================
+   PROTEÇÃO DE ACESSO
+========================================= */
+
+onAuthStateChanged(
+    auth,
+    async usuarioFirebase => {
+
+        try {
+
+            /*
+             * Não está logado.
+             */
+
+            if (!usuarioFirebase) {
+
+                irParaLogin();
+
+                return;
+
+            }
+
+
+            /*
+             * Está logado.
+             *
+             * Agora confirma se é um
+             * garçom cadastrado e ativo.
+             */
+
+            const resultado =
+                await verificarGarcom(
+                    usuarioFirebase
+                );
+
+
+            if (
+                !resultado.valido
+            ) {
+
+                console.warn(
+                    "Acesso recusado:",
+                    resultado.motivo
+                );
+
+
+                irParaLogin();
+
+                return;
+
+            }
+
+
+            /*
+             * Login confirmado.
+             */
+
+            atualizarNomeGarcom();
+
+
+            liberarSistema();
+
+
+            /*
+             * Só agora carregamos
+             * mesas e quartos.
+             */
+
+            iniciarMesas();
+
+
+        } catch (erro) {
+
+            console.error(
+                "Erro na proteção de acesso:",
+                erro
+            );
+
+
+            irParaLogin();
+
+        }
+
+    }
+);
+
+
+
+/* =========================================
+   TROCA DE GARÇOM
 ========================================= */
 
 window.abrirTrocaGarcom =
@@ -1504,67 +1456,40 @@ window.abrirTrocaGarcom =
             "";
 
 
-        mensagem.style.color =
-            "#777";
-
-
         select.innerHTML = `
 
             <option value="">
-                Carregando garçons...
+                Selecione o garçom
             </option>
 
         `;
 
 
+        /*
+         * A lista completa de garçons depende
+         * das regras do Firestore.
+         *
+         * Mantemos o funcionamento da troca
+         * se a regra atual permitir essa leitura.
+         */
+
         try {
 
-            const conectado =
-                await aguardarFirebaseTroca();
-
-
-            if (!conectado) {
-
-                throw new Error(
-                    "Firebase não conectado."
-                );
-
-            }
-
-
-            const {
-                db
-            } = window.firebaseHotel;
-
-
-            const referencia =
-                collection(
-                    db,
-                    "garcons"
-                );
+            const db =
+                window.firebaseHotel.db;
 
 
             const resultado =
                 await getDocs(
-                    referencia
+                    collection(
+                        db,
+                        "garcons"
+                    )
                 );
 
 
             const garcomAtual =
                 obterGarcomAtual();
-
-
-            select.innerHTML = `
-
-                <option value="">
-                    Selecione o garçom
-                </option>
-
-            `;
-
-
-            let quantidade =
-                0;
 
 
             resultado.forEach(
@@ -1590,9 +1515,6 @@ window.abrirTrocaGarcom =
                         return;
 
                     }
-
-
-                    quantidade++;
 
 
                     const option =
@@ -1628,21 +1550,6 @@ window.abrirTrocaGarcom =
 
                 }
             );
-
-
-            if (
-                quantidade === 0
-            ) {
-
-                select.innerHTML = `
-
-                    <option value="">
-                        Nenhum garçom cadastrado
-                    </option>
-
-                `;
-
-            }
 
 
             senha.focus();
@@ -1705,7 +1612,7 @@ window.fecharTrocaGarcomFundo =
 
 
 /* =========================================
-   CONFIRMAR TROCA DE GARÇOM
+   CONFIRMAR TROCA
 ========================================= */
 
 window.confirmarTrocaGarcom =
@@ -1743,10 +1650,6 @@ window.confirmarTrocaGarcom =
 
         const senhaDigitada =
             senha.value;
-
-
-        mensagem.style.color =
-            "#777";
 
 
         if (!usuario) {
@@ -1797,32 +1700,14 @@ window.confirmarTrocaGarcom =
 
         try {
 
-            const conectado =
-                await aguardarFirebaseTroca();
-
-
-            if (!conectado) {
-
-                throw new Error(
-                    "Firebase não conectado."
-                );
-
-            }
-
-
-            const {
-                db
-            } = window.firebaseHotel;
+            const db =
+                window.firebaseHotel.db;
 
 
             const email =
                 usuario +
                 "@hoteldobau.com";
 
-
-            /*
-             * Autentica o novo garçom.
-             */
 
             const resultado =
                 await signInWithEmailAndPassword(
@@ -1837,55 +1722,45 @@ window.confirmarTrocaGarcom =
 
 
             /*
-             * Procura o cadastro
-             * correspondente ao UID.
+             * Aqui também buscamos somente
+             * o UID autenticado.
              */
 
-            const referencia =
-                collection(
-                    db,
-                    "garcons"
+            const consulta =
+                query(
+                    collection(
+                        db,
+                        "garcons"
+                    ),
+                    where(
+                        "uid",
+                        "==",
+                        usuarioFirebase.uid
+                    )
                 );
 
 
             const resultadoGarcom =
                 await getDocs(
-                    referencia
+                    consulta
                 );
 
 
-            let dadosGarcom =
-                null;
-
-
-            resultadoGarcom.forEach(
-                documento => {
-
-                    const dados =
-                        documento.data();
-
-
-                    if (
-                        dados.uid ===
-                        usuarioFirebase.uid
-                    ) {
-
-                        dadosGarcom =
-                            dados;
-
-                    }
-
-                }
-            );
-
-
-            if (!dadosGarcom) {
+            if (
+                resultadoGarcom.empty
+            ) {
 
                 throw new Error(
                     "GARCOM_NAO_CADASTRADO"
                 );
 
             }
+
+
+            const dadosGarcom =
+                resultadoGarcom
+                    .docs[0]
+                    .data();
 
 
             if (
@@ -1899,20 +1774,11 @@ window.confirmarTrocaGarcom =
             }
 
 
-            /*
-             * Salva o novo garçom.
-             */
-
             salvarGarcomLogado(
                 dadosGarcom,
                 usuarioFirebase
             );
 
-
-            /*
-             * Atualiza o cabeçalho
-             * imediatamente.
-             */
 
             atualizarNomeGarcom();
 
@@ -1926,7 +1792,7 @@ window.confirmarTrocaGarcom =
 
 
             setTimeout(
-                function () {
+                () => {
 
                     fecharTrocaGarcom();
 
@@ -2020,7 +1886,7 @@ document
     )
     .addEventListener(
         "keydown",
-        function (evento) {
+        evento => {
 
             if (
                 evento.key ===
@@ -2062,7 +1928,7 @@ document
 
 
 /* =========================================
-   FUNÇÕES DAS MESAS
+   ABRIR MESA
 ========================================= */
 
 window.abrirMesa =
@@ -2087,6 +1953,10 @@ window.abrirMesa =
 
 
 
+/* =========================================
+   ABRIR QUARTO
+========================================= */
+
 window.abrirQuarto =
     function (numero) {
 
@@ -2110,41 +1980,7 @@ window.abrirQuarto =
 
 
 /* =========================================
-   AGUARDAR FIREBASE DAS MESAS
-========================================= */
-
-async function aguardarFirebase() {
-
-    let tentativas = 0;
-
-
-    while (
-        !window.firebaseHotel &&
-        tentativas < 50
-    ) {
-
-        await new Promise(
-            resolve =>
-                setTimeout(
-                    resolve,
-                    100
-                )
-        );
-
-
-        tentativas++;
-
-    }
-
-
-    return !!window.firebaseHotel;
-
-}
-
-
-
-/* =========================================
-   QUARTOS DISPONÍVEIS
+   QUARTOS
 ========================================= */
 
 const quartosDisponiveis = [
@@ -2166,7 +2002,7 @@ const quartosDisponiveis = [
 
 
 /* =========================================
-   DEFINIR VISUAL
+   DEFINIR STATUS
 ========================================= */
 
 function definirStatusLocal(
@@ -2190,9 +2026,7 @@ function definirStatusLocal(
     }
 
 
-    else if (
-        tipo === "quarto"
-    ) {
+    else {
 
         botao =
             document.querySelector(
@@ -2273,11 +2107,10 @@ function definirStatusLocal(
 
 
 /* =========================================
-   DEIXAR TODOS LIVRES
+   RESETAR STATUS
 ========================================= */
 
 function resetarStatus() {
-
 
     for (
         let numero = 1;
@@ -2311,33 +2144,13 @@ function resetarStatus() {
 
 
 /* =========================================
-   INICIAR MESAS E QUARTOS
+   INICIAR MESAS
 ========================================= */
 
 async function iniciarMesas() {
 
-    const conectado =
-        await aguardarFirebase();
-
-
-    if (!conectado) {
-
-        console.error(
-            "Firebase não conectado."
-        );
-
-        return;
-
-    }
-
-
-    const {
-
-        db,
-        collection,
-        onSnapshot
-
-    } = window.firebaseHotel;
+    const db =
+        window.firebaseHotel.db;
 
 
     resetarStatus();
@@ -2349,10 +2162,6 @@ async function iniciarMesas() {
             "mesas"
         );
 
-
-    /* =========================================
-       OUVIR STATUS DAS MESAS E QUARTOS
-    ========================================= */
 
     onSnapshot(
 
@@ -2386,21 +2195,12 @@ async function iniciarMesas() {
 
                     if (!tipo) {
 
-                        if (
+                        tipo =
                             idDocumento.startsWith(
                                 "quarto_"
                             )
-                        ) {
-
-                            tipo =
-                                "quarto";
-
-                        } else {
-
-                            tipo =
-                                "mesa";
-
-                        }
+                                ? "quarto"
+                                : "mesa";
 
                     }
 
@@ -2431,9 +2231,6 @@ async function iniciarMesas() {
                             );
 
                         }
-
-
-                        return;
 
                     }
 
@@ -2473,11 +2270,10 @@ async function iniciarMesas() {
 
         },
 
-
         erro => {
 
             console.error(
-                "Erro ao carregar mesas e quartos:",
+                "Erro ao carregar mesas:",
                 erro
             );
 
@@ -2488,7 +2284,7 @@ async function iniciarMesas() {
 
 
     /* =========================================
-       VERIFICAR CONSUMO REAL
+       CONSUMO DAS MESAS / QUARTOS
     ========================================= */
 
     function observarConsumo(
@@ -2502,7 +2298,7 @@ async function iniciarMesas() {
 
                 ? `quarto_${String(numero).padStart(2, "0")}`
 
-                        : `mesa_${String(numero).padStart(2, "0")}`;
+                : `mesa_${String(numero).padStart(2, "0")}`;
 
 
         const referenciaPedidos =
@@ -2547,7 +2343,6 @@ async function iniciarMesas() {
 
             },
 
-
             erro => {
 
                 console.error(
@@ -2564,7 +2359,7 @@ async function iniciarMesas() {
 
 
     /* =========================================
-       OBSERVAR MESAS 01 A 20
+       MESAS
     ========================================= */
 
     for (
@@ -2583,7 +2378,7 @@ async function iniciarMesas() {
 
 
     /* =========================================
-       OBSERVAR QUARTOS
+       QUARTOS
     ========================================= */
 
     quartosDisponiveis.forEach(
@@ -2602,15 +2397,7 @@ async function iniciarMesas() {
 
 
 /* =========================================
-   INICIAR MESAS
-========================================= */
-
-iniciarMesas();
-
-
-
-/* =========================================
-   MENU LATERAL
+   MENU
 ========================================= */
 
 window.abrirMenu =
@@ -2636,7 +2423,6 @@ window.abrirMenu =
     };
 
 
-
 window.fecharMenu =
     function () {
 
@@ -2658,7 +2444,6 @@ window.fecharMenu =
             );
 
     };
-
 
 </script>
 
