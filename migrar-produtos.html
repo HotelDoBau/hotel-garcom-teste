@@ -151,7 +151,7 @@
                 let ignorados = 0;
 
 
-                for (const produto of produtos) {
+                for (const produto of window.produtos) {
 
                     const nomeNormalizado =
                         normalizarNome(produto.nome);
@@ -232,7 +232,7 @@
                     <br>
 
                     Total analisado:
-                    <strong>${produtos.length}</strong>
+                    <strong>${window.produtos.length}</strong>
 
                     <br><br>
 
