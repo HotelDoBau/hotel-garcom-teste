@@ -190,12 +190,12 @@
         }
 
 
+        .botao-editar,
         .botao-excluir {
-            width: 100%;
+            flex: 1;
             border: none;
             border-radius: 8px;
             padding: 11px;
-            background: #b42318;
             color: white;
             font-size: 14px;
             font-weight: 600;
@@ -203,6 +203,17 @@
         }
 
 
+        .botao-editar {
+            background: #2f80ed;
+        }
+
+
+        .botao-excluir {
+            background: #b42318;
+        }
+
+
+        .botao-editar:hover,
         .botao-excluir:hover {
             opacity: 0.9;
         }
@@ -503,6 +514,14 @@
         }
 
 
+        function editarProduto(id) {
+
+            window.location.href =
+                `produtos.html?id=${encodeURIComponent(id)}`;
+
+        }
+
+
         function mostrarProdutos(produtos) {
 
             listaProdutos.innerHTML =
@@ -635,6 +654,13 @@
 
                                     <button
                                         type="button"
+                                        class="botao-editar"
+                                    >
+                                        Editar
+                                    </button>
+
+                                    <button
+                                        type="button"
                                         class="botao-excluir"
                                     >
                                         Excluir
@@ -696,6 +722,13 @@
 
                                     <button
                                         type="button"
+                                        class="botao-editar"
+                                    >
+                                        Editar
+                                    </button>
+
+                                    <button
+                                        type="button"
                                         class="botao-excluir"
                                     >
                                         Excluir
@@ -708,6 +741,24 @@
                         `;
 
                     }
+
+
+                    const botaoEditar =
+                        card.querySelector(
+                            ".botao-editar"
+                        );
+
+
+                    botaoEditar.addEventListener(
+                        "click",
+                        function () {
+
+                            editarProduto(
+                                produto.id
+                            );
+
+                        }
+                    );
 
 
                     const botaoExcluir =
