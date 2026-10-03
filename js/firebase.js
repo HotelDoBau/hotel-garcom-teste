@@ -1,7 +1,4 @@
-import {
-    initializeApp
-} from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
-
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
 
 import {
     getFirestore,
@@ -20,21 +17,18 @@ import {
     runTransaction
 } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
 
+import {
+    getStorage
+} from "https://www.gstatic.com/firebasejs/12.11.0/firebase-storage.js";
+
 
 const firebaseConfig = {
-
     apiKey: "AIzaSyAEj82ZchuqIEzbG1PhbLclqiSbIEPifWU",
-
     authDomain: "hotel-garcom-teste.firebaseapp.com",
-
     projectId: "hotel-garcom-teste",
-
     storageBucket: "hotel-garcom-teste.firebasestorage.app",
-
     messagingSenderId: "608879824533",
-
     appId: "1:608879824533:web:2c6e47be27336607b8559c"
-
 };
 
 
@@ -50,9 +44,17 @@ const db =
     );
 
 
+const storage =
+    getStorage(
+        app
+    );
+
+
 window.firebaseHotel = {
 
     db,
+
+    storage,
 
     collection,
 
@@ -86,6 +88,8 @@ window.firebaseHotel = {
 export {
 
     db,
+
+    storage,
 
     collection,
 
