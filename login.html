@@ -10,7 +10,7 @@
         content="width=device-width, initial-scale=1.0"
     >
 
-    <title>Acesso Administrativo - Hotel do Baú</title>
+    <title>Acesso - Hotel do Baú</title>
 
     <style>
 
@@ -45,9 +45,9 @@
 
             width: 100%;
 
-            max-width: 400px;
+            max-width: 380px;
 
-            background: white;
+            background: #ffffff;
 
             padding: 35px 30px;
 
@@ -116,7 +116,7 @@
 
             border-radius: 8px;
 
-            font-size: 16px;
+            font-size: 17px;
 
             outline: none;
 
@@ -176,29 +176,31 @@
 
 <body>
 
+
     <div class="login-container">
 
         <div class="logo">
 
             <h1>Hotel do Baú</h1>
 
-            <p>Acesso administrativo</p>
+            <p>Acesso dos garçons</p>
 
         </div>
 
 
         <form id="formLogin">
 
+
             <div class="campo">
 
-                <label for="email">
-                    E-mail
+                <label for="usuario">
+                    Usuário
                 </label>
 
                 <input
-                    type="email"
-                    id="email"
-                    placeholder="Digite seu e-mail"
+                    type="text"
+                    id="usuario"
+                    placeholder="Digite seu usuário"
                     autocomplete="username"
                     required
                 >
@@ -215,7 +217,10 @@
                 <input
                     type="password"
                     id="senha"
-                    placeholder="Digite sua senha"
+                    placeholder="6 números"
+                    inputmode="numeric"
+                    pattern="[0-9]{6}"
+                    maxlength="6"
                     autocomplete="current-password"
                     required
                 >
@@ -227,13 +232,15 @@
                 type="submit"
                 class="botao-login"
             >
-                Entrar
+                ENTRAR
             </button>
+
 
             <div
                 id="mensagem"
                 class="mensagem"
             ></div>
+
 
         </form>
 
@@ -243,13 +250,23 @@
     <script type="module">
 
         import {
+            initializeApp
+        } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
+
+
+        import {
             getAuth,
             signInWithEmailAndPassword
         } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
 
+
         import {
-            initializeApp
-        } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
+            getFirestore,
+            collection,
+            query,
+            where,
+            getDocs
+        } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
 
 
         const firebaseConfig = {
@@ -278,15 +295,40 @@
         const app =
             initializeApp(firebaseConfig);
 
+
         const auth =
             getAuth(app);
+
+
+        const db =
+            getFirestore(app);
 
 
         const formLogin =
             document.getElementById("formLogin");
 
+
         const mensagem =
             document.getElementById("mensagem");
+
+
+        const campoUsuario =
+            document.getElementById("usuario");
+
+
+        const campoSenha =
+            document.getElementById("senha");
+
+
+        campoSenha.addEventListener(
+            "input",
+            function () {
+
+                this.value =
+                    this.value.replace(/\D/g, "");
+
+            }
+        );
 
 
         formLogin.addEventListener(
@@ -296,17 +338,39 @@
                 evento.preventDefault();
 
 
-                const email =
-                    document
-                        .getElementById("email")
+                const usuario =
+                    campoUsuario
                         .value
-                        .trim();
+                        .trim()
+                        .toLowerCase();
+
 
                 const senha =
-                    document
-                        .getElementById("senha")
-                        .value;
+                    campoSenha.value;
 
+
+                if (!usuario) {
+
+                    mensagem.textContent =
+                        "Digite o usuário.";
+
+                    return;
+
+                }
+
+
+                if (!/^\d{6}$/.test(senha)) {
+
+                    mensagem.textContent =
+                        "A senha deve ter 6 números.";
+
+                    return;
+
+                }
+
+
+                mensagem.style.color =
+                    "#777";
 
                 mensagem.textContent =
                     "Entrando...";
@@ -314,10 +378,126 @@
 
                 try {
 
-                    await signInWithEmailAndPassword(
-                        auth,
-                        email,
-                        senha
+
+                    /*
+                     * O usuário digitado pelo garçom
+                     * é transformado no e-mail interno
+                     * utilizado pelo Firebase.
+                     */
+
+                    const email =
+                        usuario +
+                        "@hoteldobau.com";
+
+
+                    /*
+                     * Faz o login no Firebase.
+                     */
+
+                    const resultado =
+                        await signInWithEmailAndPassword(
+                            auth,
+                            email,
+                            senha
+                        );
+
+
+                    const usuarioFirebase =
+                        resultado.user;
+
+
+                    /*
+                     * Procura o cadastro do garçom
+                     * pelo UID do Firebase.
+                     */
+
+                    const referencia =
+                        collection(
+                            db,
+                            "garcons"
+                        );
+
+
+                    const consulta =
+                        query(
+                            referencia,
+                            where(
+                                "uid",
+                                "==",
+                                usuarioFirebase.uid
+                            )
+                        );
+
+
+                    const resultadoGarcom =
+                        await getDocs(consulta);
+
+
+                    if (
+                        resultadoGarcom.empty
+                    ) {
+
+                        mensagem.style.color =
+                            "#c0392b";
+
+                        mensagem.textContent =
+                            "Garçom não cadastrado.";
+
+                        return;
+
+                    }
+
+
+                    const documento =
+                        resultadoGarcom.docs[0];
+
+
+                    const dados =
+                        documento.data();
+
+
+                    /*
+                     * Verifica se o garçom
+                     * está ativo.
+                     */
+
+                    if (
+                        dados.ativo !== true
+                    ) {
+
+                        mensagem.style.color =
+                            "#c0392b";
+
+                        mensagem.textContent =
+                            "Usuário desativado.";
+
+                        return;
+
+                    }
+
+
+                    /*
+                     * Guarda a identificação
+                     * do garçom no navegador.
+                     *
+                     * Vamos usar isso depois
+                     * na auditoria.
+                     */
+
+                    localStorage.setItem(
+                        "garcomLogado",
+                        JSON.stringify({
+
+                            uid:
+                                usuarioFirebase.uid,
+
+                            nome:
+                                dados.nome,
+
+                            usuario:
+                                dados.usuario
+
+                        })
                     );
 
 
@@ -325,26 +505,30 @@
                         "#16803c";
 
                     mensagem.textContent =
-                        "Login realizado com sucesso.";
+                        "Acesso realizado.";
 
 
-                    setTimeout(function () {
+                    setTimeout(
+                        function () {
 
-                        window.location.href =
-                            "index.html";
+                            window.location.href =
+                                "index.html";
 
-                    }, 500);
+                        },
+                        500
+                    );
 
 
                 } catch (erro) {
 
                     console.error(erro);
 
+
                     mensagem.style.color =
                         "#c0392b";
 
                     mensagem.textContent =
-                        "E-mail ou senha incorretos.";
+                        "Usuário ou senha incorretos.";
 
                 }
 
