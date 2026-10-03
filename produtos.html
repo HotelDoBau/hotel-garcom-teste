@@ -302,57 +302,53 @@
     </div>
 
 
-    <script type="module">
+ <script type="module">
 
-        import {
+    try {
+
+        const firebase =
+            await import("./js/firebase.js");
+
+
+        const {
             db,
             collection,
             addDoc,
             serverTimestamp
-        } from "./js/firebase.js";
+        } = firebase;
 
 
         const nomeProduto =
-            document.getElementById(
-                "nomeProduto"
-            );
+            document.getElementById("nomeProduto");
 
 
         const fotoProduto =
-            document.getElementById(
-                "fotoProduto"
-            );
+            document.getElementById("fotoProduto");
 
 
         const fotoPreview =
-            document.getElementById(
-                "fotoPreview"
-            );
+            document.getElementById("fotoPreview");
 
 
         const categoriaProduto =
-            document.getElementById(
-                "categoriaProduto"
-            );
+            document.getElementById("categoriaProduto");
 
 
         const descricaoProduto =
-            document.getElementById(
-                "descricaoProduto"
-            );
+            document.getElementById("descricaoProduto");
 
 
         const precoProduto =
-            document.getElementById(
-                "precoProduto"
-            );
+            document.getElementById("precoProduto");
 
 
         const btnConcluir =
-            document.getElementById(
-                "btnConcluir"
-            );
+            document.getElementById("btnConcluir");
 
+
+        /* =========================
+           PRÉ-VISUALIZAÇÃO DA FOTO
+        ========================= */
 
         fotoProduto.addEventListener(
             "change",
@@ -397,6 +393,10 @@
             }
         );
 
+
+        /* =========================
+           CADASTRAR PRODUTO
+        ========================= */
 
         btnConcluir.addEventListener(
             "click",
@@ -517,13 +517,14 @@
                 } catch (erro) {
 
                     console.error(
-                        "Erro ao cadastrar produto:",
+                        "ERRO AO SALVAR PRODUTO:",
                         erro
                     );
 
 
                     alert(
-                        "Não foi possível cadastrar o produto."
+                        "Erro ao salvar produto:\n\n" +
+                        erro.message
                     );
 
                 } finally {
@@ -539,7 +540,23 @@
             }
         );
 
-    </script>
+
+    } catch (erro) {
+
+        console.error(
+            "ERRO AO CARREGAR FIREBASE:",
+            erro
+        );
+
+
+        alert(
+            "Erro ao carregar o Firebase:\n\n" +
+            erro.message
+        );
+
+    }
+
+</script>
 
 
 </body>
