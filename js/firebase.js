@@ -18,7 +18,10 @@ import {
 } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
 
 import {
-    getStorage
+    getStorage,
+    ref,
+    uploadBytes,
+    getDownloadURL
 } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-storage.js";
 
 
@@ -80,7 +83,13 @@ window.firebaseHotel = {
 
     getDoc,
 
-    runTransaction
+    runTransaction,
+
+    ref,
+
+    uploadBytes,
+
+    getDownloadURL
 
 };
 
@@ -115,6 +124,12 @@ export {
 
     getDoc,
 
-    runTransaction
+    runTransaction,
+
+    ref,
+
+    uploadBytes,
+
+    getDownloadURL
 
 };
