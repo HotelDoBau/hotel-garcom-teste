@@ -1152,6 +1152,48 @@ async function enviarPedido() {
             : "";
 
 
+    // ===========================
+    // GARÇOM LOGADO
+    // ===========================
+
+    let garcomNome =
+        "Não informado";
+
+
+    try {
+
+        const garcomSalvo =
+            localStorage.getItem(
+                "garcomLogado"
+            );
+
+
+        if (garcomSalvo) {
+
+            const garcom =
+                JSON.parse(
+                    garcomSalvo
+                );
+
+
+            garcomNome =
+                garcom.nome ||
+                garcom.nomeGarcom ||
+                garcom.usuario ||
+                "Não informado";
+
+        }
+
+    } catch (erro) {
+
+        console.error(
+            "Erro ao identificar garçom:",
+            erro
+        );
+
+    }
+
+
     try {
 
         const numeroPedido =
@@ -1338,6 +1380,13 @@ async function enviarPedido() {
                 numeroPedido:
                     numeroPedido,
 
+                // ===========================
+                // GARÇOM
+                // ===========================
+
+                garcomNome:
+                    garcomNome,
+
                 mesa:
                     ehQuarto
                         ? null
@@ -1419,6 +1468,7 @@ async function enviarPedido() {
     }
 
 }
+
 
 
 // ===========================
