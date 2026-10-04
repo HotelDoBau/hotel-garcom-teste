@@ -3,6 +3,53 @@
 
     <style>
 
+        #bloqueioAcesso {
+
+    position: fixed;
+
+    inset: 0;
+
+    background: #f4f6f8;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    z-index: 99999;
+
+    font-family: Arial;
+
+    color: #17212b;
+
+}
+
+
+#bloqueioAcesso strong {
+
+    font-size: 22px;
+
+}
+
+
+#bloqueioAcesso span {
+
+    margin-top: 10px;
+
+    color: #777;
+
+}
+
+
+body.liberado #bloqueioAcesso {
+
+    display: none;
+
+}
+
 .menu-configuracoes {
 
     display: flex;
@@ -293,8 +340,13 @@ async function iniciar(){
 
 
                 console.log(
-                    "Administrador autorizado"
-                );
+    "Administrador autorizado"
+);
+
+
+document.body.classList.add(
+    "liberado"
+);
 
 
             }
@@ -328,6 +380,17 @@ iniciar();
     
 <body>
 
+    <div id="bloqueioAcesso">
+
+    <strong>
+        Hotel do Baú
+    </strong>
+
+    <span>
+        Verificando permissão...
+    </span>
+
+</div>
 
 <header class="topo">
 
