@@ -4,6 +4,7 @@ import {
     onSnapshot,
     doc,
     getDocs,
+    getDoc,
     deleteDoc,
     setDoc,
     serverTimestamp
@@ -21,6 +22,121 @@ const impressoesAutomaticasEmAndamento =
 
 
 // =====================================================
+// CONFIGURAÇÃO PADRÃO DA IMPRESSORA
+// =====================================================
+
+const CONFIGURACAO_IMPRESSAO_PADRAO = {
+
+    larguraPapel: 80,
+
+    numeroVias: 1,
+
+    mostrarGarcom: true,
+
+    mostrarMesa: true,
+
+    mostrarComanda: true,
+
+    mostrarHorario: true,
+
+    mostrarPrecos: true
+
+};
+
+
+// =====================================================
+// CARREGAR CONFIGURAÇÃO DA IMPRESSORA
+// =====================================================
+
+async function obterConfiguracaoImpressao() {
+
+    try {
+
+        const referencia =
+            doc(
+                db,
+                "configuracoes",
+                "impressora"
+            );
+
+
+        const snapshot =
+            await getDoc(
+                referencia
+            );
+
+
+        if (
+            snapshot.exists()
+        ) {
+
+            return {
+
+                ...CONFIGURACAO_IMPRESSAO_PADRAO,
+
+                ...snapshot.data()
+
+            };
+
+        }
+
+
+    } catch (erro) {
+
+        console.warn(
+            "Não foi possível carregar as configurações da impressora. Usando padrão.",
+            erro
+        );
+
+    }
+
+
+    return {
+        ...CONFIGURACAO_IMPRESSAO_PADRAO
+    };
+}
+
+
+// =====================================================
+// FORMATAÇÃO DE VALOR
+// =====================================================
+
+function formatarValor(valor) {
+
+    return Number(
+        valor || 0
+    )
+        .toFixed(2)
+        .replace(".", ",");
+}
+
+
+// =====================================================
+// ESCAPAR TEXTO PARA IMPRESSÃO
+// =====================================================
+
+function escaparHTML(texto) {
+
+    if (
+        texto === null ||
+        texto === undefined
+    ) {
+
+        return "";
+
+    }
+
+
+    return String(texto)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+}
+
+
+// =====================================================
 // TRAVA CONTRA IMPRESSÃO DUPLICADA
 // =====================================================
 
@@ -35,10 +151,12 @@ function adquirirTravaImpressao(chave) {
                 "hotelBau_impressao_" + chave
             );
 
+
         if (existente) {
 
             const tempo =
                 Number(existente);
+
 
             if (
                 agora - tempo <
@@ -46,13 +164,17 @@ function adquirirTravaImpressao(chave) {
             ) {
 
                 return false;
+
             }
+
         }
+
 
         localStorage.setItem(
             "hotelBau_impressao_" + chave,
             String(agora)
         );
+
 
         return true;
 
@@ -82,6 +204,7 @@ function liberarTravaImpressao(chave) {
             "Erro ao liberar trava de impressão:",
             erro
         );
+
     }
 }
 
@@ -90,151 +213,335 @@ function liberarTravaImpressao(chave) {
 // IMPRESSÃO
 // =====================================================
 
-function abrirImpressao(conteudo) {
+function abrirImpressao(
+    conteudo,
+    configuracao = CONFIGURACAO_IMPRESSAO_PADRAO
+) {
 
-    return new Promise((resolve, reject) => {
+    return new Promise(
+        (resolve, reject) => {
 
-        try {
+            try {
 
-            const iframe =
-                document.createElement("iframe");
+                const iframe =
+                    document.createElement("iframe");
 
-            iframe.style.position = "fixed";
-            iframe.style.width = "1px";
-            iframe.style.height = "1px";
-            iframe.style.border = "0";
-            iframe.style.opacity = "0";
-            iframe.style.pointerEvents = "none";
 
-            document.body.appendChild(iframe);
+                iframe.style.position = "fixed";
+                iframe.style.width = "1px";
+                iframe.style.height = "1px";
+                iframe.style.border = "0";
+                iframe.style.opacity = "0";
+                iframe.style.pointerEvents = "none";
 
-            const documento =
-                iframe.contentWindow.document;
 
-            documento.open();
+                document.body.appendChild(
+                    iframe
+                );
 
-            documento.write(`
-                <!DOCTYPE html>
 
-                <html>
+                const documento =
+                    iframe.contentWindow.document;
 
-                <head>
 
-                    <meta charset="UTF-8">
+                const larguraPapel =
+                    Number(
+                        configuracao.larguraPapel
+                    ) === 80
+                        ? 80
+                        : 80;
 
-                    <style>
 
-                        @page {
-                            size: 80mm auto;
-                            margin: 3mm;
-                        }
+                const larguraConteudo =
+                    larguraPapel - 8;
 
-                        html,
-                        body {
-                            margin: 0;
-                            padding: 0;
-                            width: 72mm;
-                            font-family: Arial, sans-serif;
-                            font-size: 12px;
-                            color: #000;
-                        }
 
-                        body {
-                            padding-bottom: 10px;
-                        }
-
-                        .central {
-                            text-align: center;
-                        }
-
-                        .separador {
-                            border-top: 1px dashed #000;
-                            margin: 8px 0;
-                        }
-
-                        .identificacao-print {
-                            font-weight: bold;
-                            font-size: 14px;
-                        }
-
-                        .mesa-print {
-                            font-weight: bold;
-                            font-size: 15px;
-                            margin-top: 4px;
-                        }
-
-                        .linha-item-impressao {
-                            display: flex;
-                            justify-content: space-between;
-                            gap: 8px;
-                            margin: 4px 0;
-                        }
-
-                        .item-producao {
-                            font-size: 13px;
-                        }
-
-                        .obs {
-                            margin-top: 8px;
-                            font-size: 12px;
-                        }
-
-                        .total-impressao {
-                            font-weight: bold;
-                            font-size: 15px;
-                            margin-top: 8px;
-                        }
-
-                    </style>
-
-                </head>
-
-                <body>
-
-                    ${conteudo}
-
-                </body>
-
-                </html>
-            `);
-
-            documento.close();
-
-            setTimeout(() => {
-
-                try {
-
-                    iframe.contentWindow.focus();
-
-                    iframe.contentWindow.print();
-
-                } catch (erro) {
-
-                    console.error(
-                        "Erro ao enviar impressão:",
-                        erro
+                const numeroVias =
+                    Math.max(
+                        1,
+                        Math.min(
+                            2,
+                            Number(
+                                configuracao.numeroVias
+                            ) || 1
+                        )
                     );
 
-                    reject(erro);
 
-                    return;
+                let conteudoFinal = "";
+
+
+                for (
+                    let via = 1;
+                    via <= numeroVias;
+                    via++
+                ) {
+
+                    conteudoFinal += `
+
+                        <div class="via-impressao">
+
+                            ${conteudo}
+
+                        </div>
+
+                    `;
+
+
+                    if (
+                        via < numeroVias
+                    ) {
+
+                        conteudoFinal += `
+
+                            <div class="quebra-via"></div>
+
+                        `;
+
+                    }
+
                 }
 
-                setTimeout(() => {
 
-                    iframe.remove();
+                documento.open();
 
-                    resolve();
 
-                }, 1200);
+                documento.write(`
 
-            }, 700);
+                    <!DOCTYPE html>
 
-        } catch (erro) {
+                    <html>
 
-            reject(erro);
+                    <head>
+
+                        <meta charset="UTF-8">
+
+                        <style>
+
+                            @page {
+
+                                size:
+                                    ${larguraPapel}mm auto;
+
+                                margin: 3mm;
+
+                            }
+
+
+                            html,
+                            body {
+
+                                margin: 0;
+
+                                padding: 0;
+
+                                width:
+                                    ${larguraConteudo}mm;
+
+                                font-family:
+                                    Arial,
+                                    sans-serif;
+
+                                font-size:
+                                    12px;
+
+                                color:
+                                    #000;
+
+                            }
+
+
+                            body {
+
+                                padding-bottom:
+                                    10px;
+
+                            }
+
+
+                            .central {
+
+                                text-align:
+                                    center;
+
+                            }
+
+
+                            .separador {
+
+                                border-top:
+                                    1px dashed #000;
+
+                                margin:
+                                    8px 0;
+
+                            }
+
+
+                            .identificacao-print {
+
+                                font-weight:
+                                    bold;
+
+                                font-size:
+                                    14px;
+
+                            }
+
+
+                            .mesa-print {
+
+                                font-weight:
+                                    bold;
+
+                                font-size:
+                                    15px;
+
+                                margin-top:
+                                    4px;
+
+                            }
+
+
+                            .linha-item-impressao {
+
+                                display:
+                                    flex;
+
+                                justify-content:
+                                    space-between;
+
+                                gap:
+                                    8px;
+
+                                margin:
+                                    4px 0;
+
+                            }
+
+
+                            .item-producao {
+
+                                font-size:
+                                    13px;
+
+                                margin:
+                                    4px 0;
+
+                            }
+
+
+                            .obs {
+
+                                margin-top:
+                                    8px;
+
+                                font-size:
+                                    12px;
+
+                            }
+
+
+                            .total-impressao {
+
+                                font-weight:
+                                    bold;
+
+                                font-size:
+                                    15px;
+
+                                margin-top:
+                                    8px;
+
+                            }
+
+
+                            .quebra-via {
+
+                                page-break-after:
+                                    always;
+
+                                break-after:
+                                    page;
+
+                                height:
+                                    1px;
+
+                            }
+
+
+                            .via-impressao {
+
+                                width:
+                                    100%;
+
+                            }
+
+                        </style>
+
+                    </head>
+
+                    <body>
+
+                        ${conteudoFinal}
+
+                    </body>
+
+                    </html>
+
+                `);
+
+
+                documento.close();
+
+
+                setTimeout(
+                    () => {
+
+                        try {
+
+                            iframe.contentWindow.focus();
+
+                            iframe.contentWindow.print();
+
+                        } catch (erro) {
+
+                            console.error(
+                                "Erro ao enviar impressão:",
+                                erro
+                            );
+
+                            reject(erro);
+
+                            return;
+
+                        }
+
+
+                        setTimeout(
+                            () => {
+
+                                iframe.remove();
+
+                                resolve();
+
+                            },
+                            1200
+                        );
+
+                    },
+                    700
+                );
+
+
+            } catch (erro) {
+
+                reject(erro);
+
+            }
+
         }
-    });
+    );
 }
 
 
@@ -249,14 +556,19 @@ function obterIdentificacao(pedido) {
             ? "QUARTO"
             : "MESA";
 
+
     const numero =
         pedido.quarto ||
         pedido.mesa ||
         pedido.numero;
 
+
     return {
+
         tipo,
+
         numero
+
     };
 }
 
@@ -281,83 +593,123 @@ async function imprimirGarcom(
         );
 
         return;
+
     }
+
+
+    const configuracao =
+        await obterConfiguracaoImpressao();
+
 
     const {
         tipo,
         numero
-    } = obterIdentificacao(pedido);
+    } =
+        obterIdentificacao(
+            pedido
+        );
 
 
-   let conteudo = `
+    let conteudo = `
 
-    <div class="central">
+        <div class="central">
 
-        <div class="identificacao-print">
-            HOTEL DO BAÚ
+            <div class="identificacao-print">
+                HOTEL DO BAÚ
+            </div>
+
+            <div>
+                PRODUÇÃO
+            </div>
+
         </div>
 
-        <div>
-            PRODUÇÃO
-        </div>
+        <div class="separador"></div>
 
-    </div>
-
-    <div class="separador"></div>
-
-    <div class="central">
-
-        <div class="mesa-print">
-            ${tipo} ${String(numero).padStart(2, "0")}
-        </div>
-
-        <div>
-            Pedido #${pedido.numeroPedido || ""}
-        </div>
-
-        <div style="margin-top: 6px; font-weight: bold;">
-            GARÇOM: ${pedido.garcomNome || "Não informado"}
-        </div>
-
-    </div>
-
-    <div class="separador"></div>
-
-`;
+    `;
 
 
-    pedido.itens.forEach(item => {
+    // =================================================
+    // MESA / QUARTO
+    // =================================================
 
-        const quantidade =
-            Number(item.quantidade || 0);
+    if (
+        configuracao.mostrarMesa
+    ) {
 
         conteudo += `
 
-            <div class="item-producao">
+            <div class="central">
 
-                ${quantidade} x ${item.nome}
+                <div class="mesa-print">
+
+                    ${escaparHTML(tipo)}
+                    ${String(numero).padStart(2, "0")}
+
+                </div>
 
             </div>
 
         `;
-    });
+
+    }
 
 
-    if (pedido.observacao) {
+    // =================================================
+    // COMANDA
+    // =================================================
+
+    if (
+        configuracao.mostrarComanda
+    ) {
 
         conteudo += `
 
-            <div class="separador"></div>
+            <div class="central">
 
-            <div class="obs">
-
-                <strong>OBSERVAÇÃO:</strong><br>
-
-                ${pedido.observacao}
+                Pedido #${
+                    escaparHTML(
+                        pedido.numeroPedido || ""
+                    )
+                }
 
             </div>
 
         `;
+
+    }
+
+
+    // =================================================
+    // GARÇOM
+    // =================================================
+
+    if (
+        configuracao.mostrarGarcom
+    ) {
+
+        conteudo += `
+
+            <div
+                class="central"
+                style="
+                    margin-top: 6px;
+                    font-weight: bold;
+                "
+            >
+
+                GARÇOM:
+                ${
+                    escaparHTML(
+                        pedido.garcomNome ||
+                        "Não informado"
+                    )
+                }
+
+            </div>
+
+        `;
+
     }
 
 
@@ -365,38 +717,177 @@ async function imprimirGarcom(
 
         <div class="separador"></div>
 
-        <div class="central">
-
-            ${pedido.dataHora || ""}
-
-        </div>
-
     `;
 
 
-    await abrirImpressao(conteudo);
+    // =================================================
+    // ITENS
+    // =================================================
+
+    pedido.itens.forEach(
+        item => {
+
+            const quantidade =
+                Number(
+                    item.quantidade || 0
+                );
 
 
-    // -------------------------------------------------
-    // REMOVE SOMENTE DA FILA DE PRODUÇÃO
-    // -------------------------------------------------
+            const nome =
+                escaparHTML(
+                    item.nome
+                );
 
-    if (pedido.id) {
+
+            if (
+                configuracao.mostrarPrecos &&
+                item.preco !== undefined
+            ) {
+
+                const subtotal =
+                    quantidade *
+                    Number(
+                        item.preco || 0
+                    );
+
+
+                conteudo += `
+
+                    <div
+                        class="linha-item-impressao"
+                    >
+
+                        <span>
+
+                            ${quantidade}
+                            x
+                            ${nome}
+
+                        </span>
+
+                        <span>
+
+                            R$
+                            ${formatarValor(
+                                subtotal
+                            )}
+
+                        </span>
+
+                    </div>
+
+                `;
+
+            } else {
+
+                conteudo += `
+
+                    <div class="item-producao">
+
+                        ${quantidade}
+                        x
+                        ${nome}
+
+                    </div>
+
+                `;
+
+            }
+
+        }
+    );
+
+
+    // =================================================
+    // OBSERVAÇÃO
+    // =================================================
+
+    if (
+        pedido.observacao
+    ) {
+
+        conteudo += `
+
+            <div class="separador"></div>
+
+            <div class="obs">
+
+                <strong>
+                    OBSERVAÇÃO:
+                </strong>
+
+                <br>
+
+                ${escaparHTML(
+                    pedido.observacao
+                )}
+
+            </div>
+
+        `;
+
+    }
+
+
+    // =================================================
+    // HORÁRIO
+    // =================================================
+
+    if (
+        configuracao.mostrarHorario
+    ) {
+
+        conteudo += `
+
+            <div class="separador"></div>
+
+            <div class="central">
+
+                ${
+                    escaparHTML(
+                        pedido.dataHora || ""
+                    )
+                }
+
+            </div>
+
+        `;
+
+    }
+
+
+    await abrirImpressao(
+        conteudo,
+        configuracao
+    );
+
+
+    // =================================================
+    // REMOVE DA FILA DE PRODUÇÃO
+    // =================================================
+
+    if (
+        pedido.id
+    ) {
 
         try {
 
             await deleteDoc(
+
                 doc(
                     db,
                     "pedidos_producao",
                     pedido.id
                 )
+
             );
+
 
             console.log(
                 "Pedido removido da fila de produção:",
                 pedido.id
             );
+
 
         } catch (erro) {
 
@@ -404,8 +895,11 @@ async function imprimirGarcom(
                 "Erro ao remover pedido da fila:",
                 erro
             );
+
         }
+
     }
+
 }
 
 
@@ -418,112 +912,166 @@ async function imprimirConsumoMesa(
     automatica = false
 ) {
 
+    const configuracao =
+        await obterConfiguracaoImpressao();
+
+
     const {
         tipo,
         numero
-    } = obterIdentificacao(pedido);
+    } =
+        obterIdentificacao(
+            pedido
+        );
 
 
     const idMesa =
         tipo === "QUARTO"
+
             ? `quarto_${String(numero).padStart(2, "0")}`
+
             : `mesa_${String(numero).padStart(2, "0")}`;
 
 
     const pedidosSnapshot =
         await getDocs(
+
             collection(
                 db,
                 "mesas",
                 idMesa,
                 "pedidos"
             )
+
         );
 
 
     const pedidos = [];
 
 
-    pedidosSnapshot.forEach(documento => {
+    pedidosSnapshot.forEach(
+        documento => {
 
-        pedidos.push({
-            id: documento.id,
-            ...documento.data()
-        });
+            pedidos.push({
 
-    });
+                id:
+                    documento.id,
 
+                ...documento.data()
 
-    pedidos.sort((a, b) => {
+            });
 
-        const tempoA =
-            a.criadoEm?.seconds ||
-            0;
-
-        const tempoB =
-            b.criadoEm?.seconds ||
-            0;
-
-        return tempoA - tempoB;
-    });
+        }
+    );
 
 
-    const itensMap = new Map();
+    pedidos.sort(
+        (a, b) => {
+
+            const tempoA =
+                a.criadoEm?.seconds ||
+                0;
+
+
+            const tempoB =
+                b.criadoEm?.seconds ||
+                0;
+
+
+            return tempoA - tempoB;
+
+        }
+    );
+
+
+    const itensMap =
+        new Map();
+
 
     let total = 0;
 
 
-    pedidos.forEach(pedidoMesa => {
+    pedidos.forEach(
+        pedidoMesa => {
 
-        const itens =
-            Array.isArray(pedidoMesa.itens)
-                ? pedidoMesa.itens
-                : [];
+            const itens =
+                Array.isArray(
+                    pedidoMesa.itens
+                )
 
+                    ? pedidoMesa.itens
 
-        itens.forEach(item => {
-
-            const chave =
-                String(
-                    item.id ??
-                    item.nome
-                );
+                    : [];
 
 
-            if (!itensMap.has(chave)) {
+            itens.forEach(
+                item => {
 
-                itensMap.set(
-                    chave,
-                    {
-                        id: item.id,
-                        nome: item.nome,
-                        quantidade: 0,
-                        preco: Number(
-                            item.preco || 0
+                    const chave =
+                        String(
+                            item.id ??
+                            item.nome
+                        );
+
+
+                    if (
+                        !itensMap.has(
+                            chave
                         )
+                    ) {
+
+                        itensMap.set(
+
+                            chave,
+
+                            {
+
+                                id:
+                                    item.id,
+
+                                nome:
+                                    item.nome,
+
+                                quantidade:
+                                    0,
+
+                                preco:
+                                    Number(
+                                        item.preco ||
+                                        0
+                                    )
+
+                            }
+
+                        );
+
                     }
-                );
-            }
 
 
-            const existente =
-                itensMap.get(chave);
+                    const existente =
+                        itensMap.get(
+                            chave
+                        );
 
 
-            existente.quantidade +=
-                Number(
-                    item.quantidade || 0
-                );
+                    existente.quantidade +=
+                        Number(
+                            item.quantidade ||
+                            0
+                        );
 
-        });
-
-
-        total +=
-            Number(
-                pedidoMesa.total || 0
+                }
             );
 
-    });
+
+            total +=
+                Number(
+                    pedidoMesa.total ||
+                    0
+                );
+
+        }
+    );
 
 
     let conteudo = `
@@ -542,66 +1090,233 @@ async function imprimirConsumoMesa(
 
         <div class="separador"></div>
 
-        <div class="central">
-
-            <div class="mesa-print">
-
-                ${tipo} ${String(numero).padStart(2, "0")}
-
-            </div>
-
-        </div>
-
-        <div class="separador"></div>
-
     `;
 
 
-    itensMap.forEach(item => {
+    // =================================================
+    // MESA / QUARTO
+    // =================================================
 
-        const subtotal =
-            item.quantidade *
-            item.preco;
-
+    if (
+        configuracao.mostrarMesa
+    ) {
 
         conteudo += `
 
-            <div class="linha-item-impressao">
+            <div class="central">
 
-                <span>
-                    ${item.quantidade} x ${item.nome}
-                </span>
+                <div class="mesa-print">
 
-                <span>
-                    R$ ${subtotal
-                        .toFixed(2)
-                        .replace(".", ",")}
-                </span>
+                    ${escaparHTML(tipo)}
+                    ${String(numero).padStart(2, "0")}
+
+                </div>
 
             </div>
 
         `;
 
-    });
+    }
+
+
+    // =================================================
+    // COMANDA
+    // =================================================
+
+    if (
+        configuracao.mostrarComanda &&
+        pedido.numeroPedido
+    ) {
+
+        conteudo += `
+
+            <div class="central">
+
+                Pedido #${
+                    escaparHTML(
+                        pedido.numeroPedido
+                    )
+                }
+
+            </div>
+
+        `;
+
+    }
+
+
+    // =================================================
+    // GARÇOM
+    // =================================================
+
+    if (
+        configuracao.mostrarGarcom &&
+        pedido.garcomNome
+    ) {
+
+        conteudo += `
+
+            <div
+                class="central"
+                style="
+                    margin-top: 6px;
+                    font-weight: bold;
+                "
+            >
+
+                GARÇOM:
+                ${
+                    escaparHTML(
+                        pedido.garcomNome
+                    )
+                }
+
+            </div>
+
+        `;
+
+    }
 
 
     conteudo += `
 
         <div class="separador"></div>
 
-        <div class="linha-item-impressao">
+    `;
 
-            <strong>
-                TOTAL
-            </strong>
 
-            <strong>
-                R$ ${total
-                    .toFixed(2)
-                    .replace(".", ",")}
-            </strong>
+    // =================================================
+    // ITENS
+    // =================================================
 
-        </div>
+    itensMap.forEach(
+        item => {
+
+            const subtotal =
+                item.quantidade *
+                item.preco;
+
+
+            if (
+                configuracao.mostrarPrecos
+            ) {
+
+                conteudo += `
+
+                    <div
+                        class="linha-item-impressao"
+                    >
+
+                        <span>
+
+                            ${item.quantidade}
+                            x
+                            ${escaparHTML(
+                                item.nome
+                            )}
+
+                        </span>
+
+                        <span>
+
+                            R$
+                            ${formatarValor(
+                                subtotal
+                            )}
+
+                        </span>
+
+                    </div>
+
+                `;
+
+            } else {
+
+                conteudo += `
+
+                    <div class="item-producao">
+
+                        ${item.quantidade}
+                        x
+                        ${escaparHTML(
+                            item.nome
+                        )}
+
+                    </div>
+
+                `;
+
+            }
+
+        }
+    );
+
+
+    // =================================================
+    // TOTAL
+    // =================================================
+
+    if (
+        configuracao.mostrarPrecos
+    ) {
+
+        conteudo += `
+
+            <div class="separador"></div>
+
+            <div
+                class="linha-item-impressao"
+            >
+
+                <strong>
+                    TOTAL
+                </strong>
+
+                <strong>
+
+                    R$
+                    ${formatarValor(
+                        total
+                    )}
+
+                </strong>
+
+            </div>
+
+        `;
+
+    }
+
+
+    // =================================================
+    // HORÁRIO
+    // =================================================
+
+    if (
+        configuracao.mostrarHorario &&
+        pedido.dataHora
+    ) {
+
+        conteudo += `
+
+            <div class="separador"></div>
+
+            <div class="central">
+
+                ${
+                    escaparHTML(
+                        pedido.dataHora
+                    )
+                }
+
+            </div>
+
+        `;
+
+    }
+
+
+    conteudo += `
 
         <div class="separador"></div>
 
@@ -618,7 +1333,11 @@ async function imprimirConsumoMesa(
     `;
 
 
-    await abrirImpressao(conteudo);
+    await abrirImpressao(
+        conteudo,
+        configuracao
+    );
+
 }
 
 
@@ -631,8 +1350,12 @@ async function imprimirPedidoAutomaticamente(
     origem = "garcom"
 ) {
 
-    if (!pedido?.id) {
+    if (
+        !pedido?.id
+    ) {
+
         return;
+
     }
 
 
@@ -646,11 +1369,14 @@ async function imprimirPedidoAutomaticamente(
     ) {
 
         return;
+
     }
 
 
     if (
-        !adquirirTravaImpressao(chave)
+        !adquirirTravaImpressao(
+            chave
+        )
     ) {
 
         console.log(
@@ -659,6 +1385,7 @@ async function imprimirPedidoAutomaticamente(
         );
 
         return;
+
     }
 
 
@@ -692,8 +1419,12 @@ async function imprimirPedidoAutomaticamente(
         impressoesAutomaticasEmAndamento
             .delete(chave);
 
-        liberarTravaImpressao(chave);
+        liberarTravaImpressao(
+            chave
+        );
+
     }
+
 }
 
 
@@ -711,38 +1442,41 @@ onSnapshot(
     snapshot => {
 
         snapshot.docChanges()
-            .forEach(alteracao => {
+            .forEach(
+                alteracao => {
 
-                if (
-                    alteracao.type !== "added"
-                ) {
+                    if (
+                        alteracao.type !== "added"
+                    ) {
 
-                    return;
+                        return;
+
+                    }
+
+
+                    const pedidoNovo = {
+
+                        id:
+                            alteracao.doc.id,
+
+                        ...alteracao.doc.data()
+
+                    };
+
+
+                    console.log(
+                        "NOVO PEDIDO PARA IMPRESSÃO:",
+                        pedidoNovo
+                    );
+
+
+                    imprimirPedidoAutomaticamente(
+                        pedidoNovo,
+                        "garcom"
+                    );
+
                 }
-
-
-                const pedidoNovo = {
-
-                    id:
-                        alteracao.doc.id,
-
-                    ...alteracao.doc.data()
-
-                };
-
-
-                console.log(
-                    "NOVO PEDIDO PARA IMPRESSÃO:",
-                    pedidoNovo
-                );
-
-
-                imprimirPedidoAutomaticamente(
-                    pedidoNovo,
-                    "garcom"
-                );
-
-            });
+            );
 
     },
 
@@ -757,11 +1491,14 @@ onSnapshot(
 
 );
 
-/* =========================================
-   IMPRESSÃO DO FECHAMENTO
-========================================= */
 
-async function imprimirFechamentoAutomaticamente(fechamento) {
+// =====================================================
+// IMPRESSÃO DO FECHAMENTO
+// =====================================================
+
+async function imprimirFechamentoAutomaticamente(
+    fechamento
+) {
 
     try {
 
@@ -769,6 +1506,10 @@ async function imprimirFechamentoAutomaticamente(fechamento) {
             "FECHAMENTO PARA IMPRESSÃO:",
             fechamento
         );
+
+
+        const configuracao =
+            await obterConfiguracaoImpressao();
 
 
         const ehQuarto =
@@ -794,7 +1535,9 @@ async function imprimirFechamentoAutomaticamente(fechamento) {
             Array.isArray(
                 fechamento.itens
             )
+
                 ? fechamento.itens
+
                 : [];
 
 
@@ -827,6 +1570,19 @@ async function imprimirFechamentoAutomaticamente(fechamento) {
 
                 <hr>
 
+        `;
+
+
+        // =================================================
+        // MESA / QUARTO
+        // =================================================
+
+        if (
+            configuracao.mostrarMesa
+        ) {
+
+            conteudo += `
+
                 <div
                     style="
                         text-align:left;
@@ -834,13 +1590,96 @@ async function imprimirFechamentoAutomaticamente(fechamento) {
                 >
 
                     <strong>
-                        ${nomeLocal} ${numero}
+
+                        ${nomeLocal}
+                        ${numero}
+
                     </strong>
 
                     <br><br>
 
-        `;
+                </div>
 
+            `;
+
+        }
+
+
+        // =================================================
+        // COMANDA
+        // =================================================
+
+        const numeroComanda =
+            fechamento.numeroComanda ||
+            fechamento.comanda ||
+            fechamento.numeroPedido ||
+            "";
+
+
+        if (
+            configuracao.mostrarComanda &&
+            numeroComanda
+        ) {
+
+            conteudo += `
+
+                <div
+                    style="
+                        text-align:center;
+                        margin-bottom:8px;
+                    "
+                >
+
+                    Pedido #
+                    ${
+                        escaparHTML(
+                            numeroComanda
+                        )
+                    }
+
+                </div>
+
+            `;
+
+        }
+
+
+        // =================================================
+        // GARÇOM
+        // =================================================
+
+        if (
+            configuracao.mostrarGarcom &&
+            fechamento.garcomNome
+        ) {
+
+            conteudo += `
+
+                <div
+                    style="
+                        text-align:center;
+                        font-weight:bold;
+                        margin-bottom:8px;
+                    "
+                >
+
+                    GARÇOM:
+                    ${
+                        escaparHTML(
+                            fechamento.garcomNome
+                        )
+                    }
+
+                </div>
+
+            `;
+
+        }
+
+
+        // =================================================
+        // ITENS
+        // =================================================
 
         itens.forEach(
             item => {
@@ -862,36 +1701,69 @@ async function imprimirFechamentoAutomaticamente(fechamento) {
                     quantidade;
 
 
-                conteudo += `
+                if (
+                    configuracao.mostrarPrecos
+                ) {
 
-                    <div
-                        style="
-                            margin-bottom:8px;
-                        "
-                    >
+                    conteudo += `
 
-                        ${quantidade}x
-                        ${item.nome}
-
-                        <br>
-
-                        <span
+                        <div
+                            class="linha-item-impressao"
                             style="
-                                display:block;
-                                text-align:right;
+                                margin-bottom:8px;
                             "
                         >
-                            R$
-                            ${subtotal.toFixed(2)}
-                        </span>
 
-                    </div>
+                            <span>
 
-                `;
+                                ${quantidade}x
+                                ${escaparHTML(
+                                    item.nome
+                                )}
+
+                            </span>
+
+                            <span>
+
+                                R$
+                                ${formatarValor(
+                                    subtotal
+                                )}
+
+                            </span>
+
+                        </div>
+
+                    `;
+
+                } else {
+
+                    conteudo += `
+
+                        <div
+                            style="
+                                margin-bottom:8px;
+                            "
+                        >
+
+                            ${quantidade}x
+                            ${escaparHTML(
+                                item.nome
+                            )}
+
+                        </div>
+
+                    `;
+
+                }
 
             }
         );
 
+
+        // =================================================
+        // VALORES FINAIS
+        // =================================================
 
         const subtotal =
             Number(
@@ -911,9 +1783,11 @@ async function imprimirFechamentoAutomaticamente(fechamento) {
             );
 
 
-        conteudo += `
+        if (
+            configuracao.mostrarPrecos
+        ) {
 
-                </div>
+            conteudo += `
 
                 <hr>
 
@@ -925,12 +1799,20 @@ async function imprimirFechamentoAutomaticamente(fechamento) {
                 >
 
                     Subtotal:
-                    R$ ${subtotal.toFixed(2)}
+
+                    R$
+                    ${formatarValor(
+                        subtotal
+                    )}
 
                     <br>
 
                     Desconto:
-                    R$ ${desconto.toFixed(2)}
+
+                    R$
+                    ${formatarValor(
+                        desconto
+                    )}
 
                     <br><br>
 
@@ -939,11 +1821,32 @@ async function imprimirFechamentoAutomaticamente(fechamento) {
                             font-size:18px;
                         "
                     >
+
                         TOTAL:
-                        R$ ${total.toFixed(2)}
+
+                        R$
+                        ${formatarValor(
+                            total
+                        )}
+
                     </strong>
 
                 </div>
+
+            `;
+
+        }
+
+
+        // =================================================
+        // HORÁRIO
+        // =================================================
+
+        if (
+            configuracao.mostrarHorario
+        ) {
+
+            conteudo += `
 
                 <br>
 
@@ -954,26 +1857,47 @@ async function imprimirFechamentoAutomaticamente(fechamento) {
                     "
                 >
 
-                    ${fechamento.dataHora || ""}
-
-                    <br><br>
-
-                    Obrigado pela preferência!
+                    ${
+                        escaparHTML(
+                            fechamento.dataHora ||
+                            ""
+                        )
+                    }
 
                 </div>
 
+            `;
+
+        }
+
+
+        conteudo += `
+
+            <br>
+
+            <div
+                style="
+                    text-align:center;
+                    font-size:12px;
+                "
+            >
+
+                Obrigado pela preferência!
+
             </div>
+
+        </div>
 
         `;
 
 
-        /*
-            IMPRIME PRIMEIRO.
-            A limpeza só acontece depois.
-        */
+        // =================================================
+        // IMPRIME PRIMEIRO
+        // =================================================
 
         await abrirImpressao(
-            conteudo
+            conteudo,
+            configuracao
         );
 
 
@@ -983,9 +1907,9 @@ async function imprimirFechamentoAutomaticamente(fechamento) {
         );
 
 
-        /* =====================================
-           LIMPAR CONSUMO DA MESA/QUARTO
-        ===================================== */
+        // =================================================
+        // LIMPAR CONSUMO DA MESA/QUARTO
+        // =================================================
 
         if (
             fechamento.idMesa
@@ -1020,9 +1944,9 @@ async function imprimirFechamentoAutomaticamente(fechamento) {
         }
 
 
-        /* =====================================
-           LIBERAR MESA / QUARTO
-        ===================================== */
+        // =================================================
+        // LIBERAR MESA / QUARTO
+        // =================================================
 
         if (
             fechamento.idMesa
@@ -1055,9 +1979,9 @@ async function imprimirFechamentoAutomaticamente(fechamento) {
         }
 
 
-        /* =====================================
-           REMOVER FECHAMENTO DA FILA
-        ===================================== */
+        // =================================================
+        // REMOVER FECHAMENTO DA FILA
+        // =================================================
 
         await deleteDoc(
 
@@ -1075,8 +1999,8 @@ async function imprimirFechamentoAutomaticamente(fechamento) {
             fechamento.idMesa
         );
 
-    }
-    catch (erro) {
+
+    } catch (erro) {
 
         console.error(
             "Erro ao imprimir fechamento:",
@@ -1088,9 +2012,9 @@ async function imprimirFechamentoAutomaticamente(fechamento) {
 }
 
 
-/* =========================================
-   ESCUTAR FECHAMENTOS
-========================================= */
+// =====================================================
+// ESCUTAR FECHAMENTOS
+// =====================================================
 
 onSnapshot(
 
@@ -1102,51 +2026,49 @@ onSnapshot(
     snapshot => {
 
         snapshot.docChanges()
-            .forEach(alteracao => {
+            .forEach(
+                alteracao => {
 
-                if (
-                    alteracao.type !== "added"
-                ) {
+                    if (
+                        alteracao.type !== "added"
+                    ) {
 
-                    return;
+                        return;
+
+                    }
+
+
+                    const fechamento = {
+
+                        id:
+                            alteracao.doc.id,
+
+                        ...alteracao.doc.data()
+
+                    };
+
+
+                    if (
+                        fechamento.status !== "novo"
+                    ) {
+
+                        return;
+
+                    }
+
+
+                    console.log(
+                        "NOVO FECHAMENTO PARA IMPRESSÃO:",
+                        fechamento
+                    );
+
+
+                    imprimirFechamentoAutomaticamente(
+                        fechamento
+                    );
+
                 }
-
-
-                const fechamento = {
-
-                    id:
-                        alteracao.doc.id,
-
-                    ...alteracao.doc.data()
-
-                };
-
-
-                /*
-                    Só entram na impressão
-                    fechamentos ainda novos.
-                */
-
-                if (
-                    fechamento.status !== "novo"
-                ) {
-
-                    return;
-
-                }
-
-
-                console.log(
-                    "NOVO FECHAMENTO PARA IMPRESSÃO:",
-                    fechamento
-                );
-
-
-                imprimirFechamentoAutomaticamente(
-                    fechamento
-                );
-
-            });
+            );
 
     },
 
@@ -1160,6 +2082,8 @@ onSnapshot(
     }
 
 );
+
+
 console.log(
     "Módulo de impressão Hotel Garcom TESTE carregado."
 );
