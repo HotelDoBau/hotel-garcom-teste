@@ -3,523 +3,578 @@
 
 <head>
 
-    <meta charset="UTF-8">
+<meta charset="UTF-8">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Acesso - Hotel do Baú</title>
+<title>Acesso - Hotel do Baú</title>
 
-    <style>
 
-        * {
-            box-sizing: border-box;
-        }
+<style>
 
-        body {
+* {
+    box-sizing: border-box;
+}
 
-            margin: 0;
 
-            min-height: 100vh;
+body {
 
-            display: flex;
+    margin:0;
 
-            align-items: center;
+    min-height:100vh;
 
-            justify-content: center;
+    display:flex;
 
-            padding: 20px;
+    align-items:center;
 
-            background: #f4f6f8;
+    justify-content:center;
 
-            font-family:
-                Arial,
-                Helvetica,
-                sans-serif;
+    padding:20px;
 
-        }
+    background:#f4f6f8;
 
-        .login-container {
+    font-family:Arial, Helvetica, sans-serif;
 
-            width: 100%;
+}
 
-            max-width: 380px;
 
-            background: #ffffff;
+.login-container {
 
-            padding: 35px 30px;
+    width:100%;
 
-            border-radius: 14px;
+    max-width:380px;
 
-            box-shadow:
-                0 8px 25px rgba(0, 0, 0, 0.10);
+    background:white;
 
-        }
+    padding:35px 30px;
 
-        .logo {
+    border-radius:14px;
 
-            text-align: center;
+    box-shadow:0 8px 25px rgba(0,0,0,0.10);
 
-            margin-bottom: 30px;
+}
 
-        }
 
-        .logo h1 {
+.logo {
 
-            margin: 0;
+    text-align:center;
 
-            color: #17212b;
+    margin-bottom:30px;
 
-            font-size: 28px;
+}
 
-        }
 
-        .logo p {
+.logo h1 {
 
-            margin: 8px 0 0;
+    margin:0;
 
-            color: #777;
+    color:#17212b;
 
-            font-size: 14px;
+    font-size:28px;
 
-        }
+}
 
-        .campo {
 
-            margin-bottom: 18px;
+.logo p {
 
-        }
+    margin:8px 0 0;
 
-        .campo label {
+    color:#777;
 
-            display: block;
+    font-size:14px;
 
-            margin-bottom: 7px;
+}
 
-            color: #333;
 
-            font-size: 14px;
+.campo {
 
-            font-weight: 600;
+    margin-bottom:18px;
 
-        }
+}
 
-        .campo input {
 
-            width: 100%;
+.campo label {
 
-            padding: 13px;
+    display:block;
 
-            border: 1px solid #d5d9dd;
+    margin-bottom:7px;
 
-            border-radius: 8px;
+    color:#333;
 
-            font-size: 17px;
+    font-size:14px;
 
-            outline: none;
+    font-weight:600;
 
-        }
+}
 
-        .campo input:focus {
 
-            border-color: #17212b;
+.campo input {
 
-        }
+    width:100%;
 
-        .botao-login {
+    padding:13px;
 
-            width: 100%;
+    border:1px solid #d5d9dd;
 
-            padding: 14px;
+    border-radius:8px;
 
-            border: none;
+    font-size:17px;
 
-            border-radius: 8px;
+    outline:none;
 
-            background: #17212b;
+}
 
-            color: white;
 
-            font-size: 16px;
+.campo input:focus {
 
-            font-weight: 600;
+    border-color:#17212b;
 
-            cursor: pointer;
+}
 
-        }
 
-        .botao-login:hover {
+.botao-login {
 
-            opacity: 0.9;
+    width:100%;
 
-        }
+    padding:14px;
 
-        .mensagem {
+    border:none;
 
-            margin-top: 15px;
+    border-radius:8px;
 
-            min-height: 20px;
+    background:#17212b;
 
-            text-align: center;
+    color:white;
 
-            color: #c0392b;
+    font-size:16px;
 
-            font-size: 14px;
+    font-weight:600;
 
-        }
+    cursor:pointer;
 
-    </style>
+}
+
+
+.botao-login:hover {
+
+    opacity:0.9;
+
+}
+
+
+.mensagem {
+
+    margin-top:15px;
+
+    min-height:20px;
+
+    text-align:center;
+
+    color:#c0392b;
+
+    font-size:14px;
+
+}
+
+
+</style>
+
 
 </head>
+
 
 <body>
 
 
-    <div class="login-container">
+<div class="login-container">
 
-        <div class="logo">
 
-            <h1>Hotel do Baú</h1>
+<div class="logo">
 
-            <p>Acesso dos garçons</p>
+<h1>Hotel do Baú</h1>
 
-        </div>
+<p>Acesso dos garçons</p>
 
+</div>
 
-        <form id="formLogin">
 
 
-            <div class="campo">
+<form id="formLogin">
 
-                <label for="usuario">
-                    Usuário
-                </label>
 
-                <input
-                    type="text"
-                    id="usuario"
-                    placeholder="Digite seu usuário"
-                    autocomplete="username"
-                    required
-                >
+<div class="campo">
 
-            </div>
+<label for="usuario">
+Usuário
+</label>
 
 
-            <div class="campo">
+<input
 
-                <label for="senha">
-                    Senha
-                </label>
+type="text"
 
-                <input
-                    type="password"
-                    id="senha"
-                    placeholder="6 números"
-                    inputmode="numeric"
-                    pattern="[0-9]{6}"
-                    maxlength="6"
-                    autocomplete="current-password"
-                    required
-                >
+id="usuario"
 
-            </div>
+placeholder="Digite seu usuário"
 
+autocomplete="username"
 
-            <button
-                type="submit"
-                class="botao-login"
-            >
-                ENTRAR
-            </button>
+required
 
+>
 
-            <div
-                id="mensagem"
-                class="mensagem"
-            ></div>
+</div>
 
 
-        </form>
 
-    </div>
+<div class="campo">
 
+<label for="senha">
+Senha
+</label>
 
-    <script type="module">
 
-        import {
-            initializeApp
-        } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
+<input
 
+type="password"
 
-        import {
-            getAuth,
-            signInWithEmailAndPassword
-        } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
+id="senha"
 
+placeholder="Digite sua senha"
 
-        import {
-            getFirestore,
-            collection,
-            query,
-            where,
-            getDocs
-        } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+autocomplete="current-password"
 
+required
 
-        const firebaseConfig = {
+>
 
-            apiKey:
-                "AIzaSyAEj82ZchuqIEzbG1PhbLclqiSbIEPifWU",
+</div>
 
-            authDomain:
-                "hotel-garcom-teste.firebaseapp.com",
 
-            projectId:
-                "hotel-garcom-teste",
 
-            storageBucket:
-                "hotel-garcom-teste.firebasestorage.app",
+<button
 
-            messagingSenderId:
-                "608879824533",
+type="submit"
 
-            appId:
-                "1:608879824533:web:2c6e47be27336607b8559c"
+class="botao-login"
 
-        };
+>
 
+ENTRAR
 
-        const app =
-            initializeApp(firebaseConfig);
+</button>
 
 
-        const auth =
-            getAuth(app);
 
+<div
 
-        const db =
-            getFirestore(app);
+id="mensagem"
 
+class="mensagem"
 
-        const formLogin =
-            document.getElementById("formLogin");
+></div>
 
 
-        const mensagem =
-            document.getElementById("mensagem");
 
+</form>
 
-        const campoUsuario =
-            document.getElementById("usuario");
 
+</div>
 
-        const campoSenha =
-            document.getElementById("senha");
 
 
-        campoSenha.addEventListener(
-            "input",
-            function () {
+<script type="module">
 
-                this.value =
-                    this.value.replace(/\D/g, "");
 
-            }
-        );
+import {
 
+initializeApp
 
-        formLogin.addEventListener(
-            "submit",
-            async function (evento) {
+} from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
 
-                evento.preventDefault();
 
 
-                const usuario =
-                    campoUsuario
-                        .value
-                        .trim()
-                        .toLowerCase();
+import {
 
+getAuth,
 
-                const senha =
-                    campoSenha.value;
+signInWithEmailAndPassword
 
+} from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
 
-                if (!usuario) {
 
-                    mensagem.textContent =
-                        "Digite o usuário.";
 
-                    return;
+import {
 
-                }
+getFirestore,
 
+collection,
 
-                if (!/^\d{6}$/.test(senha)) {
+query,
 
-                    mensagem.textContent =
-                        "A senha deve ter 6 números.";
+where,
 
-                    return;
+getDocs
 
-                }
+} from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
 
 
-                mensagem.style.color =
-                    "#777";
 
-                mensagem.textContent =
-                    "Entrando...";
+const firebaseConfig = {
 
 
-                try {
+apiKey:
+"AIzaSyAEj82ZchuqIEzbG1PhbLclqiSbIEPifWU",
 
-                    const email =
-                        usuario +
-                        "@hoteldobau.com";
 
+authDomain:
+"hotel-garcom-teste.firebaseapp.com",
 
-                    const resultado =
-                        await signInWithEmailAndPassword(
-                            auth,
-                            email,
-                            senha
-                        );
 
+projectId:
+"hotel-garcom-teste",
 
-                    const usuarioFirebase =
-                        resultado.user;
 
+storageBucket:
+"hotel-garcom-teste.firebasestorage.app",
 
-                    const referencia =
-                        collection(
-                            db,
-                            "garcons"
-                        );
 
+messagingSenderId:
+"608879824533",
 
-                    const consulta =
-                        query(
-                            referencia,
-                            where(
-                                "uid",
-                                "==",
-                                usuarioFirebase.uid
-                            )
-                        );
 
+appId:
+"1:608879824533:web:2c6e47be27336607b8559c"
 
-                    const resultadoGarcom =
-                        await getDocs(consulta);
 
+};
 
-                    if (
-                        resultadoGarcom.empty
-                    ) {
 
-                        mensagem.style.color =
-                            "#c0392b";
 
-                        mensagem.textContent =
-                            "Garçom não cadastrado.";
+const app = initializeApp(firebaseConfig);
 
-                        return;
 
-                    }
+const auth = getAuth(app);
 
 
-                    const documento =
-                        resultadoGarcom.docs[0];
+const db = getFirestore(app);
 
 
-                    const dados =
-                        documento.data();
 
+const formLogin =
+document.getElementById("formLogin");
 
-                    if (
-                        dados.ativo !== true
-                    ) {
 
-                        mensagem.style.color =
-                            "#c0392b";
+const mensagem =
+document.getElementById("mensagem");
 
-                        mensagem.textContent =
-                            "Usuário desativado.";
 
-                        return;
 
-                    }
+formLogin.addEventListener(
 
+"submit",
 
-                    localStorage.setItem(
-                        "garcomLogado",
-                        JSON.stringify({
+async function(evento){
 
-                            uid:
-                                usuarioFirebase.uid,
 
-                            nome:
-                                dados.nome,
+evento.preventDefault();
 
-                            usuario:
-                                dados.usuario
 
-                        })
-                    );
 
+const usuario =
 
-                    console.log(
-                        "LOGIN OK"
-                    );
+document.getElementById("usuario")
 
+.value
 
-                    console.log(
-                        "UID:",
-                        usuarioFirebase.uid
-                    );
+.trim()
 
+.toLowerCase();
 
-                    console.log(
-                        "Garçom:",
-                        dados.nome
-                    );
 
 
-                    /*
-                     * Redireciona diretamente
-                     * para o sistema.
-                     */
+const senha =
 
-                    window.location.replace(
-                        "./index.html"
-                    );
+document.getElementById("senha")
 
+.value;
 
-                } catch (erro) {
 
-                    console.error(
-                        "ERRO NO LOGIN:",
-                        erro
-                    );
 
+mensagem.style.color="#777";
 
-                    mensagem.style.color =
-                        "#c0392b";
+mensagem.textContent="Entrando...";
 
 
-                    mensagem.textContent =
-                        "Erro: " + erro.code;
 
-                }
+try {
 
-            }
-        );
 
-    </script>
+
+const email =
+
+usuario + "@hoteldobau.com";
+
+
+
+const resultado =
+
+await signInWithEmailAndPassword(
+
+auth,
+
+email,
+
+senha
+
+);
+
+
+
+const usuarioFirebase =
+
+resultado.user;
+
+
+
+const referencia =
+
+collection(
+
+db,
+
+"garcons"
+
+);
+
+
+
+const consulta =
+
+query(
+
+referencia,
+
+where(
+
+"uid",
+
+"==",
+
+usuarioFirebase.uid
+
+)
+
+);
+
+
+
+const resultadoGarcom =
+
+await getDocs(consulta);
+
+
+
+if(resultadoGarcom.empty){
+
+
+mensagem.style.color="#c0392b";
+
+mensagem.textContent=
+
+"Garçom não cadastrado.";
+
+return;
+
+
+}
+
+
+
+const dados =
+
+resultadoGarcom.docs[0].data();
+
+
+
+if(dados.ativo !== true){
+
+
+mensagem.style.color="#c0392b";
+
+mensagem.textContent=
+
+"Usuário desativado.";
+
+return;
+
+
+}
+
+
+
+localStorage.setItem(
+
+"garcomLogado",
+
+JSON.stringify({
+
+uid:
+
+usuarioFirebase.uid,
+
+
+nome:
+
+dados.nome,
+
+
+usuario:
+
+dados.usuario
+
+})
+
+);
+
+
+
+window.location.replace(
+
+"./index.html"
+
+);
+
+
+
+}
+
+catch(erro){
+
+
+console.error(erro);
+
+
+mensagem.style.color="#c0392b";
+
+
+mensagem.textContent=
+
+"Erro: " + erro.code;
+
+
+}
+
+
+
+}
+
+);
+
+
+
+</script>
+
 
 </body>
 
