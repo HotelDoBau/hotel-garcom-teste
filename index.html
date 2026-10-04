@@ -667,17 +667,17 @@
         </button>
 
 
-   <button
-    class="menu-item"
-    type="button"
-    onclick="window.location.href='configuracoes.html'"
->
+        <button
+            class="menu-item"
+            type="button"
+            onclick="window.location.href='configuracoes.html'"
+        >
 
-    <span class="menu-icone">⚙</span>
+            <span class="menu-icone">⚙</span>
 
-    <span>Configurações</span>
+            <span>Configurações</span>
 
-</button>
+        </button>
 
 
     </nav>
@@ -1126,6 +1126,10 @@ const auth =
 function irParaLogin() {
 
     localStorage.removeItem(
+        "usuarioLogado"
+    );
+
+    localStorage.removeItem(
         "garcomLogado"
     );
 
@@ -1321,35 +1325,6 @@ function obterUsuarioAtual() {
 }
 
 
-        if (!salvo) {
-
-            return null;
-
-        }
-
-
-
-        return JSON.parse(
-            salvo
-        );
-
-    }
-
-    catch (erro) {
-
-        console.error(
-            "Erro ao ler garçom:",
-            erro
-        );
-
-
-        return null;
-
-    }
-
-}
-
-
 
 /* =========================================
    MOSTRAR NOME
@@ -1364,23 +1339,23 @@ function atualizarNomeGarcom() {
 
 
 
-   const usuario =
-    obterUsuarioAtual();
+    const usuario =
+        obterUsuarioAtual();
 
 
 
     if (
 
-    usuario &&
+        usuario &&
 
-    usuario.nome
+        usuario.nome
 
-) {
+    ) {
 
-    botao.textContent =
-        usuario.nome + " ▾";
+        botao.textContent =
+            usuario.nome + " ▾";
 
-}
+    }
 
     else {
 
@@ -1455,97 +1430,97 @@ onAuthStateChanged(
 
 
 
-           /* ==============================
-   VERIFICAR ADMINISTRADOR
-============================== */
+            /* ==============================
+               VERIFICAR ADMINISTRADOR
+            ============================== */
 
-const db =
-    window.firebaseHotel.db;
-
-
-const adminRef =
-    doc(
-        db,
-        "administradores",
-        usuarioFirebase.uid
-    );
+            const db =
+                window.firebaseHotel.db;
 
 
-const adminSnap =
-    await getDoc(adminRef);
+            const adminRef =
+                doc(
+                    db,
+                    "administradores",
+                    usuarioFirebase.uid
+                );
 
 
-
-if (
-    adminSnap.exists()
-    &&
-    adminSnap.data().ativo === true
-) {
-
-
-    localStorage.setItem(
-        "usuarioLogado",
-        JSON.stringify({
-
-            uid:
-                usuarioFirebase.uid,
-
-            nome:
-                adminSnap.data().nome,
-
-            tipo:
-                "administrador"
-
-        })
-    );
-
-
-    console.log(
-        "Administrador autorizado:",
-        adminSnap.data().nome
-    );
-
-
-    atualizarNomeGarcom();
-
-
-    liberarSistema();
-
-
-    iniciarMesas();
-
-
-    return;
-
-}
+            const adminSnap =
+                await getDoc(adminRef);
 
 
 
-/* ==============================
-   VERIFICAR GARÇOM
-============================== */
-
-const resultado =
-    await verificarGarcom(
-        usuarioFirebase
-    );
+            if (
+                adminSnap.exists()
+                &&
+                adminSnap.data().ativo === true
+            ) {
 
 
-if (
-    !resultado.valido
-) {
+                localStorage.setItem(
+                    "usuarioLogado",
+                    JSON.stringify({
 
-    console.log(
-        "Acesso recusado:",
-        resultado.motivo
-    );
+                        uid:
+                            usuarioFirebase.uid,
+
+                        nome:
+                            adminSnap.data().nome,
+
+                        tipo:
+                            "administrador"
+
+                    })
+                );
 
 
-    irParaLogin();
+                console.log(
+                    "Administrador autorizado:",
+                    adminSnap.data().nome
+                );
 
-    return;
 
-}
+                atualizarNomeGarcom();
+
+
+                liberarSistema();
+
+
+                iniciarMesas();
+
+
+                return;
+
+            }
+
+
+
+            /* ==============================
+               VERIFICAR GARÇOM
+            ============================== */
+
+            const resultado =
+                await verificarGarcom(
+                    usuarioFirebase
+                );
+
+
+            if (
+                !resultado.valido
+            ) {
+
+                console.log(
+                    "Acesso recusado:",
+                    resultado.motivo
+                );
+
+
+                irParaLogin();
+
+                return;
+
+            }
 
 
 
@@ -1680,14 +1655,6 @@ window.abrirTrocaGarcom =
                 window.firebaseHotel.db;
 
 
-            /*
-             * O usuário já está autenticado.
-             *
-             * A regra do Firestore permite que
-             * usuários autenticados leiam a lista
-             * de garçons.
-             */
-
             const resultado =
                 await getDocs(
 
@@ -1700,7 +1667,7 @@ window.abrirTrocaGarcom =
 
 
             const garcomAtual =
-                obterGarcomAtual();
+                obterUsuarioAtual();
 
 
             select.innerHTML = `
@@ -1720,11 +1687,6 @@ window.abrirTrocaGarcom =
                         documento.data();
 
 
-                    /*
-                     * Mostra somente garçons
-                     * ativos.
-                     */
-
                     if (
                         dados.ativo !== true
                     ) {
@@ -1733,12 +1695,6 @@ window.abrirTrocaGarcom =
 
                     }
 
-
-                    /*
-                     * O usuário é necessário
-                     * porque será usado para montar
-                     * o e-mail interno do Firebase Auth.
-                     */
 
                     if (
                         !dados.usuario
@@ -1764,11 +1720,6 @@ window.abrirTrocaGarcom =
                         dados.usuario;
 
 
-                    /*
-                     * Mantém selecionado
-                     * o garçom atualmente logado.
-                     */
-
                     if (
 
                         garcomAtual &&
@@ -1792,11 +1743,6 @@ window.abrirTrocaGarcom =
 
             );
 
-
-            /*
-             * Verifica se realmente encontrou
-             * algum garçom ativo.
-             */
 
             if (
                 select.options.length <= 1
@@ -2698,13 +2644,13 @@ async function iniciarMesas() {
     ) {
 
 
-       const idMesa =
+        const idMesa =
 
-    tipo === "quarto"
+            tipo === "quarto"
 
-        ? `quarto_${String(numero).padStart(2, "0")}`
+                ? `quarto_${String(numero).padStart(2, "0")}`
 
-        : `mesa_${String(numero).padStart(2, "0")}`;
+                : `mesa_${String(numero).padStart(2, "0")}`;
 
 
         const referenciaPedidos =
@@ -2902,4 +2848,3 @@ window.fecharMenu =
 </body>
 
 </html>
-
