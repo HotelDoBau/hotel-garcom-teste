@@ -1981,25 +1981,7 @@ window.confirmarTrocaGarcom =
         }
 
 
-        if (
-
-            !/^\d{6}$/.test(
-                senhaDigitada
-            )
-
-        ) {
-
-            mensagem.style.color =
-                "#c0392b";
-
-
-            mensagem.textContent =
-                "A senha deve ter 6 números.";
-
-
-            return;
-
-        }
+    
 
 
         botao.disabled =
@@ -2255,6 +2237,18 @@ window.confirmarTrocaGarcom =
                 )
             ) {
 
+                if (!/^\d{6}$/.test(senhaDigitada)) {
+
+    mensagem.style.color =
+        "#c0392b";
+
+    mensagem.textContent =
+        "A senha do garçom deve ter 6 números.";
+
+    return;
+
+}
+                
                 const usuario =
                     selecionado
                         .substring(7)
