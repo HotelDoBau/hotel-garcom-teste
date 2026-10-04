@@ -1008,6 +1008,8 @@ import {
 
 
 import {
+    doc,
+    getDoc,
     collection,
     query,
     where,
@@ -1423,39 +1425,97 @@ onAuthStateChanged(
 
 
 
-            /* ==============================
-               VERIFICAR GARÇOM
-            ============================== */
+           /* ==============================
+   VERIFICAR ADMINISTRADOR
+============================== */
 
-            const resultado =
-                await verificarGarcom(
-                    usuarioFirebase
-                );
+const db =
+    window.firebaseHotel.db;
 
 
-
-            if (
-                !resultado.valido
-            ) {
-
-                console.log(
-                    "Acesso recusado:",
-                    resultado.motivo
-                );
+const adminRef =
+    doc(
+        db,
+        "administradores",
+        usuarioFirebase.uid
+    );
 
 
-                irParaLogin();
-
-                return;
-
-            }
+const adminSnap =
+    await getDoc(adminRef);
 
 
 
-            console.log(
-                "Acesso autorizado:",
-                resultado.dados.nome
-            );
+if (
+    adminSnap.exists()
+    &&
+    adminSnap.data().ativo === true
+) {
+
+
+    localStorage.setItem(
+        "usuarioLogado",
+        JSON.stringify({
+
+            uid:
+                usuarioFirebase.uid,
+
+            nome:
+                adminSnap.data().nome,
+
+            tipo:
+                "administrador"
+
+        })
+    );
+
+
+    console.log(
+        "Administrador autorizado:",
+        adminSnap.data().nome
+    );
+
+
+    atualizarNomeGarcom();
+
+
+    liberarSistema();
+
+
+    iniciarMesas();
+
+
+    return;
+
+}
+
+
+
+/* ==============================
+   VERIFICAR GARÇOM
+============================== */
+
+const resultado =
+    await verificarGarcom(
+        usuarioFirebase
+    );
+
+
+if (
+    !resultado.valido
+) {
+
+    console.log(
+        "Acesso recusado:",
+        resultado.motivo
+    );
+
+
+    irParaLogin();
+
+    return;
+
+}
 
 
 
