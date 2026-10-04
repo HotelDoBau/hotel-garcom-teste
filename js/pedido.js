@@ -1162,27 +1162,40 @@ async function enviarPedido() {
 
     try {
 
-        const garcomSalvo =
+        // Chave atual do sistema
+        let usuarioSalvo =
             localStorage.getItem(
-                "garcomLogado"
+                "usuarioLogado"
             );
 
 
-        if (garcomSalvo) {
+        // Compatibilidade com chave antiga
+        if (!usuarioSalvo) {
 
-            const garcom =
+            usuarioSalvo =
+                localStorage.getItem(
+                    "garcomLogado"
+                );
+
+        }
+
+
+        if (usuarioSalvo) {
+
+            const usuario =
                 JSON.parse(
-                    garcomSalvo
+                    usuarioSalvo
                 );
 
 
             garcomNome =
-                garcom.nome ||
-                garcom.nomeGarcom ||
-                garcom.usuario ||
+                usuario.nome ||
+                usuario.nomeGarcom ||
+                usuario.usuario ||
                 "Não informado";
 
         }
+
 
     } catch (erro) {
 
@@ -1470,7 +1483,6 @@ async function enviarPedido() {
 }
 
 
-
 // ===========================
 // PESQUISA
 // ===========================
@@ -1490,10 +1502,6 @@ buscar.addEventListener(
 // ===========================
 // DISPONIBILIZA FUNÇÕES
 // ===========================
-// Como este arquivo agora é um
-// módulo, as funções precisam
-// estar no window para os
-// onclick do HTML funcionarem.
 
 window.abrirRevisao =
     abrirRevisao;
