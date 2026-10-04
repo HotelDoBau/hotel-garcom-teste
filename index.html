@@ -1149,7 +1149,7 @@ function salvarGarcomLogado(
 
     localStorage.setItem(
 
-        "garcomLogado",
+        "usuarioLogado",
 
         JSON.stringify({
 
@@ -1160,7 +1160,10 @@ function salvarGarcomLogado(
                 dados.nome,
 
             usuario:
-                dados.usuario
+                dados.usuario,
+
+            tipo:
+                "garcom"
 
         })
 
@@ -1280,15 +1283,42 @@ async function verificarGarcom(
    IDENTIFICAÇÃO DO GARÇOM
 ========================================= */
 
-function obterGarcomAtual() {
+function obterUsuarioAtual() {
 
     try {
 
         const salvo =
             localStorage.getItem(
-                "garcomLogado"
+                "usuarioLogado"
             );
 
+
+        if (!salvo) {
+
+            return null;
+
+        }
+
+
+        return JSON.parse(
+            salvo
+        );
+
+    }
+
+    catch (erro) {
+
+        console.error(
+            "Erro ao ler usuário:",
+            erro
+        );
+
+
+        return null;
+
+    }
+
+}
 
 
         if (!salvo) {
@@ -1334,23 +1364,23 @@ function atualizarNomeGarcom() {
 
 
 
-    const garcom =
-        obterGarcomAtual();
+   const usuario =
+    obterUsuarioAtual();
 
 
 
     if (
 
-        garcom &&
+    usuario &&
 
-        garcom.nome
+    usuario.nome
 
-    ) {
+) {
 
-        botao.textContent =
-            garcom.nome + " ▾";
+    botao.textContent =
+        usuario.nome + " ▾";
 
-    }
+}
 
     else {
 
@@ -2668,14 +2698,13 @@ async function iniciarMesas() {
     ) {
 
 
-        const idMesa =
+       const idMesa =
 
-            tipo === "quarto"
+    tipo === "quarto"
 
-                ? `quarto_${String(numero).padStart(2, "0")}`
+        ? `quarto_${String(numero).padStart(2, "0")}`
 
-                : `mesa_${String(numero).padStart(2, "0")}`;
-
+        : `mesa_${String(numero).padStart(2, "0")}`;
 
 
         const referenciaPedidos =
