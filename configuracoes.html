@@ -183,4 +183,3009 @@ body.liberado #bloqueioAcesso {
 
 }
 
-.cabecalho
+.cabecalhoUsuarios h3 {
+
+    margin: 0;
+
+    color: #17212b;
+
+}
+
+.btnVoltarConfiguracoes {
+
+    border: none;
+
+    background: #e9edf1;
+
+    color: #17212b;
+
+    padding: 9px 13px;
+
+    border-radius: 9px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+}
+
+
+/* =========================================
+   FORMULÁRIO
+========================================= */
+
+.cardUsuarios {
+
+    background: white;
+
+    border-radius: 14px;
+
+    padding: 20px;
+
+    box-shadow:
+        0 3px 10px rgba(0,0,0,0.08);
+
+    margin-bottom: 20px;
+
+}
+
+.cardUsuarios h4 {
+
+    margin-top: 0;
+
+    margin-bottom: 18px;
+
+    color: #17212b;
+
+}
+
+.campoUsuario {
+
+    margin-bottom: 14px;
+
+}
+
+.campoUsuario label {
+
+    display: block;
+
+    font-size: 13px;
+
+    font-weight: bold;
+
+    color: #555;
+
+    margin-bottom: 6px;
+
+}
+
+.campoUsuario input {
+
+    width: 100%;
+
+    box-sizing: border-box;
+
+    padding: 12px;
+
+    border: 1px solid #d5d9dd;
+
+    border-radius: 9px;
+
+    font-size: 16px;
+
+    outline: none;
+
+}
+
+.campoUsuario input:focus {
+
+    border-color: #17212b;
+
+}
+
+.campoUsuario small {
+
+    display: block;
+
+    margin-top: 5px;
+
+    color: #777;
+
+    font-size: 12px;
+
+}
+
+.btnCadastrarUsuario {
+
+    width: 100%;
+
+    border: none;
+
+    background: #17212b;
+
+    color: white;
+
+    padding: 13px;
+
+    border-radius: 9px;
+
+    font-size: 15px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+}
+
+.btnCadastrarUsuario:disabled {
+
+    opacity: 0.6;
+
+    cursor: not-allowed;
+
+}
+
+
+/* =========================================
+   MENSAGEM
+========================================= */
+
+#mensagemUsuario {
+
+    margin-top: 12px;
+
+    font-size: 14px;
+
+    text-align: center;
+
+    min-height: 20px;
+
+}
+
+.mensagemErro {
+
+    color: #c62828;
+
+}
+
+.mensagemSucesso {
+
+    color: #2e7d32;
+
+}
+
+
+/* =========================================
+   LISTA DE USUÁRIOS
+========================================= */
+
+.listaUsuarios {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 12px;
+
+}
+
+.usuarioCard {
+
+    background: white;
+
+    border-radius: 14px;
+
+    padding: 16px;
+
+    box-shadow:
+        0 3px 10px rgba(0,0,0,0.08);
+
+}
+
+.usuarioCabecalho {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 10px;
+
+}
+
+.usuarioNome {
+
+    font-size: 16px;
+
+    font-weight: bold;
+
+    color: #17212b;
+
+}
+
+.usuarioLogin {
+
+    font-size: 13px;
+
+    color: #777;
+
+    margin-top: 4px;
+
+}
+
+.statusUsuario {
+
+    font-size: 11px;
+
+    font-weight: bold;
+
+    padding: 5px 8px;
+
+    border-radius: 7px;
+
+    white-space: nowrap;
+
+}
+
+.statusAtivo {
+
+    background: #e4f5e8;
+
+    color: #287a3e;
+
+}
+
+.statusInativo {
+
+    background: #fbe5e5;
+
+    color: #b52b2b;
+
+}
+
+
+/* =========================================
+   AÇÕES DO USUÁRIO
+========================================= */
+
+.usuarioAcoes {
+
+    margin-top: 14px;
+
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 8px;
+
+}
+
+.btnUsuario {
+
+    width: 100%;
+
+    border: none;
+
+    padding: 10px;
+
+    border-radius: 8px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+}
+
+.btnEditar {
+
+    background: #e8edf3;
+
+    color: #17212b;
+
+}
+
+.btnDesativar {
+
+    background: #f4dddd;
+
+    color: #a52121;
+
+}
+
+.btnReativar {
+
+    background: #e1f2e5;
+
+    color: #26733a;
+
+}
+
+.btnExcluir {
+
+    background: #7f1d1d;
+
+    color: white;
+
+    grid-column: 1 / -1;
+
+}
+
+.usuarioVazio {
+
+    background: white;
+
+    padding: 20px;
+
+    border-radius: 14px;
+
+    text-align: center;
+
+    color: #777;
+
+}
+
+
+/* =========================================
+   MODAL
+========================================= */
+
+#fundoModalUsuario {
+
+    position: fixed;
+
+    inset: 0;
+
+    background: rgba(0,0,0,0.55);
+
+    display: none;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding: 20px;
+
+    box-sizing: border-box;
+
+    z-index: 100000;
+
+}
+
+#fundoModalUsuario.mostrar {
+
+    display: flex;
+
+}
+
+.modalUsuario {
+
+    width: 100%;
+
+    max-width: 420px;
+
+    background: white;
+
+    border-radius: 16px;
+
+    padding: 22px;
+
+    box-sizing: border-box;
+
+    box-shadow:
+        0 10px 35px rgba(0,0,0,0.25);
+
+}
+
+.modalUsuario h3 {
+
+    margin-top: 0;
+
+    margin-bottom: 6px;
+
+    color: #17212b;
+
+}
+
+.modalUsuario p {
+
+    margin-top: 0;
+
+    margin-bottom: 18px;
+
+    color: #777;
+
+    font-size: 13px;
+
+}
+
+.modalBotoes {
+
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 10px;
+
+    margin-top: 16px;
+
+}
+
+.btnModal {
+
+    border: none;
+
+    padding: 12px;
+
+    border-radius: 9px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+}
+
+.btnCancelar {
+
+    background: #e9edf1;
+
+    color: #17212b;
+
+}
+
+.btnSalvar {
+
+    background: #17212b;
+
+    color: white;
+
+}
+
+.btnSalvar:disabled {
+
+    opacity: 0.6;
+
+}
+
+#mensagemModalUsuario {
+
+    min-height: 20px;
+
+    margin-top: 10px;
+
+    text-align: center;
+
+    font-size: 13px;
+
+}
+
+.modalExcluir {
+
+    border-top: 4px solid #7f1d1d;
+
+}
+
+.btnExcluirConfirmar {
+
+    background: #7f1d1d;
+
+    color: white;
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<!-- =========================================
+     BLOQUEIO DE ACESSO
+========================================= -->
+
+<div id="bloqueioAcesso">
+
+    <strong>
+        Hotel do Baú
+    </strong>
+
+    <span>
+        Verificando permissão...
+    </span>
+
+</div>
+
+
+<!-- =========================================
+     CABEÇALHO
+========================================= -->
+
+<header class="topo">
+
+    <button
+        class="btn-menu"
+        onclick="abrirMenu()"
+    >
+        ☰
+    </button>
+
+
+    <div class="titulo-topo">
+
+        <h1>
+            Hotel do Baú
+        </h1>
+
+        <p>
+            Configurações
+        </p>
+
+    </div>
+
+</header>
+
+
+<!-- =========================================
+     CONTEÚDO
+========================================= -->
+
+<main>
+
+
+<section
+    id="menuPrincipal"
+    class="menu-configuracoes"
+>
+
+
+    <button
+        class="menu-config-item"
+        onclick="abrirUsuarios()"
+    >
+
+        <span>
+            👤
+        </span>
+
+        <div>
+
+            <strong>
+                Usuários
+            </strong>
+
+            <small>
+                Gerenciar garçons
+            </small>
+
+        </div>
+
+    </button>
+
+
+    <button
+        class="menu-config-item"
+        onclick="mostrarEmBreve('Impressoras')"
+    >
+
+        <span>
+            🖨
+        </span>
+
+        <div>
+
+            <strong>
+                Impressoras
+            </strong>
+
+            <small>
+                Configuração de impressão
+            </small>
+
+        </div>
+
+    </button>
+
+
+    <button
+        class="menu-config-item"
+        onclick="mostrarEmBreve('Hotel')"
+    >
+
+        <span>
+            🏨
+        </span>
+
+        <div>
+
+            <strong>
+                Hotel
+            </strong>
+
+            <small>
+                Dados do estabelecimento
+            </small>
+
+        </div>
+
+    </button>
+
+
+</section>
+
+
+<!-- =========================================
+     ÁREA DE USUÁRIOS
+========================================= -->
+
+<section
+    id="areaUsuarios"
+>
+
+
+    <div class="cabecalhoUsuarios">
+
+        <h3>
+            Gerenciar garçons
+        </h3>
+
+
+        <button
+            class="btnVoltarConfiguracoes"
+            onclick="fecharUsuarios()"
+        >
+            Voltar
+        </button>
+
+    </div>
+
+
+    <!-- CADASTRAR -->
+
+    <div class="cardUsuarios">
+
+        <h4>
+            Cadastrar novo garçom
+        </h4>
+
+
+        <div class="campoUsuario">
+
+            <label for="nomeGarcom">
+                Nome
+            </label>
+
+            <input
+                type="text"
+                id="nomeGarcom"
+                placeholder="Nome do garçom"
+                autocomplete="off"
+            >
+
+        </div>
+
+
+        <div class="campoUsuario">
+
+            <label for="usuarioGarcom">
+                Usuário
+            </label>
+
+            <input
+                type="text"
+                id="usuarioGarcom"
+                placeholder="Ex.: joao"
+                autocomplete="off"
+            >
+
+            <small>
+                O login será criado automaticamente como usuario@hoteldobau.com
+            </small>
+
+        </div>
+
+
+        <div class="campoUsuario">
+
+            <label for="senhaGarcom">
+                Senha
+            </label>
+
+            <input
+                type="password"
+                id="senhaGarcom"
+                placeholder="6 números"
+                maxlength="6"
+                inputmode="numeric"
+                autocomplete="new-password"
+            >
+
+            <small>
+                A senha deve possuir exatamente 6 números.
+            </small>
+
+        </div>
+
+
+        <button
+            id="btnCadastrar"
+            class="btnCadastrarUsuario"
+            onclick="cadastrarGarcom()"
+        >
+            CADASTRAR GARÇOM
+        </button>
+
+
+        <div
+            id="mensagemUsuario"
+        ></div>
+
+    </div>
+
+
+    <!-- LISTA -->
+
+    <div class="cardUsuarios">
+
+        <h4>
+            Garçons cadastrados
+        </h4>
+
+
+        <div
+            id="listaUsuarios"
+            class="listaUsuarios"
+        >
+
+            <div class="usuarioVazio">
+                Carregando usuários...
+            </div>
+
+        </div>
+
+    </div>
+
+
+</section>
+
+
+</main>
+
+
+<!-- =========================================
+     MODAL EDITAR
+========================================= -->
+
+<div
+    id="fundoModalUsuario"
+>
+
+    <div class="modalUsuario">
+
+        <h3>
+            Editar garçom
+        </h3>
+
+        <p id="textoModalUsuario">
+            Altere os dados necessários.
+        </p>
+
+
+        <div class="campoUsuario">
+
+            <label for="editarNomeGarcom">
+                Nome
+            </label>
+
+            <input
+                type="text"
+                id="editarNomeGarcom"
+                autocomplete="off"
+            >
+
+        </div>
+
+
+        <div class="campoUsuario">
+
+            <label for="editarSenhaAtual">
+                Senha atual
+            </label>
+
+            <input
+                type="password"
+                id="editarSenhaAtual"
+                maxlength="6"
+                inputmode="numeric"
+                placeholder="Obrigatória para trocar a senha"
+                autocomplete="current-password"
+            >
+
+        </div>
+
+
+        <div class="campoUsuario">
+
+            <label for="editarNovaSenha">
+                Nova senha
+            </label>
+
+            <input
+                type="password"
+                id="editarNovaSenha"
+                maxlength="6"
+                inputmode="numeric"
+                placeholder="Deixe vazio para não alterar"
+                autocomplete="new-password"
+            >
+
+            <small>
+                A nova senha deve possuir exatamente 6 números.
+            </small>
+
+        </div>
+
+
+        <div
+            id="mensagemModalUsuario"
+        ></div>
+
+
+        <div class="modalBotoes">
+
+            <button
+                class="btnModal btnCancelar"
+                onclick="fecharModalUsuario()"
+            >
+                CANCELAR
+            </button>
+
+            <button
+                id="btnSalvarEdicao"
+                class="btnModal btnSalvar"
+                onclick="salvarEdicaoUsuario()"
+            >
+                SALVAR
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================
+     MODAL EXCLUIR
+========================================= -->
+
+<div
+    id="fundoModalExcluir"
+    style="
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.55);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        box-sizing: border-box;
+        z-index: 100001;
+    "
+>
+
+    <div class="modalUsuario modalExcluir">
+
+        <h3>
+            Excluir garçom
+        </h3>
+
+        <p id="textoModalExcluir">
+            Esta ação será permanente.
+        </p>
+
+
+        <div class="campoUsuario">
+
+            <label for="senhaExcluirGarcom">
+                Senha atual do garçom
+            </label>
+
+            <input
+                type="password"
+                id="senhaExcluirGarcom"
+                maxlength="6"
+                inputmode="numeric"
+                placeholder="Digite a senha atual"
+                autocomplete="current-password"
+            >
+
+            <small>
+                A senha é necessária para confirmar a exclusão da conta.
+            </small>
+
+        </div>
+
+
+        <div
+            id="mensagemModalExcluir"
+        ></div>
+
+
+        <div class="modalBotoes">
+
+            <button
+                class="btnModal btnCancelar"
+                onclick="fecharModalExcluir()"
+            >
+                CANCELAR
+            </button>
+
+            <button
+                id="btnConfirmarExclusao"
+                class="btnModal btnExcluirConfirmar"
+                onclick="confirmarExclusaoUsuario()"
+            >
+                EXCLUIR
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================
+     FIREBASE
+========================================= -->
+
+<script
+    type="module"
+    src="js/firebase.js"
+></script>
+
+
+<script type="module">
+
+
+import {
+    getAuth,
+    onAuthStateChanged,
+    createUserWithEmailAndPassword,
+    signInWithEmailAndPassword,
+    updatePassword,
+    deleteUser
+} from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
+
+
+import {
+    getApp,
+    getApps,
+    initializeApp
+} from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
+
+
+import {
+    collection,
+    doc,
+    getDoc,
+    getDocs,
+    query,
+    updateDoc,
+    deleteDoc,
+    where,
+    setDoc
+} from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+
+
+/* =========================================
+   VARIÁVEIS
+========================================= */
+
+let db = null;
+
+let auth = null;
+
+let administradorAutorizado = false;
+
+let usuarioEditando = null;
+
+let usuarioExcluindo = null;
+
+
+/* =========================================
+   AGUARDAR FIREBASE
+========================================= */
+
+async function aguardarFirebase(){
+
+    let tentativas = 0;
+
+
+    while(
+
+        (
+            !window.firebaseHotel ||
+            !window.firebaseHotel.db
+        )
+
+        &&
+
+        tentativas < 100
+
+    ){
+
+        await new Promise(
+            resolve =>
+            setTimeout(resolve,100)
+        );
+
+        tentativas++;
+
+    }
+
+
+    if(
+
+        !window.firebaseHotel ||
+        !window.firebaseHotel.db
+
+    ){
+
+        throw new Error(
+            "Firebase não carregou."
+        );
+
+    }
+
+
+    db =
+        window.firebaseHotel.db;
+
+
+    auth =
+        getAuth();
+
+}
+
+
+/* =========================================
+   APP SECUNDÁRIO
+========================================= */
+
+async function obterAuthSecundario(){
+
+    const appPrincipal =
+        getApp();
+
+
+    let appCadastro;
+
+
+    if(
+        getApps().some(
+            app =>
+                app.name ===
+                "cadastroGarcom"
+        )
+    ){
+
+        appCadastro =
+            getApp(
+                "cadastroGarcom"
+            );
+
+    }
+
+    else {
+
+        appCadastro =
+            initializeApp(
+                appPrincipal.options,
+                "cadastroGarcom"
+            );
+
+    }
+
+
+    return getAuth(
+        appCadastro
+    );
+
+}
+
+
+/* =========================================
+   ENCERRAR AUTH SECUNDÁRIO
+========================================= */
+
+async function encerrarAuthSecundario(
+    authSecundario
+){
+
+    try {
+
+        await authSecundario.signOut();
+
+    }
+
+    catch(erro){
+
+        console.warn(
+            "Não foi possível encerrar autenticação secundária:",
+            erro
+        );
+
+    }
+
+}
+
+
+/* =========================================
+   VERIFICAR ADMINISTRADOR
+========================================= */
+
+async function verificarAdministrador(
+    usuario
+){
+
+    const referencia =
+        doc(
+            db,
+            "administradores",
+            usuario.uid
+        );
+
+
+    const resultado =
+        await getDoc(
+            referencia
+        );
+
+
+    if(
+        !resultado.exists()
+    ){
+
+        return false;
+
+    }
+
+
+    const dados =
+        resultado.data();
+
+
+    if(
+        dados.ativo !== true
+    ){
+
+        return false;
+
+    }
+
+
+    return true;
+
+}
+
+
+/* =========================================
+   PROTEÇÃO
+========================================= */
+
+async function iniciar(){
+
+    try {
+
+        await aguardarFirebase();
+
+
+        onAuthStateChanged(
+
+            auth,
+
+            async usuario => {
+
+                if(
+                    !usuario
+                ){
+
+                    window.location.replace(
+                        "login.html"
+                    );
+
+                    return;
+
+                }
+
+
+                const permitido =
+                    await verificarAdministrador(
+                        usuario
+                    );
+
+
+                if(
+                    !permitido
+                ){
+
+                    alert(
+                        "Acesso restrito ao administrador."
+                    );
+
+
+                    window.location.replace(
+                        "index.html"
+                    );
+
+
+                    return;
+
+                }
+
+
+                administradorAutorizado =
+                    true;
+
+
+                document.body.classList.add(
+                    "liberado"
+                );
+
+
+                console.log(
+                    "Administrador autorizado."
+                );
+
+            }
+
+        );
+
+    }
+
+    catch(erro){
+
+        console.error(
+            erro
+        );
+
+
+        window.location.replace(
+            "login.html"
+        );
+
+    }
+
+}
+
+
+/* =========================================
+   ABRIR USUÁRIOS
+========================================= */
+
+window.abrirUsuarios =
+async function(){
+
+    if(
+        !administradorAutorizado
+    ){
+
+        return;
+
+    }
+
+
+    document.getElementById(
+        "menuPrincipal"
+    ).style.display = "none";
+
+
+    document.getElementById(
+        "areaUsuarios"
+    ).classList.add(
+        "visivel"
+    );
+
+
+    await carregarUsuarios();
+
+};
+
+
+/* =========================================
+   FECHAR USUÁRIOS
+========================================= */
+
+window.fecharUsuarios =
+function(){
+
+    document.getElementById(
+        "areaUsuarios"
+    ).classList.remove(
+        "visivel"
+    );
+
+
+    document.getElementById(
+        "menuPrincipal"
+    ).style.display = "flex";
+
+};
+
+
+/* =========================================
+   CARREGAR USUÁRIOS
+========================================= */
+
+async function carregarUsuarios(){
+
+    const lista =
+        document.getElementById(
+            "listaUsuarios"
+        );
+
+
+    lista.innerHTML =
+        `
+        <div class="usuarioVazio">
+            Carregando usuários...
+        </div>
+        `;
+
+
+    try {
+
+        const resultado =
+            await getDocs(
+                collection(
+                    db,
+                    "garcons"
+                )
+            );
+
+
+        const usuarios =
+            [];
+
+
+        resultado.forEach(
+            documento => {
+
+                const dados =
+                    documento.data();
+
+
+                usuarios.push({
+
+                    id: documento.id,
+
+                    ...dados
+
+                });
+
+            }
+        );
+
+
+        usuarios.sort(
+            (a,b) =>
+                String(
+                    a.nome || ""
+                ).localeCompare(
+                    String(
+                        b.nome || ""
+                    ),
+                    "pt-BR"
+                )
+        );
+
+
+        if(
+            usuarios.length === 0
+        ){
+
+            lista.innerHTML =
+                `
+                <div class="usuarioVazio">
+                    Nenhum garçom cadastrado.
+                </div>
+                `;
+
+            return;
+
+        }
+
+
+        lista.innerHTML = "";
+
+
+        usuarios.forEach(
+            usuario => {
+
+                const ativo =
+                    usuario.ativo === true;
+
+
+                const nomeSeguro =
+                    escaparJS(
+                        usuario.nome ||
+                        usuario.usuario ||
+                        "este garçom"
+                    );
+
+
+                const card =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                card.className =
+                    "usuarioCard";
+
+
+                card.innerHTML = `
+
+                    <div class="usuarioCabecalho">
+
+                        <div>
+
+                            <div class="usuarioNome">
+                                ${escaparHTML(
+                                    usuario.nome ||
+                                    "Sem nome"
+                                )}
+                            </div>
+
+                            <div class="usuarioLogin">
+                                ${escaparHTML(
+                                    usuario.usuario ||
+                                    "Sem usuário"
+                                )}
+                            </div>
+
+                        </div>
+
+
+                        <span
+                            class="
+                                statusUsuario
+                                ${
+                                    ativo
+                                    ? "statusAtivo"
+                                    : "statusInativo"
+                                }
+                            "
+                        >
+                            ${
+                                ativo
+                                ? "ATIVO"
+                                : "INATIVO"
+                            }
+                        </span>
+
+                    </div>
+
+
+                    <div class="usuarioAcoes">
+
+                        <button
+                            class="
+                                btnUsuario
+                                btnEditar
+                            "
+                            onclick="abrirEditarUsuario(
+                                '${escaparJS(usuario.id)}'
+                            )"
+                        >
+                            EDITAR
+                        </button>
+
+
+                        ${
+                            ativo
+
+                            ?
+
+                            `
+                            <button
+                                class="
+                                    btnUsuario
+                                    btnDesativar
+                                "
+                                onclick="alterarStatusUsuario(
+                                    '${escaparJS(usuario.id)}',
+                                    false,
+                                    '${nomeSeguro}'
+                                )"
+                            >
+                                DESATIVAR
+                            </button>
+                            `
+
+                            :
+
+                            `
+                            <button
+                                class="
+                                    btnUsuario
+                                    btnReativar
+                                "
+                                onclick="alterarStatusUsuario(
+                                    '${escaparJS(usuario.id)}',
+                                    true,
+                                    '${nomeSeguro}'
+                                )"
+                            >
+                                REATIVAR
+                            </button>
+                            `
+
+                        }
+
+
+                        <button
+                            class="
+                                btnUsuario
+                                btnExcluir
+                            "
+                            onclick="abrirExcluirUsuario(
+                                '${escaparJS(usuario.id)}'
+                            )"
+                        >
+                            EXCLUIR USUÁRIO
+                        </button>
+
+                    </div>
+
+                `;
+
+
+                lista.appendChild(
+                    card
+                );
+
+            }
+        );
+
+    }
+
+    catch(erro){
+
+        console.error(
+            "Erro ao carregar usuários:",
+            erro
+        );
+
+
+        lista.innerHTML =
+            `
+            <div class="usuarioVazio">
+                Não foi possível carregar os garçons.
+            </div>
+            `;
+
+    }
+
+}
+
+
+/* =========================================
+   CADASTRAR GARÇOM
+========================================= */
+
+window.cadastrarGarcom =
+async function(){
+
+    if(
+        !administradorAutorizado
+    ){
+
+        return;
+
+    }
+
+
+    const nome =
+        document.getElementById(
+            "nomeGarcom"
+        ).value.trim();
+
+
+    const usuario =
+        document.getElementById(
+            "usuarioGarcom"
+        ).value.trim().toLowerCase();
+
+
+    const senha =
+        document.getElementById(
+            "senhaGarcom"
+        ).value.trim();
+
+
+    const mensagem =
+        document.getElementById(
+            "mensagemUsuario"
+        );
+
+
+    const botao =
+        document.getElementById(
+            "btnCadastrar"
+        );
+
+
+    mensagem.className = "";
+
+    mensagem.textContent = "";
+
+
+    if(
+        !nome
+    ){
+
+        mostrarMensagem(
+            "Informe o nome do garçom.",
+            true
+        );
+
+        return;
+
+    }
+
+
+    if(
+        !usuario
+    ){
+
+        mostrarMensagem(
+            "Informe o usuário.",
+            true
+        );
+
+        return;
+
+    }
+
+
+    if(
+        !/^[a-zA-Z0-9._-]+$/.test(
+            usuario
+        )
+    ){
+
+        mostrarMensagem(
+            "O usuário deve conter apenas letras, números, ponto, hífen ou underline.",
+            true
+        );
+
+        return;
+
+    }
+
+
+    if(
+        !/^\d{6}$/.test(
+            senha
+        )
+    ){
+
+        mostrarMensagem(
+            "A senha deve possuir exatamente 6 números.",
+            true
+        );
+
+        return;
+
+    }
+
+
+    botao.disabled =
+        true;
+
+
+    botao.textContent =
+        "CADASTRANDO...";
+
+
+    let authCadastro = null;
+
+
+    try {
+
+        const email =
+            usuario +
+            "@hoteldobau.com";
+
+
+        const consultaUsuario =
+            query(
+
+                collection(
+                    db,
+                    "garcons"
+                ),
+
+                where(
+                    "usuario",
+                    "==",
+                    usuario
+                )
+
+            );
+
+
+        const resultadoUsuario =
+            await getDocs(
+                consultaUsuario
+            );
+
+
+        if(
+            !resultadoUsuario.empty
+        ){
+
+            throw new Error(
+                "USUARIO_JA_CADASTRADO"
+            );
+
+        }
+
+
+        authCadastro =
+            await obterAuthSecundario();
+
+
+        const resultadoAuth =
+            await createUserWithEmailAndPassword(
+
+                authCadastro,
+
+                email,
+
+                senha
+
+            );
+
+
+        const uid =
+            resultadoAuth.user.uid;
+
+
+        await setDoc(
+
+            doc(
+                db,
+                "garcons",
+                uid
+            ),
+
+            {
+
+                uid: uid,
+
+                nome: nome,
+
+                usuario: usuario,
+
+                ativo: true
+
+            }
+
+        );
+
+
+        document.getElementById(
+            "nomeGarcom"
+        ).value = "";
+
+
+        document.getElementById(
+            "usuarioGarcom"
+        ).value = "";
+
+
+        document.getElementById(
+            "senhaGarcom"
+        ).value = "";
+
+
+        mostrarMensagem(
+            "Garçom cadastrado com sucesso.",
+            false
+        );
+
+
+        await carregarUsuarios();
+
+
+    }
+
+    catch(erro){
+
+        console.error(
+            "Erro ao cadastrar garçom:",
+            erro
+        );
+
+
+        if(
+            erro.message ===
+            "USUARIO_JA_CADASTRADO"
+        ){
+
+            mostrarMensagem(
+                "Esse usuário já está cadastrado. Se estiver inativo, use REATIVAR.",
+                true
+            );
+
+        }
+
+        else if(
+            erro.code ===
+            "auth/email-already-in-use"
+        ){
+
+            mostrarMensagem(
+                "Esse usuário já possui uma conta. Se estiver inativo, use REATIVAR.",
+                true
+            );
+
+        }
+
+        else if(
+            erro.code ===
+            "auth/weak-password"
+        ){
+
+            mostrarMensagem(
+                "A senha informada não foi aceita pelo Firebase.",
+                true
+            );
+
+        }
+
+        else if(
+            erro.code ===
+            "auth/invalid-email"
+        ){
+
+            mostrarMensagem(
+                "O usuário informado não é válido.",
+                true
+            );
+
+        }
+
+        else {
+
+            mostrarMensagem(
+                "Não foi possível cadastrar o garçom. Verifique o console.",
+                true
+            );
+
+        }
+
+    }
+
+    finally {
+
+        if(
+            authCadastro
+        ){
+
+            await encerrarAuthSecundario(
+                authCadastro
+            );
+
+        }
+
+
+        botao.disabled =
+            false;
+
+
+        botao.textContent =
+            "CADASTRAR GARÇOM";
+
+    }
+
+};
+
+
+/* =========================================
+   ALTERAR STATUS
+========================================= */
+
+window.alterarStatusUsuario =
+async function(
+    id,
+    novoStatus,
+    nome
+){
+
+    if(
+        !administradorAutorizado
+    ){
+
+        return;
+
+    }
+
+
+    const acao =
+        novoStatus
+        ? "reativar"
+        : "desativar";
+
+
+    const confirmado =
+        confirm(
+            `Deseja ${acao} o garçom "${nome}"?`
+        );
+
+
+    if(
+        !confirmado
+    ){
+
+        return;
+
+    }
+
+
+    try {
+
+        await updateDoc(
+
+            doc(
+                db,
+                "garcons",
+                id
+            ),
+
+            {
+
+                ativo:
+                    novoStatus
+
+            }
+
+        );
+
+
+        await carregarUsuarios();
+
+
+        mostrarMensagem(
+            novoStatus
+            ? "Garçom reativado com sucesso."
+            : "Garçom desativado com sucesso.",
+            false
+        );
+
+    }
+
+    catch(erro){
+
+        console.error(
+            "Erro ao alterar status:",
+            erro
+        );
+
+
+        mostrarMensagem(
+            "Não foi possível alterar o status do garçom.",
+            true
+        );
+
+    }
+
+};
+
+
+/* =========================================
+   ABRIR EDITAR
+========================================= */
+
+window.abrirEditarUsuario =
+async function(id){
+
+    if(
+        !administradorAutorizado
+    ){
+
+        return;
+
+    }
+
+
+    try {
+
+        const referencia =
+            doc(
+                db,
+                "garcons",
+                id
+            );
+
+
+        const resultado =
+            await getDoc(
+                referencia
+            );
+
+
+        if(
+            !resultado.exists()
+        ){
+
+            mostrarMensagem(
+                "Usuário não encontrado.",
+                true
+            );
+
+            return;
+
+        }
+
+
+        const dados =
+            resultado.data();
+
+
+        usuarioEditando = {
+
+            id: id,
+
+            ...dados
+
+        };
+
+
+        document.getElementById(
+            "editarNomeGarcom"
+        ).value =
+            dados.nome || "";
+
+
+        document.getElementById(
+            "editarSenhaAtual"
+        ).value = "";
+
+
+        document.getElementById(
+            "editarNovaSenha"
+        ).value = "";
+
+
+        document.getElementById(
+            "mensagemModalUsuario"
+        ).textContent = "";
+
+
+        document.getElementById(
+            "mensagemModalUsuario"
+        ).className = "";
+
+
+        document.getElementById(
+            "textoModalUsuario"
+        ).textContent =
+            `Usuário: ${dados.usuario || ""}`;
+
+
+        document.getElementById(
+            "fundoModalUsuario"
+        ).classList.add(
+            "mostrar"
+        );
+
+
+        document.getElementById(
+            "editarNomeGarcom"
+        ).focus();
+
+    }
+
+    catch(erro){
+
+        console.error(
+            "Erro ao abrir edição:",
+            erro
+        );
+
+
+        mostrarMensagem(
+            "Não foi possível abrir o usuário.",
+            true
+        );
+
+    }
+
+};
+
+
+/* =========================================
+   FECHAR EDITAR
+========================================= */
+
+window.fecharModalUsuario =
+function(){
+
+    document.getElementById(
+        "fundoModalUsuario"
+    ).classList.remove(
+        "mostrar"
+    );
+
+
+    usuarioEditando = null;
+
+};
+
+
+/* =========================================
+   SALVAR EDIÇÃO
+========================================= */
+
+window.salvarEdicaoUsuario =
+async function(){
+
+    if(
+        !administradorAutorizado ||
+        !usuarioEditando
+    ){
+
+        return;
+
+    }
+
+
+    const nome =
+        document.getElementById(
+            "editarNomeGarcom"
+        ).value.trim();
+
+
+    const senhaAtual =
+        document.getElementById(
+            "editarSenhaAtual"
+        ).value.trim();
+
+
+    const novaSenha =
+        document.getElementById(
+            "editarNovaSenha"
+        ).value.trim();
+
+
+    const mensagem =
+        document.getElementById(
+            "mensagemModalUsuario"
+        );
+
+
+    const botao =
+        document.getElementById(
+            "btnSalvarEdicao"
+        );
+
+
+    mensagem.className = "";
+
+    mensagem.textContent = "";
+
+
+    if(
+        !nome
+    ){
+
+        mensagem.className =
+            "mensagemErro";
+
+        mensagem.textContent =
+            "Informe o nome.";
+
+        return;
+
+    }
+
+
+    if(
+        novaSenha &&
+        !/^\d{6}$/.test(
+            novaSenha
+        )
+    ){
+
+        mensagem.className =
+            "mensagemErro";
+
+        mensagem.textContent =
+            "A nova senha deve possuir exatamente 6 números.";
+
+        return;
+
+    }
+
+
+    if(
+        novaSenha &&
+        !/^\d{6}$/.test(
+            senhaAtual
+        )
+    ){
+
+        mensagem.className =
+            "mensagemErro";
+
+        mensagem.textContent =
+            "Informe a senha atual para trocar a senha.";
+
+        return;
+
+    }
+
+
+    botao.disabled =
+        true;
+
+    botao.textContent =
+        "SALVANDO...";
+
+
+    let authSecundario = null;
+
+
+    try {
+
+        /*
+         * Primeiro atualiza o nome no Firestore.
+         */
+
+        await updateDoc(
+
+            doc(
+                db,
+                "garcons",
+                usuarioEditando.id
+            ),
+
+            {
+
+                nome: nome
+
+            }
+
+        );
+
+
+        /*
+         * Se não foi solicitada troca de senha,
+         * termina aqui.
+         */
+
+        if(
+            !novaSenha
+        ){
+
+            mensagem.className =
+                "mensagemSucesso";
+
+            mensagem.textContent =
+                "Nome alterado com sucesso.";
+
+
+            await carregarUsuarios();
+
+
+            setTimeout(
+                () => {
+                    fecharModalUsuario();
+                },
+                700
+            );
+
+
+            return;
+
+        }
+
+
+        /*
+         * Para trocar a senha precisamos
+         * autenticar o próprio garçom
+         * no Firebase Authentication.
+         */
+
+        authSecundario =
+            await obterAuthSecundario();
+
+
+        const email =
+            usuarioEditando.usuario +
+            "@hoteldobau.com";
+
+
+        const resultadoLogin =
+            await signInWithEmailAndPassword(
+
+                authSecundario,
+
+                email,
+
+                senhaAtual
+
+            );
+
+
+        const usuarioFirebase =
+            resultadoLogin.user;
+
+
+        if(
+            usuarioFirebase.uid !==
+            usuarioEditando.id
+        ){
+
+            throw new Error(
+                "USUARIO_INCORRETO"
+            );
+
+        }
+
+
+        await updatePassword(
+
+            usuarioFirebase,
+
+            novaSenha
+
+        );
+
+
+        mensagem.className =
+            "mensagemSucesso";
+
+        mensagem.textContent =
+            "Nome e senha alterados com sucesso.";
+
+
+        await carregarUsuarios();
+
+
+        setTimeout(
+            () => {
+                fecharModalUsuario();
+            },
+            800
+        );
+
+    }
+
+    catch(erro){
+
+        console.error(
+            "Erro ao editar usuário:",
+            erro
+        );
+
+
+        if(
+            erro.code ===
+            "auth/invalid-credential"
+            ||
+            erro.code ===
+            "auth/wrong-password"
+        ){
+
+            mensagem.className =
+                "mensagemErro";
+
+            mensagem.textContent =
+                "Senha atual incorreta.";
+
+        }
+
+        else if(
+            erro.code ===
+            "auth/user-not-found"
+        ){
+
+            mensagem.className =
+                "mensagemErro";
+
+            mensagem.textContent =
+                "Conta do usuário não encontrada.";
+
+        }
+
+        else if(
+            erro.code ===
+            "auth/weak-password"
+        ){
+
+            mensagem.className =
+                "mensagemErro";
+
+            mensagem.textContent =
+                "A nova senha não foi aceita pelo Firebase.";
+
+        }
+
+        else if(
+            erro.message ===
+            "USUARIO_INCORRETO"
+        ){
+
+            mensagem.className =
+                "mensagemErro";
+
+            mensagem.textContent =
+                "Não foi possível confirmar o usuário.";
+
+        }
+
+        else {
+
+            mensagem.className =
+                "mensagemErro";
+
+            mensagem.textContent =
+                "Não foi possível alterar o usuário.";
+
+        }
+
+    }
+
+    finally {
+
+        if(
+            authSecundario
+        ){
+
+            await encerrarAuthSecundario(
+                authSecundario
+            );
+
+        }
+
+
+        botao.disabled =
+            false;
+
+        botao.textContent =
+            "SALVAR";
+
+    }
+
+};
+
+
+/* =========================================
+   ABRIR EXCLUSÃO
+========================================= */
+
+window.abrirExcluirUsuario =
+async function(id){
+
+    if(
+        !administradorAutorizado
+    ){
+
+        return;
+
+    }
+
+
+    try {
+
+        const referencia =
+            doc(
+                db,
+                "garcons",
+                id
+            );
+
+
+        const resultado =
+            await getDoc(
+                referencia
+            );
+
+
+        if(
+            !resultado.exists()
+        ){
+
+            mostrarMensagem(
+                "Usuário não encontrado.",
+                true
+            );
+
+            return;
+
+        }
+
+
+        const dados =
+            resultado.data();
+
+
+        usuarioExcluindo = {
+
+            id: id,
+
+            ...dados
+
+        };
+
+
+        document.getElementById(
+            "senhaExcluirGarcom"
+        ).value = "";
+
+
+        document.getElementById(
+            "mensagemModalExcluir"
+        ).textContent = "";
+
+
+        document.getElementById(
+            "mensagemModalExcluir"
+        ).className = "";
+
+
+        document.getElementById(
+            "textoModalExcluir"
+        ).textContent =
+            `Você está excluindo "${dados.nome || dados.usuario}". Esta ação removerá a conta de acesso e o cadastro do garçom. Os registros históricos de pedidos e fechamentos serão preservados.`;
+
+
+        document.getElementById(
+            "fundoModalExcluir"
+        ).style.display =
+            "flex";
+
+
+        document.getElementById(
+            "senhaExcluirGarcom"
+        ).focus();
+
+    }
+
+    catch(erro){
+
+        console.error(
+            "Erro ao abrir exclusão:",
+            erro
+        );
+
+
+        mostrarMensagem(
+            "Não foi possível abrir a exclusão.",
+            true
+        );
+
+    }
+
+};
+
+
+/* =========================================
+   FECHAR EXCLUSÃO
+========================================= */
+
+window.fecharModalExcluir =
+function(){
+
+    document.getElementById(
+        "fundoModalExcluir"
+    ).style.display =
+        "none";
+
+
+    usuarioExcluindo = null;
+
+};
+
+
+/* =========================================
+   CONFIRMAR EXCLUSÃO
+========================================= */
+
+window.confirmarExclusaoUsuario =
+async function(){
+
+    if(
+        !administradorAutorizado ||
+        !usuarioExcluindo
+    ){
+
+        return;
+
+    }
+
+
+    const senha =
+        document.getElementById(
+            "senhaExcluirGarcom"
+        ).value.trim();
+
+
+    const mensagem =
+        document.getElementById(
+            "mensagemModalExcluir"
+        );
+
+
+    const botao =
+        document.getElementById(
+            "btnConfirmarExclusao"
+        );
+
+
+    mensagem.className = "";
+
+    mensagem.textContent = "";
+
+
+    if(
+        !/^\d{6}$/.test(
+            senha
+        )
+    ){
+
+        mensagem.className =
+            "mensagemErro";
+
+        mensagem.textContent =
+            "Informe a senha atual de 6 números.";
+
+        return;
+
+    }
+
+
+    const confirmado =
+        confirm(
+            `ATENÇÃO!\n\nDeseja realmente excluir o usuário "${usuarioExcluindo.nome || usuarioExcluindo.usuario}"?\n\nA conta de acesso e o cadastro serão removidos permanentemente.`
+        );
+
+
+    if(
+        !confirmado
+    ){
+
+        return;
+
+    }
+
+
+    botao.disabled =
+        true;
+
+    botao.textContent =
+        "EXCLUINDO...";
+
+
+    let authSecundario = null;
+
+
+    try {
+
+        /*
+         * Autentica o próprio garçom
+         * para poder excluir a conta
+         * do Firebase Authentication.
+         */
+
+        authSecundario =
+            await obterAuthSecundario();
+
+
+        const email =
+            usuarioExcluindo.usuario +
+            "@hoteldobau.com";
+
+
+        const resultadoLogin =
+            await signInWithEmailAndPassword(
+
+                authSecundario,
+
+                email,
+
+                senha
+
+            );
+
+
+        const usuarioFirebase =
+            resultadoLogin.user;
+
+
+        if(
+            usuarioFirebase.uid !==
+            usuarioExcluindo.id
+        ){
+
+            throw new Error(
+                "USUARIO_INCORRETO"
+            );
+
+        }
+
+
+        /*
+         * Exclui primeiro o documento
+         * do Firestore.
+         */
+
+        await deleteDoc(
+
+            doc(
+                db,
+                "garcons",
+                usuarioExcluindo.id
+            )
+
+        );
+
+
+        /*
+         * Depois exclui a conta
+         * do Firebase Authentication.
+         */
+
+        await deleteUser(
+            usuarioFirebase
+        );
+
+
+        fecharModalExcluir();
+
+
+        await carregarUsuarios();
+
+
+        mostrarMensagem(
+            "Usuário excluído com sucesso.",
+            false
+        );
+
+    }
+
+    catch(erro){
+
+        console.error(
+            "Erro ao excluir usuário:",
+            erro
+        );
+
+
+        if(
+            erro.code ===
+            "auth/invalid-credential"
+            ||
+            erro.code ===
+            "auth/wrong-password"
+        ){
+
+            mensagem.className =
+                "mensagemErro";
+
+            mensagem.textContent =
+                "Senha atual incorreta.";
+
+        }
+
+        else if(
+            erro.code ===
+            "auth/user-not-found"
+        ){
+
+            mensagem.className =
+                "mensagemErro";
+
+            mensagem.textContent =
+                "Conta do usuário não encontrada.";
+
+        }
+
+        else if(
+            erro.message ===
+            "USUARIO_INCORRETO"
+        ){
+
+            mensagem.className =
+                "mensagemErro";
+
+            mensagem.textContent =
+                "Não foi possível confirmar o usuário.";
+
+        }
+
+        else {
+
+            mensagem.className =
+                "mensagemErro";
+
+            mensagem.textContent =
+                "Não foi possível excluir o usuário.";
+
+        }
+
+    }
+
+    finally {
+
+        if(
+            authSecundario
+        ){
+
+            await encerrarAuthSecundario(
+                authSecundario
+            );
+
+        }
+
+
+        botao.disabled =
+            false;
+
+        botao.textContent =
+            "EXCLUIR";
+
+    }
+
+};
+
+
+/* =========================================
+   MENSAGEM
+========================================= */
+
+function mostrarMensagem(
+    texto,
+    erro
+){
+
+    const elemento =
+        document.getElementById(
+            "mensagemUsuario"
+        );
+
+
+    elemento.textContent =
+        texto;
+
+
+    elemento.className =
+        erro
+        ? "mensagemErro"
+        : "mensagemSucesso";
+
+}
+
+
+/* =========================================
+   ESCAPAR HTML
+========================================= */
+
+function escaparHTML(
+    texto
+){
+
+    return String(texto)
+
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+
+        .replace(
+            /</g,
+            "&lt;"
+        )
+
+        .replace(
+            />/g,
+            "&gt;"
+        )
+
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+}
+
+
+/* =========================================
+   ESCAPAR JAVASCRIPT
+========================================= */
+
+function escaparJS(
+    texto
+){
+
+    return String(texto)
+
+        .replace(
+            /\\/g,
+            "\\\\"
+        )
+
+        .replace(
+            /'/g,
+            "\\'"
+        )
+
+        .replace(
+            /"/g,
+            '\\"'
+        )
+
+        .replace(
+            /\n/g,
+            "\\n"
+        )
+
+        .replace(
+            /\r/g,
+            "\\r"
+        );
+
+}
+
+
+/* =========================================
+   IMPRESSORAS / HOTEL
+========================================= */
+
+window.mostrarEmBreve =
+function(nome){
+
+    alert(
+        `${nome}: esta área ainda será configurada.`
+    );
+
+};
+
+
+/* =========================================
+   MENU
+========================================= */
+
+window.abrirMenu =
+function(){
+
+    window.location.href =
+        "index.html";
+
+};
+
+
+/* =========================================
+   INICIAR
+========================================= */
+
+iniciar();
+
+</script>
+
+
+</body>
+
+</html>
