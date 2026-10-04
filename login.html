@@ -308,6 +308,10 @@ import {
 
 getFirestore,
 
+doc,
+
+getDoc,
+
 collection,
 
 query,
@@ -435,7 +439,65 @@ const usuarioFirebase =
 
 resultado.user;
 
+// ===========================
+// VERIFICA ADMINISTRADOR
+// ===========================
 
+
+const adminRef = doc(
+    db,
+    "administradores",
+    usuarioFirebase.uid
+);
+
+
+const adminSnap = await getDoc(adminRef);
+
+
+
+if(adminSnap.exists()) {
+
+
+    const dadosAdmin =
+        adminSnap.data();
+
+
+    if(dadosAdmin.ativo === true) {
+
+
+        localStorage.setItem(
+            "usuarioLogado",
+            JSON.stringify({
+
+                uid:
+                    usuarioFirebase.uid,
+
+                nome:
+                    dadosAdmin.nome,
+
+                tipo:
+                    "administrador"
+
+            })
+        );
+
+
+        console.log(
+            "Administrador:",
+            dadosAdmin.nome
+        );
+
+
+        window.location.replace(
+            "./index.html"
+        );
+
+
+        return;
+
+    }
+
+}
 
 const referencia =
 
