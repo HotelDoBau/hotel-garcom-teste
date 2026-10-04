@@ -526,15 +526,12 @@
                 Senha
             </label>
 
-            <input
-                type="password"
-                id="senhaTrocaGarcom"
-                placeholder="6 números"
-                inputmode="numeric"
-                pattern="[0-9]{6}"
-                maxlength="6"
-                autocomplete="off"
-            >
+           <input
+    type="password"
+    id="senhaTrocaGarcom"
+    placeholder="Digite a senha"
+    autocomplete="current-password"
+>
 
         </div>
 
@@ -2529,32 +2526,6 @@ document
                 confirmarTrocaGarcom();
 
             }
-
-        }
-
-    );
-
-
-
-/* =========================================
-   SOMENTE NÚMEROS
-========================================= */
-
-document
-    .getElementById(
-        "senhaTrocaGarcom"
-    )
-    .addEventListener(
-
-        "input",
-
-        function () {
-
-            this.value =
-                this.value.replace(
-                    /\D/g,
-                    ""
-                );
 
         }
 
