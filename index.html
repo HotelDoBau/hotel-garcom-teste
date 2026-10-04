@@ -1643,7 +1643,7 @@ window.abrirTrocaGarcom =
         select.innerHTML = `
 
             <option value="">
-                Carregando garçons...
+                Carregando usuários...
             </option>
 
         `;
@@ -1655,7 +1655,17 @@ window.abrirTrocaGarcom =
                 window.firebaseHotel.db;
 
 
-            const resultado =
+            const usuarioAtual =
+                obterUsuarioAtual();
+
+
+            /*
+             * =====================================
+             * CARREGAR GARÇONS
+             * =====================================
+             */
+
+            const resultadoGarcons =
                 await getDocs(
 
                     collection(
@@ -1666,20 +1676,112 @@ window.abrirTrocaGarcom =
                 );
 
 
-            const garcomAtual =
-                obterUsuarioAtual();
+            /*
+             * =====================================
+             * CARREGAR ADMINISTRADORES
+             * =====================================
+             */
+
+            const resultadoAdministradores =
+                await getDocs(
+
+                    collection(
+                        db,
+                        "administradores"
+                    )
+
+                );
 
 
             select.innerHTML = `
 
                 <option value="">
-                    Selecione o garçom
+                    Selecione o usuário
                 </option>
 
             `;
 
 
-            resultado.forEach(
+            /*
+             * =====================================
+             * ADMINISTRADORES
+             * =====================================
+             */
+
+            resultadoAdministradores.forEach(
+
+                documento => {
+
+                    const dados =
+                        documento.data();
+
+
+                    if (
+                        dados.ativo !== true
+                    ) {
+
+                        return;
+
+                    }
+
+
+                    const option =
+                        document.createElement(
+                            "option"
+                        );
+
+
+                    /*
+                     * Identifica o administrador
+                     * sem misturar com os garçons.
+                     */
+
+                    option.value =
+                        "admin:" +
+                        documento.id;
+
+
+                    option.textContent =
+                        dados.nome ||
+                        "Administrador";
+
+
+                    /*
+                     * Se for o administrador
+                     * atualmente logado, seleciona.
+                     */
+
+                    if (
+
+                        usuarioAtual &&
+
+                        usuarioAtual.uid ===
+                            documento.id
+
+                    ) {
+
+                        option.selected =
+                            true;
+
+                    }
+
+
+                    select.appendChild(
+                        option
+                    );
+
+                }
+
+            );
+
+
+            /*
+             * =====================================
+             * GARÇONS
+             * =====================================
+             */
+
+            resultadoGarcons.forEach(
 
                 documento => {
 
@@ -1712,6 +1814,7 @@ window.abrirTrocaGarcom =
 
 
                     option.value =
+                        "garcom:" +
                         dados.usuario;
 
 
@@ -1722,10 +1825,10 @@ window.abrirTrocaGarcom =
 
                     if (
 
-                        garcomAtual &&
+                        usuarioAtual &&
 
                         dados.uid ===
-                            garcomAtual.uid
+                            usuarioAtual.uid
 
                     ) {
 
@@ -1753,7 +1856,7 @@ window.abrirTrocaGarcom =
 
 
                 mensagem.textContent =
-                    "Nenhum garçom ativo encontrado.";
+                    "Nenhum usuário ativo encontrado.";
 
 
                 return;
@@ -1768,7 +1871,7 @@ window.abrirTrocaGarcom =
         catch (erro) {
 
             console.error(
-                "Erro ao carregar garçons:",
+                "Erro ao carregar usuários:",
                 erro
             );
 
@@ -1778,12 +1881,11 @@ window.abrirTrocaGarcom =
 
 
             mensagem.textContent =
-                "Não foi possível carregar os garçons.";
+                "Não foi possível carregar os usuários.";
 
         }
 
     };
-
 
 
 
@@ -1859,33 +1961,27 @@ window.confirmarTrocaGarcom =
             );
 
 
-
-        const usuario =
-            select.value
-                .trim()
-                .toLowerCase();
-
+        const selecionado =
+            select.value.trim();
 
 
         const senhaDigitada =
             senha.value;
 
 
-
-        if (!usuario) {
+        if (!selecionado) {
 
             mensagem.style.color =
                 "#c0392b";
 
 
             mensagem.textContent =
-                "Selecione um garçom.";
+                "Selecione um usuário.";
 
 
             return;
 
         }
-
 
 
         if (
@@ -1909,7 +2005,6 @@ window.confirmarTrocaGarcom =
         }
 
 
-
         botao.disabled =
             true;
 
@@ -1922,124 +2017,366 @@ window.confirmarTrocaGarcom =
             "Verificando acesso...";
 
 
-
         try {
 
             const db =
                 window.firebaseHotel.db;
 
 
+            /*
+             * =====================================
+             * ADMINISTRADOR
+             * =====================================
+             */
 
-            const email =
-                usuario +
-                "@hoteldobau.com";
+            if (
+                selecionado.startsWith(
+                    "admin:"
+                )
+            ) {
 
-
-
-            const resultado =
-                await signInWithEmailAndPassword(
-
-                    auth,
-
-                    email,
-
-                    senhaDigitada
-
-                );
-
+                const adminUid =
+                    selecionado.substring(
+                        6
+                    );
 
 
-            const usuarioFirebase =
-                resultado.user;
-
-
-
-            const consulta =
-                query(
-
-                    collection(
+                const adminRef =
+                    doc(
                         db,
-                        "garcons"
-                    ),
+                        "administradores",
+                        adminUid
+                    );
 
-                    where(
-                        "uid",
-                        "==",
-                        usuarioFirebase.uid
-                    )
+
+                const adminSnap =
+                    await getDoc(
+                        adminRef
+                    );
+
+
+                if (
+                    !adminSnap.exists()
+                ) {
+
+                    throw new Error(
+                        "ADMIN_NAO_CADASTRADO"
+                    );
+
+                }
+
+
+                const dadosAdmin =
+                    adminSnap.data();
+
+
+                if (
+                    dadosAdmin.ativo !== true
+                ) {
+
+                    throw new Error(
+                        "USUARIO_DESATIVADO"
+                    );
+
+                }
+
+
+                /*
+                 * Se o administrador selecionado
+                 * já é o administrador atualmente
+                 * autenticado, podemos apenas manter
+                 * a sessão.
+                 */
+
+                const usuarioAtual =
+                    obterUsuarioAtual();
+
+
+                if (
+
+                    usuarioAtual &&
+
+                    usuarioAtual.uid ===
+                        adminUid
+
+                ) {
+
+                    localStorage.setItem(
+
+                        "usuarioLogado",
+
+                        JSON.stringify({
+
+                            uid:
+                                adminUid,
+
+                            nome:
+                                dadosAdmin.nome ||
+                                "Administrador",
+
+                            tipo:
+                                "administrador"
+
+                        })
+
+                    );
+
+
+                    atualizarNomeGarcom();
+
+
+                    mensagem.style.color =
+                        "#16803c";
+
+
+                    mensagem.textContent =
+                        "Administrador confirmado.";
+
+
+                    setTimeout(
+
+                        () => {
+
+                            fecharTrocaGarcom();
+
+                        },
+
+                        400
+
+                    );
+
+
+                    return;
+
+                }
+
+
+                /*
+                 * Caso seja necessário trocar para
+                 * outro administrador, o documento
+                 * precisa possuir um campo "email".
+                 */
+
+                if (
+                    !dadosAdmin.email
+                ) {
+
+                    throw new Error(
+                        "ADMIN_SEM_EMAIL"
+                    );
+
+                }
+
+
+                const resultadoAdmin =
+                    await signInWithEmailAndPassword(
+
+                        auth,
+
+                        dadosAdmin.email,
+
+                        senhaDigitada
+
+                    );
+
+
+                const usuarioFirebase =
+                    resultadoAdmin.user;
+
+
+                if (
+                    usuarioFirebase.uid !==
+                    adminUid
+                ) {
+
+                    throw new Error(
+                        "ADMIN_INCORRETO"
+                    );
+
+                }
+
+
+                localStorage.setItem(
+
+                    "usuarioLogado",
+
+                    JSON.stringify({
+
+                        uid:
+                            adminUid,
+
+                        nome:
+                            dadosAdmin.nome ||
+                            "Administrador",
+
+                        tipo:
+                            "administrador"
+
+                    })
 
                 );
 
 
+                atualizarNomeGarcom();
 
-            const resultadoGarcom =
-                await getDocs(
-                    consulta
+
+                mensagem.style.color =
+                    "#16803c";
+
+
+                mensagem.textContent =
+                    "Administrador alterado.";
+
+
+                setTimeout(
+
+                    () => {
+
+                        fecharTrocaGarcom();
+
+                    },
+
+                    400
+
                 );
 
 
-
-            if (
-                resultadoGarcom.empty
-            ) {
-
-                throw new Error(
-                    "GARCOM_NAO_CADASTRADO"
-                );
+                return;
 
             }
 
 
-
-            const dadosGarcom =
-                resultadoGarcom
-                    .docs[0]
-                    .data();
-
-
+            /*
+             * =====================================
+             * GARÇOM
+             * =====================================
+             */
 
             if (
-                dadosGarcom.ativo !== true
+                selecionado.startsWith(
+                    "garcom:"
+                )
             ) {
 
-                throw new Error(
-                    "USUARIO_DESATIVADO"
+                const usuario =
+                    selecionado
+                        .substring(7)
+                        .trim()
+                        .toLowerCase();
+
+
+                const email =
+                    usuario +
+                    "@hoteldobau.com";
+
+
+                const resultado =
+                    await signInWithEmailAndPassword(
+
+                        auth,
+
+                        email,
+
+                        senhaDigitada
+
+                    );
+
+
+                const usuarioFirebase =
+                    resultado.user;
+
+
+                const consulta =
+                    query(
+
+                        collection(
+                            db,
+                            "garcons"
+                        ),
+
+                        where(
+                            "uid",
+                            "==",
+                            usuarioFirebase.uid
+                        )
+
+                    );
+
+
+                const resultadoGarcom =
+                    await getDocs(
+                        consulta
+                    );
+
+
+                if (
+                    resultadoGarcom.empty
+                ) {
+
+                    throw new Error(
+                        "GARCOM_NAO_CADASTRADO"
+                    );
+
+                }
+
+
+                const dadosGarcom =
+                    resultadoGarcom
+                        .docs[0]
+                        .data();
+
+
+                if (
+                    dadosGarcom.ativo !== true
+                ) {
+
+                    throw new Error(
+                        "USUARIO_DESATIVADO"
+                    );
+
+                }
+
+
+                salvarGarcomLogado(
+
+                    dadosGarcom,
+
+                    usuarioFirebase
+
                 );
+
+
+                atualizarNomeGarcom();
+
+
+                mensagem.style.color =
+                    "#16803c";
+
+
+                mensagem.textContent =
+                    "Garçom alterado.";
+
+
+                setTimeout(
+
+                    () => {
+
+                        fecharTrocaGarcom();
+
+                    },
+
+                    400
+
+                );
+
+
+                return;
 
             }
 
 
-
-            salvarGarcomLogado(
-                dadosGarcom,
-                usuarioFirebase
-            );
-
-
-
-            atualizarNomeGarcom();
-
-
-
-            mensagem.style.color =
-                "#16803c";
-
-
-            mensagem.textContent =
-                "Garçom alterado.";
-
-
-
-            setTimeout(
-
-                () => {
-
-                    fecharTrocaGarcom();
-
-                },
-
-                400
-
+            throw new Error(
+                "USUARIO_INVALIDO"
             );
 
         }
@@ -2047,14 +2384,13 @@ window.confirmarTrocaGarcom =
         catch (erro) {
 
             console.error(
-                "Erro ao trocar garçom:",
+                "Erro ao trocar usuário:",
                 erro
             );
 
 
             mensagem.style.color =
                 "#c0392b";
-
 
 
             if (
@@ -2078,6 +2414,42 @@ window.confirmarTrocaGarcom =
 
                 mensagem.textContent =
                     "Usuário desativado.";
+
+            }
+
+            else if (
+
+                erro.message ===
+                "ADMIN_NAO_CADASTRADO"
+
+            ) {
+
+                mensagem.textContent =
+                    "Administrador não cadastrado.";
+
+            }
+
+            else if (
+
+                erro.message ===
+                "ADMIN_SEM_EMAIL"
+
+            ) {
+
+                mensagem.textContent =
+                    "O administrador não possui e-mail cadastrado.";
+
+            }
+
+            else if (
+
+                erro.message ===
+                "ADMIN_INCORRETO"
+
+            ) {
+
+                mensagem.textContent =
+                    "Administrador inválido.";
 
             }
 
@@ -2111,20 +2483,23 @@ window.confirmarTrocaGarcom =
             else {
 
                 mensagem.textContent =
-                    "Não foi possível trocar o garçom.";
+                    "Não foi possível trocar o usuário.";
 
             }
 
         }
 
 
+        finally {
 
-        botao.disabled =
-            false;
+            botao.disabled =
+                false;
 
 
-        botao.textContent =
-            "ENTRAR";
+            botao.textContent =
+                "ENTRAR";
+
+        }
 
     };
 
