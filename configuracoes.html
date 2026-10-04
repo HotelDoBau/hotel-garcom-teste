@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="pt-BR">
 
@@ -26,23 +27,14 @@
 #bloqueioAcesso {
 
     position: fixed;
-
     inset: 0;
-
     background: #f4f6f8;
-
     display: flex;
-
     flex-direction: column;
-
     align-items: center;
-
     justify-content: center;
-
     z-index: 99999;
-
     font-family: Arial;
-
     color: #17212b;
 
 }
@@ -56,7 +48,6 @@
 #bloqueioAcesso span {
 
     margin-top: 10px;
-
     color: #777;
 
 }
@@ -75,11 +66,8 @@ body.liberado #bloqueioAcesso {
 .menu-configuracoes {
 
     display: flex;
-
     flex-direction: column;
-
     gap: 15px;
-
     margin-top: 25px;
 
 }
@@ -87,26 +75,16 @@ body.liberado #bloqueioAcesso {
 .menu-config-item {
 
     width: 100%;
-
     display: flex;
-
     align-items: center;
-
     gap: 18px;
-
     padding: 18px;
-
     background: white;
-
     border: none;
-
     border-radius: 14px;
-
     box-shadow:
         0 3px 10px rgba(0,0,0,0.08);
-
     cursor: pointer;
-
     text-align: left;
 
 }
@@ -114,9 +92,7 @@ body.liberado #bloqueioAcesso {
 .menu-config-item span {
 
     font-size: 32px;
-
     width: 45px;
-
     text-align: center;
 
 }
@@ -124,11 +100,8 @@ body.liberado #bloqueioAcesso {
 .menu-config-item strong {
 
     display: block;
-
     font-size: 17px;
-
     color: #17212b;
-
     margin-bottom: 4px;
 
 }
@@ -136,7 +109,6 @@ body.liberado #bloqueioAcesso {
 .menu-config-item small {
 
     color: #777;
-
     font-size: 13px;
 
 }
@@ -155,7 +127,6 @@ body.liberado #bloqueioAcesso {
 #areaUsuarios {
 
     display: none;
-
     margin-top: 25px;
 
 }
@@ -168,25 +139,41 @@ body.liberado #bloqueioAcesso {
 
 
 /* =========================================
-   CABEÇALHO DA ÁREA
+   ÁREA DE IMPRESSORAS
 ========================================= */
 
-.cabecalhoUsuarios {
+#areaImpressoras {
+
+    display: none;
+    margin-top: 25px;
+
+}
+
+#areaImpressoras.visivel {
+
+    display: block;
+
+}
+
+
+/* =========================================
+   CABEÇALHO DAS ÁREAS
+========================================= */
+
+.cabecalhoUsuarios,
+.cabecalhoImpressoras {
 
     display: flex;
-
     align-items: center;
-
     justify-content: space-between;
-
     margin-bottom: 18px;
 
 }
 
-.cabecalhoUsuarios h3 {
+.cabecalhoUsuarios h3,
+.cabecalhoImpressoras h3 {
 
     margin: 0;
-
     color: #17212b;
 
 }
@@ -194,17 +181,11 @@ body.liberado #bloqueioAcesso {
 .btnVoltarConfiguracoes {
 
     border: none;
-
     background: #e9edf1;
-
     color: #17212b;
-
     padding: 9px 13px;
-
     border-radius: 9px;
-
     font-weight: bold;
-
     cursor: pointer;
 
 }
@@ -217,14 +198,10 @@ body.liberado #bloqueioAcesso {
 .cardUsuarios {
 
     background: white;
-
     border-radius: 14px;
-
     padding: 20px;
-
     box-shadow:
         0 3px 10px rgba(0,0,0,0.08);
-
     margin-bottom: 20px;
 
 }
@@ -232,9 +209,7 @@ body.liberado #bloqueioAcesso {
 .cardUsuarios h4 {
 
     margin-top: 0;
-
     margin-bottom: 18px;
-
     color: #17212b;
 
 }
@@ -248,13 +223,9 @@ body.liberado #bloqueioAcesso {
 .campoUsuario label {
 
     display: block;
-
     font-size: 13px;
-
     font-weight: bold;
-
     color: #555;
-
     margin-bottom: 6px;
 
 }
@@ -262,17 +233,11 @@ body.liberado #bloqueioAcesso {
 .campoUsuario input {
 
     width: 100%;
-
     box-sizing: border-box;
-
     padding: 12px;
-
     border: 1px solid #d5d9dd;
-
     border-radius: 9px;
-
     font-size: 16px;
-
     outline: none;
 
 }
@@ -286,11 +251,8 @@ body.liberado #bloqueioAcesso {
 .campoUsuario small {
 
     display: block;
-
     margin-top: 5px;
-
     color: #777;
-
     font-size: 12px;
 
 }
@@ -298,21 +260,13 @@ body.liberado #bloqueioAcesso {
 .btnCadastrarUsuario {
 
     width: 100%;
-
     border: none;
-
     background: #17212b;
-
     color: white;
-
     padding: 13px;
-
     border-radius: 9px;
-
     font-size: 15px;
-
     font-weight: bold;
-
     cursor: pointer;
 
 }
@@ -320,7 +274,6 @@ body.liberado #bloqueioAcesso {
 .btnCadastrarUsuario:disabled {
 
     opacity: 0.6;
-
     cursor: not-allowed;
 
 }
@@ -333,11 +286,8 @@ body.liberado #bloqueioAcesso {
 #mensagemUsuario {
 
     margin-top: 12px;
-
     font-size: 14px;
-
     text-align: center;
-
     min-height: 20px;
 
 }
@@ -362,9 +312,7 @@ body.liberado #bloqueioAcesso {
 .listaUsuarios {
 
     display: flex;
-
     flex-direction: column;
-
     gap: 12px;
 
 }
@@ -372,11 +320,8 @@ body.liberado #bloqueioAcesso {
 .usuarioCard {
 
     background: white;
-
     border-radius: 14px;
-
     padding: 16px;
-
     box-shadow:
         0 3px 10px rgba(0,0,0,0.08);
 
@@ -385,11 +330,8 @@ body.liberado #bloqueioAcesso {
 .usuarioCabecalho {
 
     display: flex;
-
     align-items: center;
-
     justify-content: space-between;
-
     gap: 10px;
 
 }
@@ -397,9 +339,7 @@ body.liberado #bloqueioAcesso {
 .usuarioNome {
 
     font-size: 16px;
-
     font-weight: bold;
-
     color: #17212b;
 
 }
@@ -407,9 +347,7 @@ body.liberado #bloqueioAcesso {
 .usuarioLogin {
 
     font-size: 13px;
-
     color: #777;
-
     margin-top: 4px;
 
 }
@@ -417,13 +355,9 @@ body.liberado #bloqueioAcesso {
 .statusUsuario {
 
     font-size: 11px;
-
     font-weight: bold;
-
     padding: 5px 8px;
-
     border-radius: 7px;
-
     white-space: nowrap;
 
 }
@@ -431,7 +365,6 @@ body.liberado #bloqueioAcesso {
 .statusAtivo {
 
     background: #e4f5e8;
-
     color: #287a3e;
 
 }
@@ -439,7 +372,6 @@ body.liberado #bloqueioAcesso {
 .statusInativo {
 
     background: #fbe5e5;
-
     color: #b52b2b;
 
 }
@@ -452,11 +384,8 @@ body.liberado #bloqueioAcesso {
 .usuarioAcoes {
 
     margin-top: 14px;
-
     display: grid;
-
     grid-template-columns: 1fr 1fr;
-
     gap: 8px;
 
 }
@@ -464,15 +393,10 @@ body.liberado #bloqueioAcesso {
 .btnUsuario {
 
     width: 100%;
-
     border: none;
-
     padding: 10px;
-
     border-radius: 8px;
-
     font-weight: bold;
-
     cursor: pointer;
 
 }
@@ -480,7 +404,6 @@ body.liberado #bloqueioAcesso {
 .btnEditar {
 
     background: #e8edf3;
-
     color: #17212b;
 
 }
@@ -488,7 +411,6 @@ body.liberado #bloqueioAcesso {
 .btnDesativar {
 
     background: #f4dddd;
-
     color: #a52121;
 
 }
@@ -496,7 +418,6 @@ body.liberado #bloqueioAcesso {
 .btnReativar {
 
     background: #e1f2e5;
-
     color: #26733a;
 
 }
@@ -504,9 +425,7 @@ body.liberado #bloqueioAcesso {
 .btnExcluir {
 
     background: #7f1d1d;
-
     color: white;
-
     grid-column: 1 / -1;
 
 }
@@ -514,14 +433,175 @@ body.liberado #bloqueioAcesso {
 .usuarioVazio {
 
     background: white;
-
     padding: 20px;
-
     border-radius: 14px;
-
     text-align: center;
-
     color: #777;
+
+}
+
+
+/* =========================================
+   CONFIGURAÇÕES DA IMPRESSORA
+========================================= */
+
+.cardImpressora {
+
+    background: white;
+    border-radius: 14px;
+    padding: 20px;
+    box-shadow:
+        0 3px 10px rgba(0,0,0,0.08);
+    margin-bottom: 15px;
+
+}
+
+.cardImpressora h4 {
+
+    margin: 0 0 6px 0;
+    color: #17212b;
+    font-size: 16px;
+
+}
+
+.cardImpressoraDescricao {
+
+    margin: 0 0 18px 0;
+    color: #777;
+    font-size: 13px;
+    line-height: 1.4;
+
+}
+
+.campoImpressora {
+
+    margin-bottom: 18px;
+
+}
+
+.campoImpressora label {
+
+    display: block;
+    font-size: 13px;
+    font-weight: bold;
+    color: #555;
+    margin-bottom: 7px;
+
+}
+
+.campoImpressora select {
+
+    width: 100%;
+    box-sizing: border-box;
+    padding: 12px;
+    border: 1px solid #d5d9dd;
+    border-radius: 9px;
+    background: white;
+    font-size: 15px;
+    color: #17212b;
+    outline: none;
+
+}
+
+.campoImpressora select:focus {
+
+    border-color: #17212b;
+
+}
+
+
+/* =========================================
+   OPÇÕES DE IMPRESSÃO
+========================================= */
+
+.opcoesImpressao {
+
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+}
+
+.opcaoImpressao {
+
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 11px 12px;
+    background: #f7f8f9;
+    border-radius: 9px;
+    cursor: pointer;
+
+}
+
+.opcaoImpressao input {
+
+    width: 18px;
+    height: 18px;
+    margin: 0;
+
+}
+
+.opcaoImpressao span {
+
+    color: #17212b;
+    font-size: 14px;
+
+}
+
+
+/* =========================================
+   BOTÕES IMPRESSORA
+========================================= */
+
+.botoesImpressora {
+
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 18px;
+
+}
+
+.btnImpressora {
+
+    width: 100%;
+    border: none;
+    padding: 13px;
+    border-radius: 9px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+
+}
+
+.btnTestarImpressora {
+
+    background: #e8edf3;
+    color: #17212b;
+
+}
+
+.btnSalvarImpressora {
+
+    background: #17212b;
+    color: white;
+
+}
+
+.btnImpressora:disabled {
+
+    opacity: 0.6;
+    cursor: not-allowed;
+
+}
+
+#mensagemImpressora {
+
+    min-height: 20px;
+    margin-top: 12px;
+    text-align: center;
+    font-size: 13px;
 
 }
 
@@ -533,21 +613,13 @@ body.liberado #bloqueioAcesso {
 #fundoModalUsuario {
 
     position: fixed;
-
     inset: 0;
-
     background: rgba(0,0,0,0.55);
-
     display: none;
-
     align-items: center;
-
     justify-content: center;
-
     padding: 20px;
-
     box-sizing: border-box;
-
     z-index: 100000;
 
 }
@@ -561,17 +633,11 @@ body.liberado #bloqueioAcesso {
 .modalUsuario {
 
     width: 100%;
-
     max-width: 420px;
-
     background: white;
-
     border-radius: 16px;
-
     padding: 22px;
-
     box-sizing: border-box;
-
     box-shadow:
         0 10px 35px rgba(0,0,0,0.25);
 
@@ -580,9 +646,7 @@ body.liberado #bloqueioAcesso {
 .modalUsuario h3 {
 
     margin-top: 0;
-
     margin-bottom: 6px;
-
     color: #17212b;
 
 }
@@ -590,11 +654,8 @@ body.liberado #bloqueioAcesso {
 .modalUsuario p {
 
     margin-top: 0;
-
     margin-bottom: 18px;
-
     color: #777;
-
     font-size: 13px;
 
 }
@@ -602,11 +663,8 @@ body.liberado #bloqueioAcesso {
 .modalBotoes {
 
     display: grid;
-
     grid-template-columns: 1fr 1fr;
-
     gap: 10px;
-
     margin-top: 16px;
 
 }
@@ -614,13 +672,9 @@ body.liberado #bloqueioAcesso {
 .btnModal {
 
     border: none;
-
     padding: 12px;
-
     border-radius: 9px;
-
     font-weight: bold;
-
     cursor: pointer;
 
 }
@@ -628,7 +682,6 @@ body.liberado #bloqueioAcesso {
 .btnCancelar {
 
     background: #e9edf1;
-
     color: #17212b;
 
 }
@@ -636,7 +689,6 @@ body.liberado #bloqueioAcesso {
 .btnSalvar {
 
     background: #17212b;
-
     color: white;
 
 }
@@ -650,11 +702,8 @@ body.liberado #bloqueioAcesso {
 #mensagemModalUsuario {
 
     min-height: 20px;
-
     margin-top: 10px;
-
     text-align: center;
-
     font-size: 13px;
 
 }
@@ -668,7 +717,6 @@ body.liberado #bloqueioAcesso {
 .btnExcluirConfirmar {
 
     background: #7f1d1d;
-
     color: white;
 
 }
@@ -766,7 +814,7 @@ body.liberado #bloqueioAcesso {
 
     <button
         class="menu-config-item"
-        onclick="mostrarEmBreve('Impressoras')"
+        onclick="abrirImpressoras()"
     >
 
         <span>
@@ -943,6 +991,231 @@ body.liberado #bloqueioAcesso {
             </div>
 
         </div>
+
+    </div>
+
+
+</section>
+
+
+<!-- =========================================
+     ÁREA DE IMPRESSORAS
+========================================= -->
+
+<section
+    id="areaImpressoras"
+>
+
+
+    <div class="cabecalhoImpressoras">
+
+        <h3>
+            Impressoras
+        </h3>
+
+
+        <button
+            class="btnVoltarConfiguracoes"
+            onclick="fecharImpressoras()"
+        >
+            Voltar
+        </button>
+
+    </div>
+
+
+    <!-- PAPEL E VIAS -->
+
+    <div class="cardImpressora">
+
+        <h4>
+            Impressão
+        </h4>
+
+        <p class="cardImpressoraDescricao">
+            Defina o formato utilizado pela impressora térmica.
+        </p>
+
+
+        <div class="campoImpressora">
+
+            <label for="larguraPapel">
+                Largura do papel
+            </label>
+
+            <select
+                id="larguraPapel"
+            >
+
+                <option value="80">
+                    80 mm
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <div class="campoImpressora">
+
+            <label for="numeroVias">
+                Número de vias
+            </label>
+
+            <select
+                id="numeroVias"
+            >
+
+                <option value="1">
+                    1 via
+                </option>
+
+                <option value="2">
+                    2 vias
+                </option>
+
+            </select>
+
+        </div>
+
+    </div>
+
+
+    <!-- INFORMAÇÕES -->
+
+    <div class="cardImpressora">
+
+        <h4>
+            Informações na impressão
+        </h4>
+
+        <p class="cardImpressoraDescricao">
+            Escolha quais informações devem aparecer nos comprovantes.
+        </p>
+
+
+        <div class="opcoesImpressao">
+
+
+            <label class="opcaoImpressao">
+
+                <input
+                    type="checkbox"
+                    id="mostrarGarcom"
+                >
+
+                <span>
+                    Mostrar garçom
+                </span>
+
+            </label>
+
+
+            <label class="opcaoImpressao">
+
+                <input
+                    type="checkbox"
+                    id="mostrarMesa"
+                >
+
+                <span>
+                    Mostrar mesa / quarto
+                </span>
+
+            </label>
+
+
+            <label class="opcaoImpressao">
+
+                <input
+                    type="checkbox"
+                    id="mostrarComanda"
+                >
+
+                <span>
+                    Mostrar comanda
+                </span>
+
+            </label>
+
+
+            <label class="opcaoImpressao">
+
+                <input
+                    type="checkbox"
+                    id="mostrarHorario"
+                >
+
+                <span>
+                    Mostrar horário
+                </span>
+
+            </label>
+
+
+            <label class="opcaoImpressao">
+
+                <input
+                    type="checkbox"
+                    id="mostrarPrecos"
+                >
+
+                <span>
+                    Mostrar preços
+                </span>
+
+            </label>
+
+
+        </div>
+
+    </div>
+
+
+    <!-- AÇÕES -->
+
+    <div class="cardImpressora">
+
+        <h4>
+            Teste e salvamento
+        </h4>
+
+        <p class="cardImpressoraDescricao">
+            Primeiro teste a impressão. Depois salve as configurações para que sejam utilizadas pelo sistema.
+        </p>
+
+
+        <div class="botoesImpressora">
+
+            <button
+                id="btnTestarImpressora"
+                class="
+                    btnImpressora
+                    btnTestarImpressora
+                "
+                onclick="testarImpressora()"
+            >
+                TESTAR IMPRESSORA
+            </button>
+
+
+            <button
+                id="btnSalvarImpressora"
+                class="
+                    btnImpressora
+                    btnSalvarImpressora
+                "
+                onclick="salvarConfiguracaoImpressora()"
+            >
+                SALVAR CONFIGURAÇÕES
+            </button>
+
+        </div>
+
+
+        <div
+            id="mensagemImpressora"
+        ></div>
 
     </div>
 
@@ -1484,6 +1757,13 @@ async function(){
 
 
     document.getElementById(
+        "areaImpressoras"
+    ).classList.remove(
+        "visivel"
+    );
+
+
+    document.getElementById(
         "areaUsuarios"
     ).classList.add(
         "visivel"
@@ -1512,6 +1792,739 @@ function(){
     document.getElementById(
         "menuPrincipal"
     ).style.display = "flex";
+
+};
+
+
+/* =========================================
+   ABRIR IMPRESSORAS
+========================================= */
+
+window.abrirImpressoras =
+async function(){
+
+    if(
+        !administradorAutorizado
+    ){
+
+        return;
+
+    }
+
+
+    document.getElementById(
+        "menuPrincipal"
+    ).style.display = "none";
+
+
+    document.getElementById(
+        "areaUsuarios"
+    ).classList.remove(
+        "visivel"
+    );
+
+
+    document.getElementById(
+        "areaImpressoras"
+    ).classList.add(
+        "visivel"
+    );
+
+
+    await carregarConfiguracaoImpressora();
+
+};
+
+
+/* =========================================
+   FECHAR IMPRESSORAS
+========================================= */
+
+window.fecharImpressoras =
+function(){
+
+    document.getElementById(
+        "areaImpressoras"
+    ).classList.remove(
+        "visivel"
+    );
+
+
+    document.getElementById(
+        "menuPrincipal"
+    ).style.display = "flex";
+
+};
+
+
+/* =========================================
+   CARREGAR CONFIGURAÇÃO DA IMPRESSORA
+========================================= */
+
+async function carregarConfiguracaoImpressora(){
+
+    const mensagem =
+        document.getElementById(
+            "mensagemImpressora"
+        );
+
+
+    mensagem.className = "";
+
+    mensagem.textContent =
+        "Carregando configurações...";
+
+
+    const padrao = {
+
+        larguraPapel: 80,
+
+        numeroVias: 1,
+
+        mostrarGarcom: true,
+
+        mostrarMesa: true,
+
+        mostrarComanda: true,
+
+        mostrarHorario: true,
+
+        mostrarPrecos: true
+
+    };
+
+
+    try {
+
+        const referencia =
+            doc(
+                db,
+                "configuracoes",
+                "impressora"
+            );
+
+
+        const resultado =
+            await getDoc(
+                referencia
+            );
+
+
+        const configuracao =
+            resultado.exists()
+
+                ? {
+
+                    ...padrao,
+                    ...resultado.data()
+
+                }
+
+                : padrao;
+
+
+        document.getElementById(
+            "larguraPapel"
+        ).value =
+            String(
+                configuracao.larguraPapel
+            );
+
+
+        document.getElementById(
+            "numeroVias"
+        ).value =
+            String(
+                configuracao.numeroVias
+            );
+
+
+        document.getElementById(
+            "mostrarGarcom"
+        ).checked =
+            configuracao.mostrarGarcom === true;
+
+
+        document.getElementById(
+            "mostrarMesa"
+        ).checked =
+            configuracao.mostrarMesa === true;
+
+
+        document.getElementById(
+            "mostrarComanda"
+        ).checked =
+            configuracao.mostrarComanda === true;
+
+
+        document.getElementById(
+            "mostrarHorario"
+        ).checked =
+            configuracao.mostrarHorario === true;
+
+
+        document.getElementById(
+            "mostrarPrecos"
+        ).checked =
+            configuracao.mostrarPrecos === true;
+
+
+        mensagem.textContent = "";
+
+    }
+
+    catch(erro){
+
+        console.error(
+            "Erro ao carregar configurações da impressora:",
+            erro
+        );
+
+
+        /*
+         * Se ainda não existir configuração,
+         * usamos os valores padrão.
+         */
+
+        document.getElementById(
+            "larguraPapel"
+        ).value =
+            "80";
+
+
+        document.getElementById(
+            "numeroVias"
+        ).value =
+            "1";
+
+
+        document.getElementById(
+            "mostrarGarcom"
+        ).checked =
+            true;
+
+
+        document.getElementById(
+            "mostrarMesa"
+        ).checked =
+            true;
+
+
+        document.getElementById(
+            "mostrarComanda"
+        ).checked =
+            true;
+
+
+        document.getElementById(
+            "mostrarHorario"
+        ).checked =
+            true;
+
+
+        document.getElementById(
+            "mostrarPrecos"
+        ).checked =
+            true;
+
+
+        mensagem.className =
+            "mensagemErro";
+
+
+        mensagem.textContent =
+            "Não foi possível carregar as configurações. Os valores padrão foram carregados.";
+
+    }
+
+}
+
+
+/* =========================================
+   SALVAR CONFIGURAÇÃO DA IMPRESSORA
+========================================= */
+
+window.salvarConfiguracaoImpressora =
+async function(){
+
+    if(
+        !administradorAutorizado
+    ){
+
+        return;
+
+    }
+
+
+    const botao =
+        document.getElementById(
+            "btnSalvarImpressora"
+        );
+
+
+    const mensagem =
+        document.getElementById(
+            "mensagemImpressora"
+        );
+
+
+    const configuracao = {
+
+        larguraPapel:
+            Number(
+                document.getElementById(
+                    "larguraPapel"
+                ).value
+            ),
+
+        numeroVias:
+            Number(
+                document.getElementById(
+                    "numeroVias"
+                ).value
+            ),
+
+        mostrarGarcom:
+            document.getElementById(
+                "mostrarGarcom"
+            ).checked,
+
+        mostrarMesa:
+            document.getElementById(
+                "mostrarMesa"
+            ).checked,
+
+        mostrarComanda:
+            document.getElementById(
+                "mostrarComanda"
+            ).checked,
+
+        mostrarHorario:
+            document.getElementById(
+                "mostrarHorario"
+            ).checked,
+
+        mostrarPrecos:
+            document.getElementById(
+                "mostrarPrecos"
+            ).checked
+
+    };
+
+
+    botao.disabled =
+        true;
+
+
+    botao.textContent =
+        "SALVANDO...";
+
+
+    mensagem.className = "";
+
+    mensagem.textContent = "";
+
+
+    try {
+
+        await setDoc(
+
+            doc(
+                db,
+                "configuracoes",
+                "impressora"
+            ),
+
+            {
+
+                ...configuracao,
+
+                atualizadoEm:
+                    new Date()
+
+            },
+
+            {
+                merge: true
+            }
+
+        );
+
+
+        mensagem.className =
+            "mensagemSucesso";
+
+
+        mensagem.textContent =
+            "Configurações salvas com sucesso.";
+
+    }
+
+    catch(erro){
+
+        console.error(
+            "Erro ao salvar configuração da impressora:",
+            erro
+        );
+
+
+        mensagem.className =
+            "mensagemErro";
+
+
+        mensagem.textContent =
+            "Não foi possível salvar as configurações.";
+
+    }
+
+    finally {
+
+        botao.disabled =
+            false;
+
+
+        botao.textContent =
+            "SALVAR CONFIGURAÇÕES";
+
+    }
+
+};
+
+
+/* =========================================
+   TESTAR IMPRESSORA
+========================================= */
+
+window.testarImpressora =
+async function(){
+
+    if(
+        !administradorAutorizado
+    ){
+
+        return;
+
+    }
+
+
+    const botao =
+        document.getElementById(
+            "btnTestarImpressora"
+        );
+
+
+    const mensagem =
+        document.getElementById(
+            "mensagemImpressora"
+        );
+
+
+    const largura =
+        Number(
+            document.getElementById(
+                "larguraPapel"
+            ).value
+        ) || 80;
+
+
+    const numeroVias =
+        Math.max(
+            1,
+            Math.min(
+                2,
+                Number(
+                    document.getElementById(
+                        "numeroVias"
+                    ).value
+                ) || 1
+            )
+        );
+
+
+    botao.disabled =
+        true;
+
+
+    botao.textContent =
+        "PREPARANDO TESTE...";
+
+
+    mensagem.className = "";
+
+    mensagem.textContent =
+        "";
+
+
+    try {
+
+        const iframe =
+            document.createElement(
+                "iframe"
+            );
+
+
+        iframe.style.position =
+            "fixed";
+
+        iframe.style.width =
+            "1px";
+
+        iframe.style.height =
+            "1px";
+
+        iframe.style.border =
+            "0";
+
+        iframe.style.opacity =
+            "0";
+
+        iframe.style.pointerEvents =
+            "none";
+
+
+        document.body.appendChild(
+            iframe
+        );
+
+
+        const documento =
+            iframe.contentWindow.document;
+
+
+        const larguraConteudo =
+            largura - 8;
+
+
+        let vias = "";
+
+
+        for(
+            let i = 1;
+            i <= numeroVias;
+            i++
+        ){
+
+            vias += `
+
+                <div
+                    style="
+                        width:${larguraConteudo}mm;
+                        font-family:Arial,sans-serif;
+                        font-size:12px;
+                        color:#000;
+                    "
+                >
+
+                    <div
+                        style="
+                            text-align:center;
+                            font-size:18px;
+                            font-weight:bold;
+                        "
+                    >
+                        HOTEL DO BAÚ
+                    </div>
+
+
+                    <div
+                        style="
+                            text-align:center;
+                            margin-top:5px;
+                            font-size:15px;
+                            font-weight:bold;
+                        "
+                    >
+                        TESTE DE IMPRESSÃO
+                    </div>
+
+
+                    <hr>
+
+
+                    <div
+                        style="
+                            margin-top:8px;
+                            margin-bottom:8px;
+                        "
+                    >
+
+                        Impressora:
+                        TESTE
+
+                        <br>
+
+                        Papel:
+                        ${largura} mm
+
+                        <br>
+
+                        Via:
+                        ${i} de ${numeroVias}
+
+                    </div>
+
+
+                    <hr>
+
+
+                    <div
+                        style="
+                            text-align:center;
+                            margin-top:10px;
+                        "
+                    >
+
+                        IMPRESSÃO FUNCIONANDO
+
+                        <br><br>
+
+                        Hotel do Baú
+
+                    </div>
+
+                </div>
+
+            `;
+
+
+            if(
+                i < numeroVias
+            ){
+
+                vias += `
+
+                    <div
+                        style="
+                            page-break-after:always;
+                            break-after:page;
+                            height:1px;
+                        "
+                    ></div>
+
+                `;
+
+            }
+
+        }
+
+
+        documento.open();
+
+
+        documento.write(`
+
+            <!DOCTYPE html>
+
+            <html>
+
+            <head>
+
+                <meta charset="UTF-8">
+
+                <style>
+
+                    @page {
+
+                        size:
+                            ${largura}mm auto;
+
+                        margin:
+                            3mm;
+
+                    }
+
+
+                    html,
+                    body {
+
+                        margin:0;
+                        padding:0;
+                        width:${larguraConteudo}mm;
+                        font-family:Arial,sans-serif;
+                        color:#000;
+
+                    }
+
+                </style>
+
+            </head>
+
+            <body>
+
+                ${vias}
+
+            </body>
+
+            </html>
+
+        `);
+
+
+        documento.close();
+
+
+        await new Promise(
+            resolve =>
+                setTimeout(
+                    resolve,
+                    700
+                )
+        );
+
+
+        iframe.contentWindow.focus();
+
+        iframe.contentWindow.print();
+
+
+        await new Promise(
+            resolve =>
+                setTimeout(
+                    resolve,
+                    1200
+                )
+        );
+
+
+        iframe.remove();
+
+
+        mensagem.className =
+            "mensagemSucesso";
+
+
+        mensagem.textContent =
+            "Teste de impressão enviado.";
+
+    }
+
+    catch(erro){
+
+        console.error(
+            "Erro ao testar impressora:",
+            erro
+        );
+
+
+        mensagem.className =
+            "mensagemErro";
+
+
+        mensagem.textContent =
+            "Não foi possível realizar o teste.";
+
+    }
+
+    finally {
+
+        botao.disabled =
+            false;
+
+
+        botao.textContent =
+            "TESTAR IMPRESSORA";
+
+    }
 
 };
 
@@ -2444,10 +3457,6 @@ async function(){
 
     try {
 
-        /*
-         * Primeiro atualiza o nome no Firestore.
-         */
-
         await updateDoc(
 
             doc(
@@ -2464,11 +3473,6 @@ async function(){
 
         );
 
-
-        /*
-         * Se não foi solicitada troca de senha,
-         * termina aqui.
-         */
 
         if(
             !novaSenha
@@ -2496,12 +3500,6 @@ async function(){
 
         }
 
-
-        /*
-         * Para trocar a senha precisamos
-         * autenticar o próprio garçom
-         * no Firebase Authentication.
-         */
 
         authSecundario =
             await obterAuthSecundario();
@@ -2879,12 +3877,6 @@ async function(){
 
     try {
 
-        /*
-         * Autentica o próprio garçom
-         * para poder excluir a conta
-         * do Firebase Authentication.
-         */
-
         authSecundario =
             await obterAuthSecundario();
 
@@ -2922,11 +3914,6 @@ async function(){
         }
 
 
-        /*
-         * Exclui primeiro o documento
-         * do Firestore.
-         */
-
         await deleteDoc(
 
             doc(
@@ -2937,11 +3924,6 @@ async function(){
 
         );
 
-
-        /*
-         * Depois exclui a conta
-         * do Firebase Authentication.
-         */
 
         await deleteUser(
             usuarioFirebase
@@ -3189,3 +4171,4 @@ iniciar();
 </body>
 
 </html>
+```
