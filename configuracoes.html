@@ -106,7 +106,226 @@
 
 </head>
 
+<script
+    type="module"
+    src="js/firebase.js"
+></script>
+    
+<script type="module">
 
+import {
+    getAuth,
+    onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
+
+
+import {
+    doc,
+    getDoc
+} from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+
+
+
+/* =========================================
+   AGUARDAR FIREBASE
+========================================= */
+
+async function aguardarFirebase(){
+
+    let tentativas = 0;
+
+
+    while(
+
+        (
+            !window.firebaseHotel ||
+            !window.firebaseHotel.db
+        )
+
+        &&
+
+        tentativas < 100
+
+    ){
+
+        await new Promise(
+            resolve =>
+            setTimeout(resolve,100)
+        );
+
+
+        tentativas++;
+
+    }
+
+
+    if(
+        !window.firebaseHotel ||
+        !window.firebaseHotel.db
+    ){
+
+        throw new Error(
+            "Firebase não carregou"
+        );
+
+    }
+
+}
+
+
+
+/* =========================================
+   VERIFICAR ADMINISTRADOR
+========================================= */
+
+async function verificarAdministrador(
+    usuario
+){
+
+    const db =
+        window.firebaseHotel.db;
+
+
+    const referencia =
+        doc(
+            db,
+            "administradores",
+            usuario.uid
+        );
+
+
+    const resultado =
+        await getDoc(
+            referencia
+        );
+
+
+    if(
+        !resultado.exists()
+    ){
+
+        return false;
+
+    }
+
+
+    const dados =
+        resultado.data();
+
+
+    if(
+        dados.ativo !== true
+    ){
+
+        return false;
+
+    }
+
+
+    return true;
+
+}
+
+
+
+/* =========================================
+   INICIAR PROTEÇÃO
+========================================= */
+
+
+async function iniciar(){
+
+    try {
+
+
+        await aguardarFirebase();
+
+
+        const auth =
+            getAuth();
+
+
+        onAuthStateChanged(
+
+            auth,
+
+            async usuario => {
+
+
+                if(
+                    !usuario
+                ){
+
+                    window.location.replace(
+                        "login.html"
+                    );
+
+                    return;
+
+                }
+
+
+
+                const permitido =
+                    await verificarAdministrador(
+                        usuario
+                    );
+
+
+
+                if(
+                    !permitido
+                ){
+
+                    alert(
+                        "Acesso restrito ao administrador."
+                    );
+
+
+                    window.location.replace(
+                        "index.html"
+                    );
+
+
+                    return;
+
+                }
+
+
+                console.log(
+                    "Administrador autorizado"
+                );
+
+
+            }
+
+        );
+
+
+    }
+
+    catch(erro){
+
+        console.error(
+            erro
+        );
+
+
+        window.location.replace(
+            "login.html"
+        );
+
+    }
+
+}
+
+
+
+iniciar();
+
+
+</script>
+    
 <body>
 
 
