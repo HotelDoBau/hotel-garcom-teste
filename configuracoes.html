@@ -1165,6 +1165,50 @@ body.liberado #bloqueioAcesso {
 
             </label>
 
+            <div class="campoImpressora">
+
+    <label for="tamanhoFonteProducao">
+        Tamanho da letra da produção
+    </label>
+
+    <select
+        id="tamanhoFonteProducao"
+    >
+
+        <option value="pequena">
+            Pequena
+        </option>
+
+        <option value="normal">
+            Normal
+        </option>
+
+        <option value="grande" selected>
+            Grande
+        </option>
+
+        <option value="extragrande">
+            Extra grande
+        </option>
+
+    </select>
+
+</div>
+
+
+<label class="opcaoImpressao">
+
+    <input
+        type="checkbox"
+        id="negritoProducao"
+        checked
+    >
+
+    <span>
+        Usar letras em negrito na produção
+    </span>
+
+</label>
 
         </div>
 
@@ -1876,21 +1920,25 @@ async function carregarConfiguracaoImpressora(){
 
     const padrao = {
 
-        larguraPapel: 80,
+    larguraPapel: 80,
 
-        numeroVias: 1,
+    numeroVias: 1,
 
-        mostrarGarcom: true,
+    mostrarGarcom: true,
 
-        mostrarMesa: true,
+    mostrarMesa: true,
 
-        mostrarComanda: true,
+    mostrarComanda: true,
 
-        mostrarHorario: true,
+    mostrarHorario: true,
 
-        mostrarPrecos: true
+    mostrarPrecos: true,
 
-    };
+    tamanhoFonteProducao: "grande",
+
+    negritoProducao: true
+
+};
 
 
     try {
@@ -1962,11 +2010,26 @@ async function carregarConfiguracaoImpressora(){
             configuracao.mostrarHorario === true;
 
 
-        document.getElementById(
-            "mostrarPrecos"
-        ).checked =
-            configuracao.mostrarPrecos === true;
+       document.getElementById(
+    "mostrarPrecos"
+).checked =
+    true;
 
+
+document.getElementById(
+    "tamanhoFonteProducao"
+).value =
+    "grande";
+
+
+document.getElementById(
+    "negritoProducao"
+).checked =
+    true;
+
+
+mensagem.className =
+    "mensagemErro";
 
         mensagem.textContent = "";
 
@@ -2106,6 +2169,18 @@ async function(){
         mostrarPrecos:
             document.getElementById(
                 "mostrarPrecos"
+            ).checked
+
+                ,
+
+        tamanhoFonteProducao:
+            document.getElementById(
+                "tamanhoFonteProducao"
+            ).value,
+
+        negritoProducao:
+            document.getElementById(
+                "negritoProducao"
             ).checked
 
     };
