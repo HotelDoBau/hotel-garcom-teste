@@ -1,4 +1,8 @@
 import {
+    getAuth
+} from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
+
+import {
 db,
 collection,
 addDoc,
@@ -54,6 +58,13 @@ const prefixoLocal =
 ehQuarto
 ? "quarto_"
 : "mesa_";
+
+const auth = getAuth();
+
+console.log(
+    "USUÁRIO AUTENTICADO:",
+    auth.currentUser
+);
 
 // ===========================
 // VERIFICA MESA
