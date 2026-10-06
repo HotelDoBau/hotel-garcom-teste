@@ -593,23 +593,24 @@
             aplicarFiltros();
 
 
-        } catch (erro) {
+      } catch (erro) {
 
-            console.error(
-                "Erro ao carregar auditoria:",
-                erro
-            );
+    console.error(
+        "Erro ao carregar auditoria:",
+        erro
+    );
 
+    listaAuditoria.innerHTML = `
+        <div class="vazio">
+            <strong>Erro ao carregar a auditoria.</strong>
+            <br><br>
+            ${erro.message || erro}
+        </div>
+    `;
 
-            listaAuditoria.innerHTML = `
-                <div class="vazio">
-                    Ainda não existem registros de auditoria.
-                </div>
-            `;
+    atualizarResumo([]);
 
-            atualizarResumo([]);
-
-        }
+}
 
     }
 
