@@ -1622,11 +1622,9 @@ if (
 
         );
 
-
         console.log(
             "Auditoria registrada: abertura do local."
         );
-
 
     } catch (erroAuditoria) {
 
@@ -1634,11 +1632,6 @@ if (
             "Erro ao registrar auditoria:",
             erroAuditoria
         );
-
-        /*
-            A auditoria não pode impedir
-            o funcionamento normal do pedido.
-        */
 
     }
 
@@ -1766,11 +1759,9 @@ if (
 
         );
 
-
         console.log(
             "Auditoria registrada: itens acrescentados."
         );
-
 
     } catch (erroAuditoria) {
 
@@ -1779,18 +1770,32 @@ if (
             erroAuditoria
         );
 
-        /*
-            A auditoria não pode impedir
-            o funcionamento normal do pedido.
-        */
-
     }
 
 }
 
+
+// ===========================
+// FECHA O TRY PRINCIPAL
+// ===========================
+
+} catch (erroEnvio) {
+
+    console.error(
+        "Erro ao enviar pedido:",
+        erroEnvio
+    );
+
+    alert(
+        "Não foi possível enviar o pedido. Verifique a conexão e tente novamente."
+    );
+
+}
 // ===========================
 // PESQUISA
 // ===========================
+
+
 
 buscar.addEventListener(
 "input",
