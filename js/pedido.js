@@ -1500,6 +1500,10 @@ try {
     // ===========================
 
     console.log(
+    "CHEGOU ANTES DA AUDITORIA"
+);
+    
+    console.log(
     "VERIFICAÇÃO AUDITORIA:",
     quantidadePedidosAntes
 );
