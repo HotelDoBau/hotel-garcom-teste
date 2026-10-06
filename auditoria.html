@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>Auditoria de pedidos - Hotel do Baú</title>
+
+<style>
+
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        background: #f4f6f8;
+        font-family: Arial, sans-serif;
+        color: #17212b;
+    }
+
+    header {
+        background: #17212b;
+        color: white;
+        padding: 18px;
+        text-align: center;
+    }
+
+    header h1 {
+        margin: 0;
+        font-size: 22px;
+    }
+
+    header p {
+        margin: 6px 0 0;
+        font-size: 14px;
+        opacity: 0.8;
+    }
+
+    .container {
+        width: 100%;
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    .topo-pagina {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+    }
+
+    .topo-pagina h2 {
+        margin: 0;
+        font-size: 20px;
+    }
+
+    .botao-voltar {
+        border: none;
+        background: #17212b;
+        color: white;
+        padding: 10px 16px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 14px;
+    }
+
+    .filtros {
+        background: white;
+        border-radius: 12px;
+        padding: 16px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    .filtros-titulo {
+        font-weight: bold;
+        margin-bottom: 14px;
+    }
+
+    .filtros-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+    }
+
+    .campo {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .campo label {
+        font-size: 13px;
+        font-weight: bold;
+    }
+
+    .campo input,
+    .campo select {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccd3d9;
+        border-radius: 7px;
+        background: white;
+        font-size: 14px;
+    }
+
+    .botoes-filtro {
+        display: flex;
+        gap: 10px;
+        margin-top: 14px;
+    }
+
+    .botao {
+        border: none;
+        padding: 10px 16px;
+        border-radius: 7px;
+        cursor: pointer;
+        font-size: 14px;
+    }
+
+    .botao-filtrar {
+        background: #17212b;
+        color: white;
+    }
+
+    .botao-limpar {
+        background: #e4e8eb;
+        color: #17212b;
+    }
+
+    .resumo {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+        margin-bottom: 20px;
+    }
+
+    .resumo-card {
+        background: white;
+        border-radius: 12px;
+        padding: 16px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    .resumo-card span {
+        display: block;
+        font-size: 13px;
+        color: #68737d;
+        margin-bottom: 6px;
+    }
+
+    .resumo-card strong {
+        font-size: 22px;
+    }
+
+    .auditoria-lista {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .movimento {
+        background: white;
+        border-radius: 12px;
+        padding: 16px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    .movimento-topo {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-bottom: 10px;
+    }
+
+    .movimento-acao {
+        font-weight: bold;
+        font-size: 16px;
+    }
+
+    .movimento-data {
+        font-size: 13px;
+        color: #68737d;
+    }
+
+    .movimento-info {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 7px 20px;
+        font-size: 14px;
+    }
+
+    .movimento-info div {
+        padding: 4px 0;
+    }
+
+    .movimento-info strong {
+        color: #17212b;
+    }
+
+    .vazio {
+        background: white;
+        border-radius: 12px;
+        padding: 35px 20px;
+        text-align: center;
+        color: #68737d;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    .carregando {
+        background: white;
+        border-radius: 12px;
+        padding: 30px;
+        text-align: center;
+    }
+
+    @media (max-width: 700px) {
+
+        .container {
+            padding: 12px;
+        }
+
+        .filtros-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .resumo {
+            grid-template-columns: 1fr;
+        }
+
+        .movimento-info {
+            grid-template-columns: 1fr;
+        }
+
+    }
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+<h1>Auditoria de pedidos</h1>
+
+<p>Controle dos movimentos realizados no sistema</p>
+
+
+</header>
+
+<main class="container">
+
+
+<div class="topo-pagina">
+
+    <h2>Movimentos dos garçons</h2>
+
+    <button
+        class="botao-voltar"
+        type="button"
+        onclick="window.location.href='index.html'"
+    >
+        Voltar
+    </button>
+
+</div>
+
+
+<section class="filtros">
+
+    <div class="filtros-titulo">
+        Filtros
+    </div>
+
+
+    <div class="filtros-grid">
+
+        <div class="campo">
+
+            <label for="dataInicial">
+                Data inicial
+            </label>
+
+            <input
+                type="date"
+                id="dataInicial"
+            >
+
+        </div>
+
+
+        <div class="campo">
+
+            <label for="dataFinal">
+                Data final
+            </label>
+
+            <input
+                type="date"
+                id="dataFinal"
+            >
+
+        </div>
+
+
+        <div class="campo">
+
+            <label for="garcomFiltro">
+                Garçom
+            </label>
+
+            <select id="garcomFiltro">
+
+                <option value="">
+                    Todos os garçons
+                </option>
+
+            </select>
+
+        </div>
+
+    </div>
+
+
+    <div class="botoes-filtro">
+
+        <button
+            class="botao botao-filtrar"
+            type="button"
+            id="botaoFiltrar"
+        >
+            Filtrar
+        </button>
+
+        <button
+            class="botao botao-limpar"
+            type="button"
+            id="botaoLimpar"
+        >
+            Limpar
+        </button>
+
+    </div>
+
+</section>
+
+
+<section class="resumo">
+
+    <div class="resumo-card">
+
+        <span>
+            Movimentos encontrados
+        </span>
+
+        <strong id="totalMovimentos">
+            0
+        </strong>
+
+    </div>
+
+
+    <div class="resumo-card">
+
+        <span>
+            Garçons envolvidos
+        </span>
+
+        <strong id="totalGarcons">
+            0
+        </strong>
+
+    </div>
+
+
+    <div class="resumo-card">
+
+        <span>
+            Último movimento
+        </span>
+
+        <strong id="ultimoMovimento">
+            —
+        </strong>
+
+    </div>
+
+</section>
+
+
+<section id="listaAuditoria" class="auditoria-lista">
+
+    <div class="carregando">
+        Carregando auditoria...
+    </div>
+
+</section>
+
+
+</main>
+
+<script type="module">
+
+    import { auth, db } from "./firebase.js";
+
+    import {
+        onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
+
+    import {
+        collection,
+        getDocs,
+        query,
+        orderBy
+    } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-firestore.js";
+
+
+    const listaAuditoria =
+        document.getElementById("listaAuditoria");
+
+    const totalMovimentos =
+        document.getElementById("totalMovimentos");
+
+    const totalGarcons =
+        document.getElementById("totalGarcons");
+
+    const ultimoMovimento =
+        document.getElementById("ultimoMovimento");
+
+    const garcomFiltro =
+        document.getElementById("garcomFiltro");
+
+
+    let movimentos = [];
+
+
+    onAuthStateChanged(auth, async (usuario) => {
+
+        if (!usuario) {
+
+            window.location.href = "login.html";
+
+            return;
+
+        }
+
+
+        try {
+
+            const administradores =
+                await getDocs(
+                    collection(db, "administradores")
+                );
+
+
+            let administradorEncontrado = false;
+
+
+            administradores.forEach((docSnap) => {
+
+                const dados = docSnap.data();
+
+                if (
+                    docSnap.id === usuario.uid &&
+                    dados.ativo === true
+                ) {
+
+                    administradorEncontrado = true;
+
+                }
+
+            });
+
+
+            if (!administradorEncontrado) {
+
+                alert(
+                    "Acesso restrito aos administradores."
+                );
+
+                window.location.href = "index.html";
+
+                return;
+
+            }
+
+
+            await carregarGarcons();
+
+            await carregarAuditoria();
+
+
+        } catch (erro) {
+
+            console.error(
+                "Erro ao verificar acesso:",
+                erro
+            );
+
+            listaAuditoria.innerHTML = `
+                <div class="vazio">
+                    Não foi possível carregar a auditoria.
+                </div>
+            `;
+
+        }
+
+    });
+
+
+    async function carregarGarcons() {
+
+        const snapshot =
+            await getDocs(
+                collection(db, "garcons")
+            );
+
+
+        snapshot.forEach((docSnap) => {
+
+            const dados = docSnap.data();
+
+            if (dados.ativo === false) {
+                return;
+            }
+
+
+            const option =
+                document.createElement("option");
+
+            option.value = docSnap.id;
+
+            option.textContent =
+                dados.nome || "Garçom";
+
+
+            garcomFiltro.appendChild(option);
+
+        });
+
+    }
+
+
+    async function carregarAuditoria() {
+
+        listaAuditoria.innerHTML = `
+            <div class="carregando">
+                Carregando auditoria...
+            </div>
+        `;
+
+
+        try {
+
+            const consulta =
+                query(
+                    collection(db, "auditoria_pedidos"),
+                    orderBy("criadoEm", "desc")
+                );
+
+
+            const snapshot =
+                await getDocs(consulta);
+
+
+            movimentos = [];
+
+
+            snapshot.forEach((docSnap) => {
+
+                movimentos.push({
+                    id: docSnap.id,
+                    ...docSnap.data()
+                });
+
+            });
+
+
+            aplicarFiltros();
+
+
+        } catch (erro) {
+
+            console.error(
+                "Erro ao carregar auditoria:",
+                erro
+            );
+
+
+            listaAuditoria.innerHTML = `
+                <div class="vazio">
+                    Ainda não existem registros de auditoria.
+                </div>
+            `;
+
+            atualizarResumo([]);
+
+        }
+
+    }
+
+
+    function aplicarFiltros() {
+
+        const dataInicial =
+            document.getElementById("dataInicial").value;
+
+        const dataFinal =
+            document.getElementById("dataFinal").value;
+
+        const garcomSelecionado =
+            garcomFiltro.value;
+
+
+        const filtrados =
+            movimentos.filter((movimento) => {
+
+                let passou = true;
+
+
+                if (garcomSelecionado) {
+
+                    passou =
+                        movimento.garcomUid ===
+                        garcomSelecionado;
+
+                }
+
+
+                if (
+                    passou &&
+                    dataInicial &&
+                    movimento.criadoEm
+                ) {
+
+                    const data =
+                        movimento.criadoEm
+                            .toDate()
+                            .toISOString()
+                            .slice(0, 10);
+
+                    passou =
+                        data >= dataInicial;
+
+                }
+
+
+                if (
+                    passou &&
+                    dataFinal &&
+                    movimento.criadoEm
+                ) {
+
+                    const data =
+                        movimento.criadoEm
+                            .toDate()
+                            .toISOString()
+                            .slice(0, 10);
+
+                    passou =
+                        data <= dataFinal;
+
+                }
+
+
+                return passou;
+
+            });
+
+
+        renderizarAuditoria(filtrados);
+
+        atualizarResumo(filtrados);
+
+    }
+
+
+    function renderizarAuditoria(lista) {
+
+        if (!lista.length) {
+
+            listaAuditoria.innerHTML = `
+                <div class="vazio">
+                    Nenhum movimento encontrado.
+                </div>
+            `;
+
+            return;
+
+        }
+
+
+        listaAuditoria.innerHTML = "";
+
+
+        lista.forEach((movimento) => {
+
+            const bloco =
+                document.createElement("div");
+
+            bloco.className = "movimento";
+
+
+            let dataHora = "Data não informada";
+
+
+            if (movimento.criadoEm) {
+
+                try {
+
+                    dataHora =
+                        movimento.criadoEm
+                            .toDate()
+                            .toLocaleString(
+                                "pt-BR"
+                            );
+
+                } catch (erro) {
+
+                    dataHora =
+                        "Data não informada";
+
+                }
+
+            }
+
+
+            bloco.innerHTML = `
+
+                <div class="movimento-topo">
+
+                    <div class="movimento-acao">
+                        ${movimento.acao || "Movimento"}
+                    </div>
+
+                    <div class="movimento-data">
+                        ${dataHora}
+                    </div>
+
+                </div>
+
+
+                <div class="movimento-info">
+
+                    <div>
+                        <strong>Garçom:</strong>
+                        ${movimento.garcomNome || "Não informado"}
+                    </div>
+
+                    <div>
+                        <strong>Local:</strong>
+                        ${movimento.local || "Não informado"}
+                    </div>
+
+                    <div>
+                        <strong>Comanda:</strong>
+                        ${movimento.comanda || "Não informado"}
+                    </div>
+
+                    <div>
+                        <strong>Item:</strong>
+                        ${movimento.itemNome || "—"}
+                    </div>
+
+                    <div>
+                        <strong>Quantidade:</strong>
+                        ${movimento.quantidade || "—"}
+                    </div>
+
+                    <div>
+                        <strong>Observação:</strong>
+                        ${movimento.observacao || "—"}
+                    </div>
+
+                </div>
+
+            `;
+
+
+            listaAuditoria.appendChild(bloco);
+
+        });
+
+    }
+
+
+    function atualizarResumo(lista) {
+
+        totalMovimentos.textContent =
+            lista.length;
+
+
+        const garcons =
+            new Set(
+                lista
+                    .map((movimento) =>
+                        movimento.garcomUid
+                    )
+                    .filter(Boolean)
+            );
+
+
+        totalGarcons.textContent =
+            garcons.size;
+
+
+        if (
+            lista.length &&
+            lista[0].criadoEm
+        ) {
+
+            try {
+
+                ultimoMovimento.textContent =
+                    lista[0].criadoEm
+                        .toDate()
+                        .toLocaleString(
+                            "pt-BR",
+                            {
+                                day: "2-digit",
+                                month: "2-digit",
+                                hour: "2-digit",
+                                minute: "2-digit"
+                            }
+                        );
+
+            } catch (erro) {
+
+                ultimoMovimento.textContent =
+                    "—";
+
+            }
+
+        } else {
+
+            ultimoMovimento.textContent =
+                "—";
+
+        }
+
+    }
+
+
+    document
+        .getElementById("botaoFiltrar")
+        .addEventListener(
+            "click",
+            aplicarFiltros
+        );
+
+
+    document
+        .getElementById("botaoLimpar")
+        .addEventListener(
+            "click",
+            () => {
+
+                document.getElementById(
+                    "dataInicial"
+                ).value = "";
+
+                document.getElementById(
+                    "dataFinal"
+                ).value = "";
+
+                garcomFiltro.value = "";
+
+                aplicarFiltros();
+
+            }
+        );
+
+</script>
+
+</body>
+
+</html>
