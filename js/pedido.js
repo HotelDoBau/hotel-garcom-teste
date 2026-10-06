@@ -1505,174 +1505,286 @@ try {
     );
 
 
-    // ===========================
-    // AUDITORIA
-    // PRIMEIRO PEDIDO DO LOCAL
-    // ===========================
+   // ===========================
+// AUDITORIA
+// ===========================
 
-    console.log(
+console.log(
     "CHEGOU ANTES DA AUDITORIA"
 );
-    
-    console.log(
+
+console.log(
     "VERIFICAÇÃO AUDITORIA:",
     quantidadePedidosAntes
 );
-    
-    if (
-        quantidadePedidosAntes === 0
-    ) {
 
-        try {
 
-            await addDoc(
+// ===========================
+// PRIMEIRO PEDIDO DO LOCAL
+// ===========================
 
-                collection(
-                    db,
-                    "auditoria_pedidos"
-                ),
+if (
+    quantidadePedidosAntes === 0
+) {
 
-                {
+    try {
 
-                    acao:
-                        "Abriu " +
-                        nomeLocal.toLowerCase(),
+        await addDoc(
 
-                    descricao:
-                        "Abriu " +
-                        nomeLocal.toLowerCase() +
-                        " " +
-                        String(
-                            numeroMesa
-                        ).padStart(
-                            2,
-                            "0"
-                        ) +
-                        " com o primeiro pedido.",
+            collection(
+                db,
+                "auditoria_pedidos"
+            ),
 
-                    garcomNome:
-                        garcomNome,
+            {
 
-                    garcomUid:
-                        garcomUid,
+                acao:
+                    "Abriu " +
+                    nomeLocal.toLowerCase(),
 
-                    usuarioTipo:
-                        "garcom",
+                descricao:
+                    "Abriu " +
+                    nomeLocal.toLowerCase() +
+                    " " +
+                    String(
+                        numeroMesa
+                    ).padStart(
+                        2,
+                        "0"
+                    ) +
+                    " com o primeiro pedido.",
 
-                    local:
-                        nomeLocal +
-                        " " +
-                        String(
-                            numeroMesa
-                        ).padStart(
-                            2,
-                            "0"
+                garcomNome:
+                    garcomNome,
+
+                garcomUid:
+                    garcomUid,
+
+                usuarioTipo:
+                    "garcom",
+
+                local:
+                    nomeLocal +
+                    " " +
+                    String(
+                        numeroMesa
+                    ).padStart(
+                        2,
+                        "0"
+                    ),
+
+                tipoLocal:
+                    tipoSelecionado,
+
+                numeroLocal:
+                    Number(
+                        numeroMesa
+                    ),
+
+                comanda:
+                    "",
+
+                itemNome:
+                    itensPedido
+                        .map(
+                            item =>
+                                item.nome
+                        )
+                        .join(
+                            ", "
                         ),
 
-                    tipoLocal:
-                        tipoSelecionado,
-
-                    numeroLocal:
-                        Number(
-                            numeroMesa
+                quantidade:
+                    itensPedido
+                        .reduce(
+                            (
+                                soma,
+                                item
+                            ) =>
+                                soma +
+                                Number(
+                                    item.quantidade ||
+                                    0
+                                ),
+                            0
                         ),
 
-                    comanda:
-                        "",
+                observacao:
+                    observacao,
 
-                    itemNome:
-                        itensPedido
-                            .map(
-                                item =>
-                                    item.nome
-                            )
-                            .join(
-                                ", "
-                            ),
+                numeroPedido:
+                    numeroPedido,
 
-                    quantidade:
-                        itensPedido
-                            .reduce(
-                                (
-                                    soma,
-                                    item
-                                ) =>
-                                    soma +
-                                    Number(
-                                        item.quantidade ||
-                                        0
-                                    ),
-                                0
-                            ),
+                criadoEm:
+                    serverTimestamp()
 
-                    observacao:
-                        observacao,
+            }
 
-                    numeroPedido:
-                        numeroPedido,
-
-                    criadoEm:
-                        serverTimestamp()
-
-                }
-
-            );
+        );
 
 
-            console.log(
-                "Auditoria registrada: abertura do local."
-            );
+        console.log(
+            "Auditoria registrada: abertura do local."
+        );
 
 
-        } catch (erroAuditoria) {
+    } catch (erroAuditoria) {
 
-            console.error(
-                "Erro ao registrar auditoria:",
-                erroAuditoria
-            );
+        console.error(
+            "Erro ao registrar auditoria:",
+            erroAuditoria
+        );
 
-            /*
-                A auditoria não pode impedir
-                o funcionamento normal do pedido.
-            */
-
-        }
+        /*
+            A auditoria não pode impedir
+            o funcionamento normal do pedido.
+        */
 
     }
 
-
-    carrinho = [];
-
-
-    atualizarResumo();
-
-
-    window.location.href =
-        "mesa.html";
-
-
-} catch (erro) {
-
-    console.error(
-        "Erro ao enviar pedido:",
-        erro
-    );
-
-
-    alert(
-
-        "ERRO FIREBASE:\n\n" +
-
-        erro.code +
-
-        "\n\n" +
-
-        erro.message
-
-    );
-
 }
 
+
+// ===========================
+// PEDIDO ADICIONAL
+// LOCAL JÁ ESTAVA ABERTO
+// ===========================
+
+if (
+    quantidadePedidosAntes > 0
+) {
+
+    try {
+
+        const quantidadeTotal =
+            itensPedido.reduce(
+                (
+                    soma,
+                    item
+                ) =>
+                    soma +
+                    Number(
+                        item.quantidade || 0
+                    ),
+                0
+            );
+
+
+        const nomesItens =
+            itensPedido
+                .map(
+                    item =>
+                        Number(
+                            item.quantidade || 0
+                        ) > 1
+
+                            ? Number(
+                                item.quantidade
+                            ) +
+                              "x " +
+                              item.nome
+
+                            : item.nome
+                )
+                .join(
+                    ", "
+                );
+
+
+        await addDoc(
+
+            collection(
+                db,
+                "auditoria_pedidos"
+            ),
+
+            {
+
+                acao:
+                    "Acrescentou itens",
+
+                descricao:
+                    "Acrescentou " +
+                    nomesItens +
+                    " na " +
+                    nomeLocal.toLowerCase() +
+                    " " +
+                    String(
+                        numeroMesa
+                    ).padStart(
+                        2,
+                        "0"
+                    ) +
+                    ".",
+
+                garcomNome:
+                    garcomNome,
+
+                garcomUid:
+                    garcomUid,
+
+                usuarioTipo:
+                    "garcom",
+
+                local:
+                    nomeLocal +
+                    " " +
+                    String(
+                        numeroMesa
+                    ).padStart(
+                        2,
+                        "0"
+                    ),
+
+                tipoLocal:
+                    tipoSelecionado,
+
+                numeroLocal:
+                    Number(
+                        numeroMesa
+                    ),
+
+                comanda:
+                    "",
+
+                itemNome:
+                    nomesItens,
+
+                quantidade:
+                    quantidadeTotal,
+
+                observacao:
+                    observacao,
+
+                numeroPedido:
+                    numeroPedido,
+
+                criadoEm:
+                    serverTimestamp()
+
+            }
+
+        );
+
+
+        console.log(
+            "Auditoria registrada: itens acrescentados."
+        );
+
+
+    } catch (erroAuditoria) {
+
+        console.error(
+            "Erro ao registrar auditoria:",
+            erroAuditoria
+        );
+
+        /*
+            A auditoria não pode impedir
+            o funcionamento normal do pedido.
+        */
+
+    }
 
 }
 
