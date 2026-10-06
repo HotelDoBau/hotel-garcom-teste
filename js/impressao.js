@@ -39,10 +39,13 @@ const CONFIGURACAO_IMPRESSAO_PADRAO = {
 
     mostrarHorario: true,
 
-    mostrarPrecos: true
+    mostrarPrecos: true,
+
+    tamanhoFonteProducao: "grande",
+
+    negritoProducao: true
 
 };
-
 
 // =====================================================
 // CARREGAR CONFIGURAÇÃO DA IMPRESSORA
@@ -600,6 +603,30 @@ async function imprimirGarcom(
     const configuracao =
         await obterConfiguracaoImpressao();
 
+    const tamanhosFonteProducao = {
+
+    pequena: "11px",
+
+    normal: "12px",
+
+    grande: "16px",
+
+    extragrande: "18px"
+
+};
+
+
+const tamanhoFonteProducao =
+    tamanhosFonteProducao[
+        configuracao.tamanhoFonteProducao
+    ] || "16px";
+
+
+const pesoFonteProducao =
+    configuracao.negritoProducao
+        ? "700"
+        : "400";
+
 
     const {
         tipo,
@@ -610,11 +637,22 @@ async function imprimirGarcom(
         );
 
 
-    let conteudo = `
+   let conteudo = `
+
+    <div
+        class="impressao-producao"
+        style="
+            font-size: ${tamanhoFonteProducao};
+            font-weight: ${pesoFonteProducao};
+        "
+    >
 
         <div class="central">
 
-            <div class="identificacao-print">
+            <div
+                class="identificacao-print"
+                style="font-size: 1.15em;"
+            >
                 HOTEL DO BAÚ
             </div>
 
@@ -626,8 +664,7 @@ async function imprimirGarcom(
 
         <div class="separador"></div>
 
-    `;
-
+`;
 
     // =================================================
     // MESA / QUARTO
@@ -854,7 +891,12 @@ async function imprimirGarcom(
         `;
 
     }
+    
+conteudo += `
 
+    </div>
+
+`;
 
     await abrirImpressao(
         conteudo,
