@@ -417,12 +417,22 @@
 
     import { db } from "./js/firebase.js";
 
-import {
-    getAuth,
-    onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
+    import {
+        getAuth,
+        onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
 
-const auth = getAuth();
+    import {
+        collection,
+        getDocs,
+        query,
+        orderBy
+    } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+
+
+    const auth =
+        getAuth();
+
 
     const listaAuditoria =
         document.getElementById("listaAuditoria");
@@ -444,7 +454,6 @@ const auth = getAuth();
 
 
     onAuthStateChanged(auth, async (usuario) => {
-
         if (!usuario) {
 
             window.location.href = "login.html";
