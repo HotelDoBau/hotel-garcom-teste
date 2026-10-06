@@ -1499,6 +1499,11 @@ try {
     // PRIMEIRO PEDIDO DO LOCAL
     // ===========================
 
+    console.log(
+    "VERIFICAÇÃO AUDITORIA:",
+    quantidadePedidosAntes
+);
+    
     if (
         quantidadePedidosAntes === 0
     ) {
