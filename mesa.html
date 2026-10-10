@@ -354,6 +354,50 @@ function obterIdMesa() {
 
 }
 
+    
+async function aguardarAutenticacaoFirebase() {
+    const conectado = await aguardarFirebase();
+
+    if (!conectado) {
+        throw new Error("Firebase indisponível.");
+    }
+
+    const { auth, onAuthStateChanged } = window.firebaseHotel;
+
+    if (!auth || !onAuthStateChanged) {
+        throw new Error("Autenticação do Firebase indisponível.");
+    }
+
+    if (auth.currentUser) {
+        return auth.currentUser;
+    }
+
+    return await new Promise((resolve, reject) => {
+        let unsubscribe;
+
+        unsubscribe = onAuthStateChanged(
+            auth,
+            usuario => {
+                unsubscribe();
+
+                if (usuario) {
+                    resolve(usuario);
+                } else {
+                    reject(
+                        new Error(
+                            "Nenhum usuário autenticado no Firebase."
+                        )
+                    );
+                }
+            },
+            erro => {
+                if (unsubscribe) unsubscribe();
+                reject(erro);
+            }
+        );
+    });
+}
+
 
 /* =========================================
    MOSTRAR DADOS DA MESA
@@ -646,18 +690,29 @@ async function alterarConsumo(
         return;
     }
 
-    const conectado =
-        await aguardarFirebase();
+   let usuarioFirebase;
 
-    if (!conectado) {
-        alert(
-            "Não foi possível conectar ao Firebase."
-        );
-        return;
-    }
+try {
 
-    try {
+    usuarioFirebase =
+        await aguardarAutenticacaoFirebase();
 
+} catch (erroAutenticacao) {
+
+    console.error(
+        "Erro ao confirmar autenticação:",
+        erroAutenticacao
+    );
+
+    alert(
+        "Não foi possível confirmar sua autenticação no Firebase. Verifique seu acesso e tente novamente."
+    );
+
+    return;
+
+}
+
+try {
         const {
             db,
             collection,
@@ -673,7 +728,7 @@ async function alterarConsumo(
         // ===========================
 
         let garcomNome = "Não informado";
-        let garcomUid = "";
+        let garcomUid = usuarioFirebase.uid;
         let usuarioTipo = "garcom";
 
         try {
@@ -697,8 +752,8 @@ async function alterarConsumo(
                     usuario.usuario ||
                     "Não informado";
 
-                garcomUid =
-                    usuario.uid || "";
+               garcomUid =
+    usuario.uid || usuarioFirebase.uid;
 
                 usuarioTipo =
                     usuario.tipo || "garcom";
@@ -1475,10 +1530,8 @@ async function confirmarFechamento() {
     }
 
 
-    const conectado =
-        await aguardarFirebase();
-
-
+  const conectado =
+    await aguardarFirebase();
     if (!conectado) {
 
         alert(
