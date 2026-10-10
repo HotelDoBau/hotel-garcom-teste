@@ -1083,20 +1083,27 @@ quantidadeAnterior =
 async function iniciarMesa() {
 
 
-    const conectado =
-        await aguardarFirebase();
+   let usuarioFirebase;
 
+try {
 
-    if (!conectado) {
+    usuarioFirebase =
+        await aguardarAutenticacaoFirebase();
 
-        alert(
-            "Não foi possível conectar ao Firebase."
-        );
+} catch (erroAutenticacao) {
 
-        return;
+    console.error(
+        "Erro ao confirmar autenticação no fechamento:",
+        erroAutenticacao
+    );
 
-    }
+    alert(
+        "Não foi possível confirmar sua autenticação no Firebase. Tente novamente."
+    );
 
+    return;
+
+}
 
     const {
 
@@ -1530,17 +1537,27 @@ async function confirmarFechamento() {
     }
 
 
-  const conectado =
-    await aguardarFirebase();
-    if (!conectado) {
+let usuarioFirebase;
 
-        alert(
-            "Não foi possível conectar ao Firebase."
-        );
+try {
 
-        return;
+    usuarioFirebase =
+        await aguardarAutenticacaoFirebase();
 
-    }
+} catch (erroAutenticacao) {
+
+    console.error(
+        "Erro ao confirmar autenticação no fechamento:",
+        erroAutenticacao
+    );
+
+    alert(
+        "Não foi possível confirmar sua autenticação no Firebase. Tente novamente."
+    );
+
+    return;
+
+}
 
 
     try {
@@ -1556,6 +1573,53 @@ async function confirmarFechamento() {
     collection
 
 } = window.firebaseHotel;
+
+        // ==============================
+// IDENTIFICAR RESPONSÁVEL
+// ==============================
+
+let garcomNome = "Não informado";
+let garcomUid = usuarioFirebase.uid;
+let usuarioTipo = "garcom";
+
+try {
+
+    let usuarioSalvo =
+        localStorage.getItem("usuarioLogado");
+
+    if (!usuarioSalvo) {
+        usuarioSalvo =
+            localStorage.getItem("garcomLogado");
+    }
+
+    if (usuarioSalvo) {
+
+        const usuario =
+            JSON.parse(usuarioSalvo);
+
+        garcomNome =
+            usuario.nome ||
+            usuario.nomeGarcom ||
+            usuario.usuario ||
+            "Não informado";
+
+        garcomUid =
+            usuario.uid ||
+            usuarioFirebase.uid;
+
+        usuarioTipo =
+            usuario.tipo ||
+            "garcom";
+    }
+
+} catch (erroIdentificacao) {
+
+    console.error(
+        "Erro ao identificar responsável pelo fechamento:",
+        erroIdentificacao
+    );
+
+}
 
 
         const idMesa =
@@ -1846,6 +1910,98 @@ async function confirmarFechamento() {
 
         );
 
+                /* ==============================
+           AUDITORIA DO FECHAMENTO
+        ============================== */
+
+        try {
+
+            await addDoc(
+                collection(
+                    db,
+                    "auditoria_pedidos"
+                ),
+                {
+                    acao: "Fechou conta",
+
+                    descricao:
+                        garcomNome +
+                        " fechou " +
+                        nomeLocal.toLowerCase() +
+                        " " +
+                        String(numeroMesa).padStart(2, "0") +
+                        ". Consumo: R$ " +
+                        totalFechamentoAtual.toFixed(2) +
+                        "; desconto: R$ " +
+                        desconto.toFixed(2) +
+                        "; total final: R$ " +
+                        totalFinal.toFixed(2) +
+                        ".",
+
+                    garcomNome: garcomNome,
+                    garcomUid: garcomUid,
+                    usuarioTipo: usuarioTipo,
+
+                    local:
+                        nomeLocal +
+                        " " +
+                        String(numeroMesa).padStart(2, "0"),
+
+                    tipoLocal: tipoSelecionado,
+                    numeroLocal: Number(numeroMesa),
+
+                    comanda: "",
+
+                    fechamentoId: fechamentoRef.id,
+
+                    itens: itensFechamento.map(item => ({
+                        id: item.id,
+                        nome: item.nome,
+                        preco: Number(item.preco || 0),
+                        quantidade: Number(item.quantidade || 0),
+                        subtotal: Number(
+                            (
+                                Number(item.preco || 0) *
+                                Number(item.quantidade || 0)
+                            ).toFixed(2)
+                        )
+                    })),
+
+                    subtotal: Number(
+                        totalFechamentoAtual.toFixed(2)
+                    ),
+
+                    desconto: Number(
+                        desconto.toFixed(2)
+                    ),
+
+                    total: totalFinal,
+
+                    observacao:
+                        "Fechamento enviado para impressão.",
+
+                    criadoEm: serverTimestamp()
+                }
+            );
+
+            console.log(
+                "Auditoria do fechamento registrada:",
+                fechamentoRef.id
+            );
+
+        } catch (erroAuditoria) {
+
+            console.error(
+                "Erro ao registrar auditoria do fechamento:",
+                erroAuditoria
+            );
+
+            alert(
+                "O fechamento foi criado, mas a auditoria não foi registrada. Verifique as permissões do Firebase."
+            );
+
+        }
+        
                 /* ==============================
            FINALIZAR FECHAMENTO
         ============================== */
