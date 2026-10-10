@@ -629,8 +629,9 @@ div.querySelector(
 }
 
 
+
 /* =========================================
-   ALTERAR CONSUMO
+   ALTERAR CONSUMO + AUDITORIA
 ========================================= */
 
 async function alterarConsumo(
@@ -638,91 +639,83 @@ async function alterarConsumo(
     variacao
 ) {
 
-
     if (
         variacao !== 1 &&
         variacao !== -1
     ) {
-
         return;
-
     }
 
-
-    const confirmado =
+    const conectado =
         await aguardarFirebase();
 
-
-    if (!confirmado) {
-
+    if (!conectado) {
         alert(
             "Não foi possível conectar ao Firebase."
         );
-
         return;
-
     }
-
 
     try {
 
-
-       const {
-    db,
-    collection,
-    getDocs,
-    updateDoc,
-    deleteDoc,
-    addDoc,
-    serverTimestamp
-} = window.firebaseHotel;
+        const {
+            db,
+            collection,
+            getDocs,
+            updateDoc,
+            deleteDoc,
+            addDoc,
+            serverTimestamp
+        } = window.firebaseHotel;
 
         // ===========================
-// IDENTIFICAR GARÇOM
-// ===========================
+        // IDENTIFICAR GARÇOM
+        // ===========================
 
-let garcomNome = "Não informado";
-let garcomUid = "";
-let usuarioTipo = "garcom";
+        let garcomNome = "Não informado";
+        let garcomUid = "";
+        let usuarioTipo = "garcom";
 
-try {
+        try {
 
-    let usuarioSalvo =
-        localStorage.getItem("usuarioLogado");
+            let usuarioSalvo =
+                localStorage.getItem("usuarioLogado");
 
-    if (!usuarioSalvo) {
-        usuarioSalvo =
-            localStorage.getItem("garcomLogado");
-    }
+            if (!usuarioSalvo) {
+                usuarioSalvo =
+                    localStorage.getItem("garcomLogado");
+            }
 
-    if (usuarioSalvo) {
+            if (usuarioSalvo) {
 
-        const usuario =
-            JSON.parse(usuarioSalvo);
+                const usuario =
+                    JSON.parse(usuarioSalvo);
 
-        garcomNome =
-            usuario.nome ||
-            usuario.nomeGarcom ||
-            usuario.usuario ||
-            "Não informado";
+                garcomNome =
+                    usuario.nome ||
+                    usuario.nomeGarcom ||
+                    usuario.usuario ||
+                    "Não informado";
 
-        garcomUid =
-            usuario.uid || "";
+                garcomUid =
+                    usuario.uid || "";
 
-        usuarioTipo =
-            usuario.tipo || "garcom";
+                usuarioTipo =
+                    usuario.tipo || "garcom";
+            }
 
-    }
+        } catch (erro) {
 
-} catch (erro) {
+            console.error(
+                "Erro ao identificar garçom na auditoria:",
+                erro
+            );
 
-    console.error(
-        "Erro ao identificar garçom na auditoria:",
-        erro
-    );
+        }
 
-}
-
+        // ===========================
+        // BUSCAR PEDIDOS DA MESA
+        // ===========================
 
         const referenciaMesa =
             collection(
@@ -732,400 +725,301 @@ try {
                 "pedidos"
             );
 
-
         const snapshot =
-            await getDocs(
-                referenciaMesa
-            );
-
+            await getDocs(referenciaMesa);
 
         const documentos = [];
 
+        snapshot.forEach(documento => {
 
-        snapshot.forEach(
-            documento => {
+            documentos.push({
+                referencia: documento,
+                dados: documento.data()
+            });
 
-                documentos.push({
+        });
 
-                    referencia:
-                        documento,
-
-                    dados:
-                        documento.data()
-
-                });
-
-            }
-        );
-
-
-        /*
-            Trabalhamos primeiro
-            com o pedido mais recente.
-        */
-
+        // Pedido mais recente primeiro.
         documentos.reverse();
 
-        const quantidadeTotalAntes = documentos.reduce(
-    (soma, registro) => {
+        // ===========================
+        // LOCALIZAR ITEM E QUANTIDADE
+        // ===========================
 
-        const itens = Array.isArray(registro.dados.itens)
-            ? registro.dados.itens
-            : [];
-
-        return soma + itens.reduce(
-            (total, item) => {
-
-                if (
-                    String(item.id) === String(idProduto)
-                ) {
-                    return total + Number(item.quantidade || 0);
-                }
-
-                return total;
-            },
-            0
-        );
-    },
-    0
-);
-
-let nomeItemAlterado = "";
+        let nomeItemAlterado = "";
+let quantidadeAnterior = 0;
+let quantidadeNova = 0;
+let precoItemAlterado = 0;
 let removeuCompletamente = false;
+let alterado = false;
 
-        /* =====================================
-           AUMENTAR QUANTIDADE
-        ===================================== */
+        for (const registro of documentos) {
 
-        if (
-            variacao === 1
-        ) {
+            const itens =
+                Array.isArray(registro.dados.itens)
+                    ? [...registro.dados.itens]
+                    : [];
 
-
-            let alterado =
-                false;
-
-
-            for (
-                const registro
-                of documentos
-            ) {
-
-
-                const itens =
-                    Array.isArray(
-                        registro.dados.itens
-                    )
-                        ? [
-                            ...registro.dados.itens
-                        ]
-                        : [];
-
-
-                const indice =
-                    itens.findIndex(
-                        item =>
-                            String(
-                                item.id
-                            ) ===
-                            String(
-                                idProduto
-                            )
-                    );
-
-
-                if (
-                    indice === -1
-                ) {
-
-                    continue;
-
-                }
-
-
-                const item =
-    itens[indice];
-
-item.quantidade =
-    Number(
-        item.quantidade || 0
-    ) + 1;
-
-
-                item.subtotal =
-                    Number(
-                        item.preco || 0
-                    ) *
-                    item.quantidade;
-
-
-                const novoTotal =
-                    itens.reduce(
-                        (
-                            soma,
-                            itemAtual
-                        ) =>
-
-                            soma +
-
-                            Number(
-                                itemAtual.preco || 0
-                            ) *
-
-                            Number(
-                                itemAtual.quantidade || 0
-                            ),
-
-                        0
-                    );
-
-
-                await updateDoc(
-
-                    registro.referencia
-                        .ref,
-
-                    {
-
-                        itens:
-                            itens,
-
-                        total:
-                            Number(
-                                novoTotal.toFixed(2)
-                            )
-
-                    }
-
+            const indice =
+                itens.findIndex(item =>
+                    String(item.id) === String(idProduto) &&
+                    Number(item.quantidade || 0) > 0
                 );
 
+            if (indice === -1) {
+                continue;
+            }
 
-                alterado =
-                    true;
+           const item = itens[indice];
 
+nomeItemAlterado =
+    item.nome || "Item sem nome";
 
-                break;
+precoItemAlterado =
+    Number(item.preco || 0);
+
+quantidadeAnterior =
+    Number(item.quantidade || 0);
+
+            // ===========================
+            // AUMENTAR QUANTIDADE
+            // ===========================
+
+            if (variacao === 1) {
+
+                quantidadeNova =
+                    quantidadeAnterior + 1;
+
+                item.quantidade =
+                    quantidadeNova;
+
+                item.subtotal =
+                    Number(item.preco || 0) *
+                    quantidadeNova;
 
             }
 
+            // ===========================
+            // DIMINUIR QUANTIDADE
+            // ===========================
 
-            if (!alterado) {
+            if (variacao === -1) {
+
+                quantidadeNova =
+                    quantidadeAnterior - 1;
+
+                if (quantidadeNova <= 0) {
+
+                    itens.splice(indice, 1);
+
+                    removeuCompletamente = true;
+
+                } else {
+
+                    item.quantidade =
+                        quantidadeNova;
+
+                    item.subtotal =
+                        Number(item.preco || 0) *
+                        quantidadeNova;
+
+                }
+
+            }
+
+            // ===========================
+            // RECALCULAR TOTAL DO PEDIDO
+            // ===========================
+
+            const novoTotal =
+                itens.reduce(
+                    (soma, itemAtual) => {
+
+                        return soma +
+                            Number(itemAtual.preco || 0) *
+                            Number(itemAtual.quantidade || 0);
+
+                    },
+                    0
+                );
+
+            // ===========================
+            // SALVAR ALTERAÇÃO
+            // ===========================
+
+            if (itens.length === 0) {
+
+                await deleteDoc(
+                    registro.referencia.ref
+                );
+
+            } else {
+
+                await updateDoc(
+                    registro.referencia.ref,
+                    {
+                        itens: itens,
+                        total: Number(novoTotal.toFixed(2))
+                    }
+                );
+
+            }
+
+            alterado = true;
+
+            break;
+
+        }
+
+        if (!alterado) {
 
             alert(
                 "Não foi possível localizar este item na comanda."
             );
 
-        }
-
-    }
-
-                
-
-        /* =====================================
-           DIMINUIR QUANTIDADE
-        ===================================== */
-
-        if (
-            variacao === -1
-        ) {
-
-
-            let alterado =
-                false;
-
-
-            for (
-                const registro
-                of documentos
-            ) {
-
-
-                const itens =
-                    Array.isArray(
-                        registro.dados.itens
-                    )
-                        ? [
-                            ...registro.dados.itens
-                        ]
-                        : [];
-
-
-                const indice =
-                    itens.findIndex(
-                        item =>
-                            String(
-                                item.id
-                            ) ===
-                            String(
-                                idProduto
-                            ) &&
-                            Number(
-                                item.quantidade || 0
-                            ) > 0
-                    );
-
-
-                if (
-                    indice === -1
-                ) {
-
-                    continue;
-
-                }
-
-
-                const item =
-                    itens[indice];
-
-
-                item.quantidade =
-                    Number(
-                        item.quantidade || 0
-                    ) - 1;
-
-
-                /*
-                    Se chegou a zero,
-                    remove o item daquele
-                    pedido.
-                */
-
-                if (
-                    item.quantidade <= 0
-                ) {
-
-                    itens.splice(
-                        indice,
-                        1
-                    );
-
-                }
-                else {
-
-                    item.subtotal =
-                        Number(
-                            item.preco || 0
-                        ) *
-                        item.quantidade;
-
-                }
-
-
-                const novoTotal =
-                    itens.reduce(
-                        (
-                            soma,
-                            itemAtual
-                        ) =>
-
-                            soma +
-
-                            Number(
-                                itemAtual.preco || 0
-                            ) *
-
-                            Number(
-                                itemAtual.quantidade || 0
-                            ),
-
-                        0
-                    );
-
-
-                /*
-                    Se não restou nenhum item
-                    naquele pedido, remove
-                    somente o documento da
-                    comanda da mesa.
-                */
-
-                if (
-                    itens.length === 0
-                ) {
-
-
-                    await deleteDoc(
-                        registro.referencia.ref
-                    );
-
-
-                }
-                else {
-
-
-                    await updateDoc(
-
-                        registro.referencia.ref,
-
-                        {
-
-                            itens:
-                                itens,
-
-                            total:
-                                Number(
-                                    novoTotal.toFixed(2)
-                                )
-
-                        }
-
-                    );
-
-                }
-
-
-                alterado =
-                    true;
-
-
-                break;
-
-            }
-
-
-            if (!alterado) {
-
-                alert(
-                    "Não foi possível localizar este item na comanda."
-                );
-
-            }
+            return;
 
         }
 
+        // ===========================
+        // REGISTRAR AUDITORIA
+        // ===========================
 
-        /*
-            O onSnapshot irá atualizar
-            automaticamente a tela.
-        */
+        let acao = "";
+        let descricao = "";
 
-    }
-    catch (erro) {
+        if (variacao === 1) {
 
+            acao = "Aumentou item";
+
+            descricao =
+                "Aumentou " +
+                nomeItemAlterado +
+                " de " +
+                quantidadeAnterior +
+                " para " +
+                quantidadeNova +
+                " unidade(s) na " +
+                nomeLocal.toLowerCase() +
+                " " +
+                String(numeroMesa).padStart(2, "0") +
+                ".";
+
+        } else if (removeuCompletamente) {
+
+            acao = "Removeu item";
+
+            descricao =
+                "Removeu " +
+                nomeItemAlterado +
+                " da " +
+                nomeLocal.toLowerCase() +
+                " " +
+                String(numeroMesa).padStart(2, "0") +
+                ". A quantidade passou de " +
+                quantidadeAnterior +
+                " para 0.";
+
+        } else {
+
+            acao = "Diminuiu item";
+
+            descricao =
+                "Diminuiu " +
+                nomeItemAlterado +
+                " de " +
+                quantidadeAnterior +
+                " para " +
+                quantidadeNova +
+                " unidade(s) na " +
+                nomeLocal.toLowerCase() +
+                " " +
+                String(numeroMesa).padStart(2, "0") +
+                ".";
+
+        }
+
+        try {
+
+            await addDoc(
+                collection(db, "auditoria_pedidos"),
+                {
+                    acao: acao,
+                    descricao: descricao,
+
+                    garcomNome: garcomNome,
+                    garcomUid: garcomUid,
+                    usuarioTipo: usuarioTipo,
+
+                    local:
+                        nomeLocal +
+                        " " +
+                        String(numeroMesa).padStart(2, "0"),
+
+                    tipoLocal: tipoSelecionado,
+                    numeroLocal: Number(numeroMesa),
+                    comanda: "",
+
+                    itemNome: nomeItemAlterado,
+
+                    quantidade: Math.abs(
+                        quantidadeNova - quantidadeAnterior
+                    ),
+
+                    quantidadeAnterior: quantidadeAnterior,
+                    quantidadeNova: quantidadeNova,
+
+                   valorAlteracao:
+    Number(
+        (
+            variacao *
+            precoItemAlterado
+        ).toFixed(2)
+    ),
+
+                    observacao:
+                        "Alteração realizada na tela Ver consumo.",
+
+                    criadoEm: serverTimestamp()
+                }
+            );
+
+            console.log(
+                "Auditoria registrada:",
+                acao,
+                nomeItemAlterado
+            );
+
+        } catch (erroAuditoria) {
+
+            console.error(
+                "Erro ao registrar auditoria do consumo:",
+                erroAuditoria
+            );
+
+            alert(
+                "O consumo foi alterado, mas não foi possível registrar a auditoria. Verifique a conexão e as permissões do Firebase."
+            );
+
+        }
+
+    } catch (erro) {
 
         console.error(
             "Erro ao alterar consumo:",
             erro
         );
 
-
         alert(
-
             "Não foi possível alterar o consumo.\n\n" +
-
             (erro.code || "sem código") +
-
             "\n\n" +
-
             (erro.message || erro)
-
         );
 
     }
 
 }
-
-    window.alterarConsumo = alterarConsumo;
 
 /* =========================================
    ESCUTAR PEDIDOS DA MESA
