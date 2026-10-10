@@ -548,111 +548,76 @@ function mostrarMesa() {
                 "item-consumo";
 
 
-            div.innerHTML = `
+         div.innerHTML = `
 
-                <div>
+    <div>
+        <strong>${item.nome}</strong>
 
-                    <strong>
+        <small>
+            R$ ${item.preco.toFixed(2)} cada
+        </small>
+    </div>
 
-                        ${item.nome}
+    <div style="
+        display:flex;
+        align-items:center;
+        gap:10px;
+    ">
 
-                    </strong>
+        <button
+            type="button"
+            class="btn-diminuir-consumo"
+            style="
+                width:38px;
+                height:38px;
+                border:none;
+                border-radius:8px;
+                font-size:22px;
+                font-weight:bold;
+                cursor:pointer;
+            "
+        >−</button>
 
+        <strong style="
+            min-width:30px;
+            text-align:center;
+            font-size:18px;
+        ">${item.quantidade}</strong>
 
-                    <small>
+        <button
+            type="button"
+            class="btn-aumentar-consumo"
+            style="
+                width:38px;
+                height:38px;
+                border:none;
+                border-radius:8px;
+                font-size:22px;
+                font-weight:bold;
+                cursor:pointer;
+            "
+        >+</button>
 
-                        R$
-                        ${item.preco.toFixed(2)}
-                        cada
+        <strong style="
+            min-width:85px;
+            text-align:right;
+        ">R$ ${subtotal.toFixed(2)}</strong>
 
-                    </small>
+    </div>
 
-                </div>
+`;
 
+div.querySelector(
+    ".btn-diminuir-consumo"
+).addEventListener("click", () => {
+    alterarConsumo(item.id, -1);
+});
 
-                <div
-                    style="
-                        display:flex;
-                        align-items:center;
-                        gap:10px;
-                    "
-                >
-
-
-                    <button
-                        type="button"
-                        onclick="alterarConsumo(
-                            ${JSON.stringify(item.id)},
-                            -1
-                        )"
-                        style="
-                            width:38px;
-                            height:38px;
-                            border:none;
-                            border-radius:8px;
-                            font-size:22px;
-                            font-weight:bold;
-                            cursor:pointer;
-                        "
-                    >
-
-                        −
-
-                    </button>
-
-
-                    <strong
-                        style="
-                            min-width:30px;
-                            text-align:center;
-                            font-size:18px;
-                        "
-                    >
-
-                        ${item.quantidade}
-
-                    </strong>
-
-
-                    <button
-                        type="button"
-                        onclick="alterarConsumo(
-                            ${JSON.stringify(item.id)},
-                            1
-                        )"
-                        style="
-                            width:38px;
-                            height:38px;
-                            border:none;
-                            border-radius:8px;
-                            font-size:22px;
-                            font-weight:bold;
-                            cursor:pointer;
-                        "
-                    >
-
-                        +
-
-                    </button>
-
-
-                    <strong
-                        style="
-                            min-width:85px;
-                            text-align:right;
-                        "
-                    >
-
-                        R$
-                        ${subtotal.toFixed(2)}
-
-                    </strong>
-
-
-                </div>
-
-            `;
-
+div.querySelector(
+    ".btn-aumentar-consumo"
+).addEventListener("click", () => {
+    alterarConsumo(item.id, 1);
+});
 
             listaConsumo.appendChild(
                 div
