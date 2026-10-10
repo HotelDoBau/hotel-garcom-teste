@@ -2567,3 +2567,56 @@ button:disabled {
         animation-iteration-count: 1 !important;
     }
 }
+
+/* =========================================
+   HOTEL DO BAÚ — CORES DAS MESAS POR STATUS
+========================================= */
+
+/* MESA LIVRE — VERDE */
+.mesa.livre {
+    background: #1c4939;
+    border-color: #398563;
+}
+
+.mesa.livre strong,
+.mesa.livre span {
+    color: #a5e6c3;
+}
+
+/* MESA OCUPADA — AZUL */
+.mesa.ocupada {
+    background: #203e68;
+    border-color: #477fbe;
+}
+
+.mesa.ocupada strong,
+.mesa.ocupada span {
+    color: #b7d8ff;
+}
+
+/* MESA EM PAGAMENTO — LARANJA */
+.mesa.pagamento {
+    background: #59391e;
+    border-color: #c8873b;
+}
+
+.mesa.pagamento strong,
+.mesa.pagamento span {
+    color: #ffd09a;
+}
+
+/* EFEITO AO PASSAR O MOUSE */
+.mesa.livre:hover {
+    background: #245943;
+    border-color: #56ad81;
+}
+
+.mesa.ocupada:hover {
+    background: #294c7d;
+    border-color: #6398d3;
+}
+
+.mesa.pagamento:hover {
+    background: #704724;
+    border-color: #e5a454;
+}
