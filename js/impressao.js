@@ -1534,513 +1534,248 @@ onSnapshot(
 );
 
 
-// =====================================================
-// IMPRESSÃO DO FECHAMENTO
-// =====================================================
 
-async function imprimirFechamentoAutomaticamente(
-    fechamento
-) {
+async function imprimirFechamentoAutomaticamente(fechamento) {
+
+    if (!fechamento?.id) {
+        return;
+    }
+
+    const chaveTrava = `fechamento:${fechamento.id}`;
+
+    // Evita duas impressões simultâneas do mesmo fechamento.
+    if (impressoesAutomaticasEmAndamento.has(chaveTrava)) {
+        return;
+    }
+
+    if (!adquirirTravaImpressao(chaveTrava)) {
+        console.log(
+            "Impressão do fechamento já está em andamento:",
+            fechamento.id
+        );
+        return;
+    }
+
+    impressoesAutomaticasEmAndamento.add(chaveTrava);
 
     try {
+
+        const referenciaFechamento = doc(
+            db,
+            "fechamentos",
+            fechamento.id
+        );
+
+        // Confere o estado atual antes de imprimir.
+        const snapshotFechamento = await getDoc(
+            referenciaFechamento
+        );
+
+        if (!snapshotFechamento.exists()) {
+            console.warn(
+                "Fechamento não encontrado:",
+                fechamento.id
+            );
+            return;
+        }
+
+        const dadosAtuais = snapshotFechamento.data();
+
+        if (dadosAtuais.status !== "novo") {
+            console.log(
+                "Fechamento não está aguardando impressão:",
+                fechamento.id,
+                dadosAtuais.status
+            );
+            return;
+        }
+
+        // Usa os dados mais recentes salvos no Firebase.
+        fechamento = {
+            id: fechamento.id,
+            ...dadosAtuais
+        };
 
         console.log(
             "FECHAMENTO PARA IMPRESSÃO:",
             fechamento
         );
 
-
         const configuracao =
             await obterConfiguracaoImpressao();
 
+        const ehQuarto = fechamento.tipo === "quarto";
 
-        const ehQuarto =
-            fechamento.tipo === "quarto";
+        const nomeLocal = ehQuarto ? "QUARTO" : "MESA";
 
+        const numero = String(
+            fechamento.numero || 0
+        ).padStart(2, "0");
 
-        const nomeLocal =
-            ehQuarto
-                ? "QUARTO"
-                : "MESA";
-
-
-        const numero =
-            String(
-                fechamento.numero || 0
-            ).padStart(
-                2,
-                "0"
-            );
-
-
-        const itens =
-            Array.isArray(
-                fechamento.itens
-            )
-
-                ? fechamento.itens
-
-                : [];
-
+        const itens = Array.isArray(fechamento.itens)
+            ? fechamento.itens
+            : [];
 
         let conteudo = `
+            <div style="text-align:center;font-family:Arial,sans-serif;">
 
-            <div
-                style="
-                    text-align:center;
-                    font-family:Arial,sans-serif;
-                "
-            >
-
-                <strong
-                    style="
-                        font-size:18px;
-                    "
-                >
+                <strong style="font-size:18px;">
                     HOTEL DO BAÚ
                 </strong>
 
                 <br>
 
-                <strong
-                    style="
-                        font-size:16px;
-                    "
-                >
+                <strong style="font-size:16px;">
                     CONTA FINAL
                 </strong>
 
                 <hr>
-
         `;
 
-
-        // =================================================
         // MESA / QUARTO
-        // =================================================
-
-        if (
-            configuracao.mostrarMesa
-        ) {
-
+        if (configuracao.mostrarMesa) {
             conteudo += `
-
-                <div
-                    style="
-                        text-align:left;
-                    "
-                >
-
+                <div style="text-align:left;">
                     <strong>
-
-                        ${nomeLocal}
-                        ${numero}
-
+                        ${nomeLocal} ${numero}
                     </strong>
-
                     <br><br>
-
                 </div>
-
             `;
-
         }
 
-
-        // =================================================
         // COMANDA
-        // =================================================
-
         const numeroComanda =
             fechamento.numeroComanda ||
             fechamento.comanda ||
             fechamento.numeroPedido ||
             "";
 
-
-        if (
-            configuracao.mostrarComanda &&
-            numeroComanda
-        ) {
-
+        if (configuracao.mostrarComanda && numeroComanda) {
             conteudo += `
-
-                <div
-                    style="
-                        text-align:center;
-                        margin-bottom:8px;
-                    "
-                >
-
-                    Pedido #
-                    ${
-                        escaparHTML(
-                            numeroComanda
-                        )
-                    }
-
+                <div style="text-align:center;margin-bottom:8px;">
+                    Pedido #${escaparHTML(numeroComanda)}
                 </div>
-
             `;
-
         }
 
-
-        // =================================================
         // GARÇOM
-        // =================================================
-
-        if (
-            configuracao.mostrarGarcom &&
-            fechamento.garcomNome
-        ) {
-
+        if (configuracao.mostrarGarcom && fechamento.garcomNome) {
             conteudo += `
-
-                <div
-                    style="
-                        text-align:center;
-                        font-weight:bold;
-                        margin-bottom:8px;
-                    "
-                >
-
-                    GARÇOM:
-                    ${
-                        escaparHTML(
-                            fechamento.garcomNome
-                        )
-                    }
-
+                <div style="text-align:center;font-weight:bold;margin-bottom:8px;">
+                    GARÇOM: ${escaparHTML(fechamento.garcomNome)}
                 </div>
-
             `;
-
         }
 
-
-        // =================================================
         // ITENS
-        // =================================================
+        itens.forEach(item => {
 
-        itens.forEach(
-            item => {
+            const quantidade = Number(item.quantidade || 0);
+            const preco = Number(item.preco || 0);
+            const subtotalItem = preco * quantidade;
 
-                const quantidade =
-                    Number(
-                        item.quantidade || 0
-                    );
-
-
-                const preco =
-                    Number(
-                        item.preco || 0
-                    );
-
-
-                const subtotal =
-                    preco *
-                    quantidade;
-
-
-                if (
-                    configuracao.mostrarPrecos
-                ) {
-
-                    conteudo += `
-
-                        <div
-                            class="linha-item-impressao"
-                            style="
-                                margin-bottom:8px;
-                            "
-                        >
-
-                            <span>
-
-                                ${quantidade}x
-                                ${escaparHTML(
-                                    item.nome
-                                )}
-
-                            </span>
-
-                            <span>
-
-                                R$
-                                ${formatarValor(
-                                    subtotal
-                                )}
-
-                            </span>
-
-                        </div>
-
-                    `;
-
-                } else {
-
-                    conteudo += `
-
-                        <div
-                            style="
-                                margin-bottom:8px;
-                            "
-                        >
-
-                            ${quantidade}x
-                            ${escaparHTML(
-                                item.nome
-                            )}
-
-                        </div>
-
-                    `;
-
-                }
-
+            if (configuracao.mostrarPrecos) {
+                conteudo += `
+                    <div class="linha-item-impressao" style="margin-bottom:8px;">
+                        <span>
+                            ${quantidade}x ${escaparHTML(item.nome)}
+                        </span>
+                        <span>
+                            R$ ${formatarValor(subtotalItem)}
+                        </span>
+                    </div>
+                `;
+            } else {
+                conteudo += `
+                    <div style="margin-bottom:8px;">
+                        ${quantidade}x ${escaparHTML(item.nome)}
+                    </div>
+                `;
             }
-        );
+        });
 
-
-        // =================================================
         // VALORES FINAIS
-        // =================================================
+        const subtotal = Number(fechamento.subtotal || 0);
+        const desconto = Number(fechamento.desconto || 0);
+        const total = Number(fechamento.total || 0);
 
-        const subtotal =
-            Number(
-                fechamento.subtotal || 0
-            );
-
-
-        const desconto =
-            Number(
-                fechamento.desconto || 0
-            );
-
-
-        const total =
-            Number(
-                fechamento.total || 0
-            );
-
-
-        if (
-            configuracao.mostrarPrecos
-        ) {
-
+        if (configuracao.mostrarPrecos) {
             conteudo += `
-
                 <hr>
 
-                <div
-                    style="
-                        text-align:right;
-                        font-size:14px;
-                    "
-                >
-
-                    Subtotal:
-
-                    R$
-                    ${formatarValor(
-                        subtotal
-                    )}
-
+                <div style="text-align:right;font-size:14px;">
+                    Subtotal: R$ ${formatarValor(subtotal)}
                     <br>
-
-                    Desconto:
-
-                    R$
-                    ${formatarValor(
-                        desconto
-                    )}
-
+                    Desconto: R$ ${formatarValor(desconto)}
                     <br><br>
 
-                    <strong
-                        style="
-                            font-size:18px;
-                        "
-                    >
-
-                        TOTAL:
-
-                        R$
-                        ${formatarValor(
-                            total
-                        )}
-
+                    <strong style="font-size:18px;">
+                        TOTAL: R$ ${formatarValor(total)}
                     </strong>
-
                 </div>
-
             `;
-
         }
 
-
-        // =================================================
         // HORÁRIO
-        // =================================================
-
-        if (
-            configuracao.mostrarHorario
-        ) {
-
+        if (configuracao.mostrarHorario) {
             conteudo += `
-
                 <br>
-
-                <div
-                    style="
-                        text-align:center;
-                        font-size:12px;
-                    "
-                >
-
-                    ${
-                        escaparHTML(
-                            fechamento.dataHora ||
-                            ""
-                        )
-                    }
-
+                <div style="text-align:center;font-size:12px;">
+                    ${escaparHTML(fechamento.dataHora || "")}
                 </div>
-
             `;
-
         }
-
 
         conteudo += `
-
-            <br>
-
-            <div
-                style="
-                    text-align:center;
-                    font-size:12px;
-                "
-            >
-
-                Obrigado pela preferência!
-
+                <br>
+                <div style="text-align:center;font-size:12px;">
+                    Obrigado pela preferência!
+                </div>
             </div>
-
-        </div>
-
         `;
 
+        // Envia a conta para impressão.
+        await abrirImpressao(conteudo, configuracao);
 
-        // =================================================
-        // IMPRIME PRIMEIRO
-        // =================================================
-
-        await abrirImpressao(
-            conteudo,
-            configuracao
+        // Confere novamente o estado antes de registrar a impressão.
+        const confirmacaoFinal = await getDoc(
+            referenciaFechamento
         );
 
+        if (!confirmacaoFinal.exists()) {
+            console.warn(
+                "O fechamento deixou de existir após a impressão:",
+                fechamento.id
+            );
+            return;
+        }
+
+        if (confirmacaoFinal.data().status !== "novo") {
+            console.warn(
+                "O estado do fechamento mudou durante a impressão:",
+                fechamento.id
+            );
+            return;
+        }
+
+        // Registra que a impressão foi enviada.
+        // NÃO apaga pedidos, NÃO libera a mesa e NÃO exclui o fechamento.
+        await setDoc(
+            referenciaFechamento,
+            {
+                status: "impresso",
+                impressoEm: serverTimestamp()
+            },
+            {
+                merge: true
+            }
+        );
 
         console.log(
-            "Fechamento impresso:",
+            "Conta enviada para impressão. Atendimento mantido em pagamento:",
             fechamento.id
         );
-
-
-        // =================================================
-        // LIMPAR CONSUMO DA MESA/QUARTO
-        // =================================================
-
-        if (
-            fechamento.idMesa
-        ) {
-
-            const referenciaPedidos =
-                collection(
-                    db,
-                    "mesas",
-                    fechamento.idMesa,
-                    "pedidos"
-                );
-
-
-            const snapshot =
-                await getDocs(
-                    referenciaPedidos
-                );
-
-
-            for (
-                const documento
-                of snapshot.docs
-            ) {
-
-                await deleteDoc(
-                    documento.ref
-                );
-
-            }
-
-        }
-
-
-        // =================================================
-        // LIBERAR MESA / QUARTO
-        // =================================================
-
-        if (
-            fechamento.idMesa
-        ) {
-
-            await setDoc(
-
-                doc(
-                    db,
-                    "mesas",
-                    fechamento.idMesa
-                ),
-
-                {
-
-                    status:
-                        "livre",
-
-                    atualizadoEm:
-                        serverTimestamp()
-
-                },
-
-                {
-                    merge: true
-                }
-
-            );
-
-        }
-
-
-        // =================================================
-        // REMOVER FECHAMENTO DA FILA
-        // =================================================
-
-        await deleteDoc(
-
-            doc(
-                db,
-                "fechamentos",
-                fechamento.id
-            )
-
-        );
-
-
-        console.log(
-            "Fechamento finalizado e mesa liberada:",
-            fechamento.idMesa
-        );
-
 
     } catch (erro) {
 
@@ -2049,10 +1784,17 @@ async function imprimirFechamentoAutomaticamente(
             erro
         );
 
+    } finally {
+
+        impressoesAutomaticasEmAndamento.delete(
+            chaveTrava
+        );
+
+        liberarTravaImpressao(chaveTrava);
+
     }
 
 }
-
 
 // =====================================================
 // ESCUTAR FECHAMENTOS
