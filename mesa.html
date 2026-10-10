@@ -677,6 +677,52 @@ async function alterarConsumo(
     serverTimestamp
 } = window.firebaseHotel;
 
+        // ===========================
+// IDENTIFICAR GARÇOM
+// ===========================
+
+let garcomNome = "Não informado";
+let garcomUid = "";
+let usuarioTipo = "garcom";
+
+try {
+
+    let usuarioSalvo =
+        localStorage.getItem("usuarioLogado");
+
+    if (!usuarioSalvo) {
+        usuarioSalvo =
+            localStorage.getItem("garcomLogado");
+    }
+
+    if (usuarioSalvo) {
+
+        const usuario =
+            JSON.parse(usuarioSalvo);
+
+        garcomNome =
+            usuario.nome ||
+            usuario.nomeGarcom ||
+            usuario.usuario ||
+            "Não informado";
+
+        garcomUid =
+            usuario.uid || "";
+
+        usuarioTipo =
+            usuario.tipo || "garcom";
+
+    }
+
+} catch (erro) {
+
+    console.error(
+        "Erro ao identificar garçom na auditoria:",
+        erro
+    );
+
+}
+
 
         const referenciaMesa =
             collection(
