@@ -1651,50 +1651,31 @@ if (
 
         const quantidadeTotal =
             itensPedido.reduce(
-                (
-                    soma,
-                    item
-                ) =>
+                (soma, item) =>
                     soma +
-                    Number(
-                        item.quantidade || 0
-                    ),
+                    Number(item.quantidade || 0),
                 0
             );
-
 
         const nomesItens =
             itensPedido
                 .map(
                     item =>
-                        Number(
-                            item.quantidade || 0
-                        ) > 1
-
-                            ? Number(
-                                item.quantidade
-                            ) +
+                        Number(item.quantidade || 0) > 1
+                            ? Number(item.quantidade) +
                               "x " +
                               item.nome
-
                             : item.nome
                 )
-                .join(
-                    ", "
-                );
-
+                .join(", ");
 
         await addDoc(
-
             collection(
                 db,
                 "auditoria_pedidos"
             ),
-
             {
-
-                acao:
-                    "Acrescentou itens",
+                acao: "Acrescentou itens",
 
                 descricao:
                     "Acrescentou " +
@@ -1702,61 +1683,27 @@ if (
                     " na " +
                     nomeLocal.toLowerCase() +
                     " " +
-                    String(
-                        numeroMesa
-                    ).padStart(
-                        2,
-                        "0"
-                    ) +
+                    String(numeroMesa).padStart(2, "0") +
                     ".",
 
-                garcomNome:
-                    garcomNome,
-
-                garcomUid:
-                    garcomUid,
-
-                usuarioTipo:
-                    "garcom",
+                garcomNome: garcomNome,
+                garcomUid: garcomUid,
+                usuarioTipo: "garcom",
 
                 local:
                     nomeLocal +
                     " " +
-                    String(
-                        numeroMesa
-                    ).padStart(
-                        2,
-                        "0"
-                    ),
+                    String(numeroMesa).padStart(2, "0"),
 
-                tipoLocal:
-                    tipoSelecionado,
-
-                numeroLocal:
-                    Number(
-                        numeroMesa
-                    ),
-
-                comanda:
-                    "",
-
-                itemNome:
-                    nomesItens,
-
-                quantidade:
-                    quantidadeTotal,
-
-                observacao:
-                    observacao,
-
-                numeroPedido:
-                    numeroPedido,
-
-                criadoEm:
-                    serverTimestamp()
-
+                tipoLocal: tipoSelecionado,
+                numeroLocal: Number(numeroMesa),
+                comanda: "",
+                itemNome: nomesItens,
+                quantidade: quantidadeTotal,
+                observacao: observacao,
+                numeroPedido: numeroPedido,
+                criadoEm: serverTimestamp()
             }
-
         );
 
         console.log(
@@ -1774,7 +1721,15 @@ if (
 
 }
 
+// ===========================
+// FINALIZA O ENVIO DO PEDIDO
+// ===========================
 
+fecharRevisao();
+
+window.location.href = "index.html";
+
+    
 // ===========================
 // FECHA O TRY PRINCIPAL
 // ===========================
