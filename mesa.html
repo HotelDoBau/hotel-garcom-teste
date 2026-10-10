@@ -1824,91 +1824,58 @@ try {
             `${ano}-${mes}`;
 
 
-        await addDoc(
+       
+await addDoc(
+    collection(db, "saidas"),
+    {
+        fechamentoId: fechamentoRef.id,
 
-            collection(
-                db,
-                "saidas"
-            ),
+        mesa: ehQuarto
+            ? null
+            : Number(numeroMesa),
 
-            {
+        quarto: ehQuarto
+            ? Number(numeroMesa)
+            : quartoMesa,
 
-                fechamentoId:
-                    fechamentoRef.id,
+        tipo: tipoSelecionado,
+        numero: Number(numeroMesa),
+        idMesa: idMesa,
 
-                mesa:
-                    ehQuarto
-                        ? null
-                        : Number(numeroMesa),
+        itens: itensFechamento.map(item => ({
+            id: item.id,
+            nome: item.nome,
+            valorUnitario: Number(item.preco || 0),
+            quantidade: Number(item.quantidade || 0),
+            total: Number(
+                (
+                    Number(item.preco || 0) *
+                    Number(item.quantidade || 0)
+                ).toFixed(2)
+            )
+        })),
 
-                quarto:
-                    ehQuarto
-                        ? Number(numeroMesa)
-                        : quartoMesa,
+        referenciaMes: referenciaMes,
 
-                tipo:
-                    tipoSelecionado,
+        subtotal: Number(
+            totalFechamentoAtual.toFixed(2)
+        ),
 
-                numero:
-                    Number(numeroMesa),
+        desconto: Number(
+            desconto.toFixed(2)
+        ),
 
-                idMesa:
-                    idMesa,
+        total: Number(
+            totalFinal.toFixed(2)
+        ),
 
-                itens:
-                    itensFechamento.map(
-                        item => ({
+        dataHora: new Date().toLocaleString("pt-BR"),
 
-                            id:
-                                item.id,
+        criadoEm: serverTimestamp()
+    }
+);
 
-                            nome:
-                                item.nome,
 
-                            valorUnitario:
-                                Number(
-                                    item.preco || 0
-                                ),
-
-                            quantidade:
-                                Number(
-                                    item.quantidade || 0
-                                ),
-
-                            total:
-                                Number(
-
-                                    (
-                                        Number(
-                                            item.preco || 0
-                                        ) *
-
-                                        Number(
-                                            item.quantidade || 0
-                                        )
-
-                                    ).toFixed(2)
-
-                                )
-
-                        })
-                    ),
-
-                referenciaMes:
-                    referenciaMes,
-
-                dataHora:
-                    new Date()
-                        .toLocaleString(
-                            "pt-BR"
-                        ),
-
-                criadoEm:
-                    serverTimestamp()
-
-            }
-
-        );
 
                 /* ==============================
            AUDITORIA DO FECHAMENTO
