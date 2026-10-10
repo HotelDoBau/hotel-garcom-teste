@@ -667,15 +667,15 @@ async function alterarConsumo(
     try {
 
 
-        const {
-
-            db,
-            collection,
-            getDocs,
-            updateDoc,
-            deleteDoc
-
-        } = window.firebaseHotel;
+       const {
+    db,
+    collection,
+    getDocs,
+    updateDoc,
+    deleteDoc,
+    addDoc,
+    serverTimestamp
+} = window.firebaseHotel;
 
 
         const referenciaMesa =
@@ -720,6 +720,32 @@ async function alterarConsumo(
 
         documentos.reverse();
 
+        const quantidadeTotalAntes = documentos.reduce(
+    (soma, registro) => {
+
+        const itens = Array.isArray(registro.dados.itens)
+            ? registro.dados.itens
+            : [];
+
+        return soma + itens.reduce(
+            (total, item) => {
+
+                if (
+                    String(item.id) === String(idProduto)
+                ) {
+                    return total + Number(item.quantidade || 0);
+                }
+
+                return total;
+            },
+            0
+        );
+    },
+    0
+);
+
+let nomeItemAlterado = "";
+let removeuCompletamente = false;
 
         /* =====================================
            AUMENTAR QUANTIDADE
@@ -772,13 +798,12 @@ async function alterarConsumo(
 
 
                 const item =
-                    itens[indice];
+    itens[indice];
 
-
-                item.quantidade =
-                    Number(
-                        item.quantidade || 0
-                    ) + 1;
+item.quantidade =
+    Number(
+        item.quantidade || 0
+    ) + 1;
 
 
                 item.subtotal =
@@ -840,15 +865,15 @@ async function alterarConsumo(
 
             if (!alterado) {
 
-                alert(
-                    "Não foi possível localizar este item na comanda."
-                );
-
-            }
-
+            alert(
+                "Não foi possível localizar este item na comanda."
+            );
 
         }
 
+    }
+
+                
 
         /* =====================================
            DIMINUIR QUANTIDADE
